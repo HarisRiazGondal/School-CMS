@@ -8,7 +8,7 @@
 :root{color-scheme:light;--ink:#14213d;--muted:#5b667a;--line:#dfe5ef;--panel:#fff;--bg:#f5f7fb;--accent:#1f6feb;--warn:#9a6700}
 *{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.5 system-ui,-apple-system,Segoe UI,sans-serif}
 main{max-width:1100px;margin:auto;padding:28px 18px}header,.card{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:22px;margin-bottom:16px;box-shadow:0 2px 8px #14213d0a}
-h1,h2{margin-top:0}h1{font-size:clamp(1.8rem,4vw,3rem)}h2{font-size:1.15rem}.meta{color:var(--muted)}.status{display:inline-block;padding:6px 10px;border-radius:999px;background:#fff3cd;color:var(--warn);font-weight:700}
+h1,h2{margin-top:0}h1{font-size:clamp(1.8rem,4vw,3rem)}h2{font-size:1.15rem}.meta{color:var(--muted)}.status{display:inline-block;padding:6px 10px;border-radius:999px;background:#fff3cd;color:var(--warn);font-weight:700;margin:2px}
 .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:14px}.item{border:1px solid var(--line);border-radius:10px;padding:14px}.label{font-weight:700}.small{font-size:.92rem;color:var(--muted)}
 ul{padding-left:1.2rem}a{color:var(--accent)}:focus-visible{outline:3px solid #ffbf47;outline-offset:3px}
 </style>
@@ -18,10 +18,14 @@ ul{padding-left:1.2rem}a{color:var(--accent)}:focus-visible{outline:3px solid #f
 <header>
 <h1>School-CMS Project Status</h1>
 <p class="meta">Updated 2026-10-14 · source state verified through GitHub</p>
-<p><span class="status">Phase 0 — Discovery and design · In progress</span> <span class="status">Release: Not started</span></p>
+<p><span class="status">Phase 1 — Foundation · In progress</span><span class="status">Release: Not started</span></p>
 <p>Objective: build a configurable school operating platform with durable student identity, year-specific enrollment history, scoped portals, assessments, and auditable finance.</p>
 </header>
-<section class="card"><h2>Verified foundation</h2><ul><li>School-CMS began empty; no prior application code, branches, migrations, or tests.</li><li>Django entrypoints, settings, dependency baseline, environment example, and admin route are committed.</li><li>No runtime or test evidence has been produced yet.</li></ul></section>
+<section class="card"><h2>Verified foundation</h2><ul>
+<li>School-CMS began empty; no prior application code, branches, migrations, or tests.</li>
+<li>Django entrypoints/settings, environment and dependency baseline, custom User, SchoolMembership, School/Campus/AcademicYear, SchoolClass/Section/Subject, admin registrations, and two baseline test modules are committed.</li>
+<li>Migrations and runtime checks have not been generated or run in this environment.</li>
+</ul></section>
 <section class="card"><h2>Feature status</h2><div class="grid">
 <div class="item"><div class="label">Foundation</div><div>In progress · MVP</div></div>
 <div class="item"><div class="label">Admissions and identity</div><div>Not started · MVP</div></div>
@@ -31,7 +35,11 @@ ul{padding-left:1.2rem}a{color:var(--accent)}:focus-visible{outline:3px solid #f
 <div class="item"><div class="label">Oversight and rollout</div><div>Not started</div></div>
 </div></section>
 <section class="card"><h2>IELTS dependency</h2><p>The two accessible IELTS repositories were audited. They are separate Flask projects with incomplete or inconsistent implementation. No code was copied; school assessment will use an independent boundary.</p></section>
-<section class="card"><h2>Next actions</h2><ol><li>Run the Django foundation and record actual check output.</li><li>Implement scoped authentication and account status.</li><li>Implement school and academic foundation models, migrations, and authorization tests.</li><li>Implement immutable student identity, enrollment history, and promotion services.</li></ol></section>
+<section class="card"><h2>Next actions</h2><ol>
+<li>Run check, generate migrations, migrate, and run tests in a clean environment.</li>
+<li>Add object-level authorization tests and secure login/password-reset/account-deactivation flows.</li>
+<li>Add Student, Enrollment, roll-number, promotion, and audit services.</li>
+</ol></section>
 <section class="card"><h2>Release gates</h2><p class="small">No percentage is shown because no scoring method or implementation evidence exists. No phase is Verified or Released until tests and operational checks pass.</p></section>
 <footer class="small">Generated from docs/ai-context/*.md · readable offline without external services.</footer>
 </main>
