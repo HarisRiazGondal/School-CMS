@@ -4,11 +4,13 @@ Status vocabulary: Not started, In progress, Blocked, Verified, Released.
 
 ## Phase 0 — Discovery and design
 
-Status: In progress. Repository inspection found an empty repo. Requirements, architecture, data model, permissions, IELTS reuse audit, risks, and memory artifacts are being committed. Acceptance requires agreement on permanent identity/enrollment history, scoped permissions, and truthful status.
+Status: Verified for the current repository discovery checkpoint. The repo was empty, the requirements/design set was created, and the IELTS repositories were inspected. This does not mean application features are complete.
 
 ## Phase 1 — Foundation
 
-Status: In progress. Django entrypoints, settings, environment example, dependency baseline, and admin URL are committed. Next: custom User, School/Campus, AcademicYear/Term, Grade, SectionOffering, Subject, memberships, migrations, admin registration, and authorization tests.
+Status: In progress. Committed: Django entrypoints/settings, environment and dependency baseline, custom User, SchoolMembership, School/Campus/AcademicYear, SchoolClass/Section/Subject, admin registrations, and baseline tests. Remaining: generate and verify migrations, run check/migrate/tests, add object-level authorization and secure login/password-reset/account-deactivation flows, and reconcile terminology before dependent modules.
+
+Acceptance: clean setup passes check/migrations/tests; custom authentication and scoped permissions deny anonymous, inactive, wrong-role, and cross-school access; model constraints are verified against the database.
 
 ## Phase 2 — Admissions and identity
 
