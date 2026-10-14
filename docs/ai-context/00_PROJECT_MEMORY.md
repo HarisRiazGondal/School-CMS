@@ -9,8 +9,8 @@ School-CMS is a configurable school operating platform for one school initially,
 - Repository: HarisRiazGondal/School-CMS.
 - Initial state: empty Git repository; no prior source, branches, migrations, tests, or deployment configuration.
 - Current phase: Phase 1 — Foundation, in progress.
-- Committed foundation: Django entrypoints/settings, dependency and environment baseline, custom User, SchoolMembership, School, Campus, AcademicYear, SchoolClass, Section, Subject, admin registrations, and one cross-school model test.
-- Migration files have not been generated and no local Django command or test has been run in this environment; test evidence is unavailable.
+- Committed foundation: Django entrypoints/settings, dependency and environment baseline, custom User, SchoolMembership, School, Campus, AcademicYear, SchoolClass, Section, Subject, admin registrations, initial migrations, and baseline tests.
+- Verified locally from a clean clone: python manage.py check, makemigrations --check --dry-run, migrate, and python manage.py test all pass. The test suite reports 4 tests passed.
 - IELTS audit completed against ielts-prep and IELTS-Essay-Writing-checker-. They remain separate; no code was reused.
 
 ## Invariants
