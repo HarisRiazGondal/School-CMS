@@ -7,6 +7,10 @@ from django.utils import timezone
 
 from accounts.models import SchoolMembership, User
 from academics.models import SchoolClass, Section, Subject, Term
+from assessment.models import Assessment, Question
+from assessment.services import attach_question, create_assessment, create_question, open_assessment
+from finance.models import FeePlan, Invoice
+from finance.services import create_fee_plan, issue_invoice
 from learning.models import Assignment, TeacherAssignment
 from schools.models import AcademicYear, Campus, School
 from students.models import Enrollment, Student
@@ -96,6 +100,7 @@ class Command(BaseCommand):
                 ("demo-admin", "admin@example.test", "Demo", "Admin", SchoolMembership.Role.SCHOOL_ADMIN),
                 ("demo-registrar", "registrar@example.test", "Demo", "Registrar", SchoolMembership.Role.REGISTRAR),
                 ("demo-teacher", "teacher@example.test", "Demo", "Teacher", SchoolMembership.Role.TEACHER),
+                ("demo-accountant", "accountant@example.test", "Demo", "Accountant", SchoolMembership.Role.ACCOUNTANT),
                 ("demo-student", "student@example.test", "Casey", "Learner", SchoolMembership.Role.STUDENT),
             )
             users = {}
@@ -137,13 +142,59 @@ class Command(BaseCommand):
                     date_of_birth=date(start_year - 13, 5, 12), academic_year=year,
                     section=section, roll_number="07", student_user=student_user,
                 )
-            elif not Enrollment.objects.filter(student=student, academic_year=year).exists():
+            enrollment = Enrollment.objects.filter(student=student, academic_year=year).first()
+            if enrollment is None:
                 current = student.enrollments.filter(status=Enrollment.Status.ACTIVE).first()
                 if current:
                     close_enrollment(user=registrar, source=current, outcome=Enrollment.Status.TRANSFERRED)
                 enrollment = enroll_existing_student(
                     user=registrar, student=student, academic_year=year, section=section, roll_number="07",
                 )
+
+            # The finance services post an immutable charge and append-only ledger entry.
+            # Reuse an existing fixture invoice without rewriting its balance or payments.
+            fee_plan = FeePlan.objects.filter(
+                school=school, academic_year=year, grade=school_class, name="Demo annual fee",
+            ).first()
+            if fee_plan is None:
+                fee_plan = create_fee_plan(
+                    user=users[SchoolMembership.Role.ACCOUNTANT], school=school, academic_year=year,
+                    grade=school_class, name="Demo annual fee", amount="5000.00", currency="PKR",
+                )
+            if not Invoice.objects.filter(enrollment=enrollment, fee_plan=fee_plan).exists():
+                issue_invoice(
+                    user=users[SchoolMembership.Role.ACCOUNTANT], enrollment=enrollment,
+                    fee_plan=fee_plan,
+                )
+
+            # Seed one live assessment and its questions through the normal lifecycle.
+            # A rerun leaves an existing assessment, attempts, answers and results intact.
+            assessment_title = "Fractions mastery check"
+            assessment = Assessment.objects.filter(
+                school=school, academic_year=year, section=section, subject=subject,
+                title=assessment_title,
+            ).first()
+            if assessment is None:
+                assessment = create_assessment(
+                    teacher, section=section, subject=subject, term=term, title=assessment_title,
+                    opens_at=timezone.now() - timedelta(hours=1),
+                    closes_at=timezone.now() + timedelta(days=30), attempt_limit=2, pass_percent="60.00",
+                )
+            if assessment.status == Assessment.Status.DRAFT and not assessment.questions.exists():
+                question_specs = (
+                    (Question.Kind.MCQ, "Which fraction is equivalent to 1/2?", ["2/4", "2/3", "3/5"], "2/4", "2.00"),
+                    (Question.Kind.TRUE_FALSE, "A fraction with equal numerator and denominator equals 1.", [], "true", "1.00"),
+                    (Question.Kind.MANUAL, "Explain how you would compare 3/4 and 2/3.", [], "", "3.00"),
+                )
+                for position, (kind, prompt, choices, correct_answer, points) in enumerate(question_specs, start=1):
+                    bank_question = create_question(
+                        teacher, subject=subject, kind=kind, prompt=prompt,
+                        max_points=points, choices=choices, correct_answer=correct_answer,
+                        position=position,
+                    )
+                    attach_question(teacher, assessment, bank_question)
+            if assessment.status == Assessment.Status.DRAFT and assessment.questions.exists():
+                open_assessment(teacher, assessment)
 
             assignment, created = Assignment.objects.get_or_create(
                 section=section,
@@ -161,6 +212,6 @@ class Command(BaseCommand):
                 assignment.save(update_fields=["is_published"])
 
         self.stdout.write(self.style.SUCCESS(
-            f"Demo school ready for {year_name}. Accounts: demo-admin, demo-registrar, demo-teacher, demo-student."
+            f"Demo school ready for {year_name}. Accounts: demo-admin, demo-registrar, demo-teacher, demo-accountant, demo-student."
         ))
         self.stdout.write("All accounts use the password supplied with --password.")

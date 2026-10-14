@@ -1,0 +1,4 @@
+{% extends "base.html" %}
+{% block title %}Issue invoice | Finance{% endblock %}
+{% block content %}<div class="page-header"><div><p class="eyebrow">{{ school.name }}</p><h1>Issue invoice</h1><p class="muted">Select a plan that matches the enrollment’s historical year and grade.</p></div></div>
+<form method="post" class="form-card">{% csrf_token %}{% if form.non_field_errors %}<div class="form-errors">{{ form.non_field_errors }}</div>{% endif %}{% for field in form %}<div class="field">{{ field.label_tag }}{{ field }}{% if field.help_text %}<small class="muted">{{ field.help_text }}</small>{% endif %}{{ field.errors }}</div>{% endfor %}<button class="button button-primary" type="submit">Issue invoice</button> <a href="{% url 'finance:school-home' school_slug=school.slug %}">Cancel</a></form>{% endblock %}

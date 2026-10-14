@@ -1,0 +1,5 @@
+{% extends "base.html" %}
+{% block content %}<section class="page-header"><div><p class="eyebrow">{{ assessment.subject }}</p><h1>{{ assessment.title }}</h1></div></section>
+<p class="card">Available {{ assessment.opens_at }} – {{ assessment.closes_at }}. You have {{ assessment.attempt_limit }} allowed attempt(s).</p>
+{% for attempt in attempts %}<article class="card"><p>Attempt {{ attempt.number }} · {{ attempt.get_status_display }}</p>{% if attempt.status == 'published' %}<p>Result: {{ attempt.raw_score }} / {{ attempt.total_points }} · Grade {{ attempt.grade_label }}</p>{% elif attempt.status == 'in_progress' %}<a class="button" href="{% url 'assessment:attempt' attempt.pk %}">Continue attempt</a>{% endif %}</article>{% endfor %}
+{% if can_start %}<form method="post" action="{% url 'assessment:start' assessment.pk %}">{% csrf_token %}<button class="button button-primary">Start attempt</button></form>{% endif %}{% endblock %}

@@ -1,0 +1,5 @@
+{% extends "base.html" %}
+{% block title %}Receipt {{ receipt.receipt_code }} | Finance{% endblock %}
+{% block content %}<div class="page-header"><div><p class="eyebrow">{{ invoice.school.name }} · Receipt</p><h1>{{ receipt.receipt_code }}</h1><p class="muted">Issued {{ receipt.issued_at }}</p></div></div>
+<div class="card"><h2>Payment receipt</h2><p><strong>Student:</strong> {{ invoice.enrollment.student.student_code }}</p><p><strong>Enrollment year:</strong> {{ invoice.enrollment.academic_year.name }}</p><p><strong>Invoice:</strong> {{ invoice.issue_date }} · {{ invoice.fee_plan.name }}</p><p><strong>Payment received:</strong> {{ payment.amount }} {{ payment.currency }}</p><p><strong>Posted:</strong> {{ payment.posted_at }}</p><a href="{% url 'finance:invoice-detail' invoice_id=invoice.pk %}">View invoice ledger</a></div>
+{% endblock %}

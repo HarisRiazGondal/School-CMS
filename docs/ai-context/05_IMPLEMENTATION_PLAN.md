@@ -1,22 +1,22 @@
 # Implementation Plan
 
-Use: Not started, In progress, Blocked, Verified, Released.
+Status vocabulary: Not started, In progress, Blocked, Verified, Released.
 
-| Phase | Status | Current boundary / acceptance still needed |
+| Phase | Status | Current boundary |
 |---|---|---|
-| 0 Discovery/design | Verified | Empty repo confirmed; requirements/relationships/permissions/workflows/IELTS audit documented |
-| 1 Foundation | In progress | Local schema/auth/portals verified; PostgreSQL and fuller provisioning/authorization/privacy release checks remain |
-| 2 Admissions/identity | In progress | Registration, individual outcomes and history verified; intake approval, batch/conditional, transfer/section correction UI remain |
-| 3 Core education | In progress | Basic assigned attendance/text work/grading verified; correction approvals, student attendance/to-do and files remain |
-| 4 Assessment | Not started | Attempt rules/scoring/moderation/report-card and authorization tests required |
-| 5 Finance | Not started | Decimal ledger, reconciliation/reversal and scope tests required |
-| 6 Oversight | Not started | Notices, timetable, policy editor and scoped analytics required |
-| 7 Rollout | Not started | PostgreSQL, SMTP, uploads, security/accessibility, restore and hosted pilot required |
+| 0 Discovery/design | Verified | Repository, relationships, roles/workflows and IELTS keep-separate audit documented |
+| 1 Foundation | In progress | Local schema/auth/scope verified; production database/provisioning/security verification remains |
+| 2 Admissions/identity | In progress | Registration/individual progression/history verified; intake/approval, batch/conditional and correction UI remain |
+| 3 Core education | In progress | Attendance/text work/grading verified; correction approvals, files and fuller student dashboards remain |
+| 4 Assessment | In progress | Pilot bank/attempt/scoring/moderation/publication/transcript gate verified; exam calendars, richer scales/weights/exports remain |
+| 5 Finance | In progress | Pilot plan/invoice/payment/receipt/reversal/statement gate verified; installments/refunds/late fees/approvals/general ledger remain |
+| 6 Oversight | Not started | Timetable/notices/settings and complete scoped operations required |
+| 7 Rollout | Not started | PostgreSQL, SMTP, security/accessibility, restore and hosted acceptance required |
 
-## Defined progress score
+## Unchanged progress scoring
 
-Eight **pilot delivery milestones**, each 12.5%, are defined in `project_state.json`. Count only milestones with Verified local acceptance criteria; 4/8 currently verified gives **50%**. This score is a deliberately defined pilot delivery measure, not completion of every requirement or of production readiness. The full phase table above retains unfinished scope.
+Eight equally weighted pilot delivery milestones each contribute 12.5%. Six now meet their documented local acceptance gates: foundation, scoped auth, identity/year progression, basic education, assessments/report cards, and fees/accounting. **6/8 = 75%.** The same criteria/denominator were defined before the work; full phase scope is tracked separately above. This score does not certify production readiness.
 
-First four gates: clean foundation/academic schema; session auth and scoped portals; identity/year progression; basic attendance/classwork. Remaining four: assessment/report cards; fees/accounting; complete oversight/operations; production pilot release. Their exact acceptance criteria are rendered into PROJECT_STATUS.html.
+Milestone 7 requires correction approvals, timetable/notices/settings, scoped dashboards and batch workflows. Milestone 8 requires actual PostgreSQL/security/upload/SMTP/restore/accessibility/hosted pilot evidence. Do not mark them complete because of code presence.
 
-Run focused tests on every increment and integrated checks before commits. Keep migrations additive, preserve old rows, and update status source and impacted Markdown in the same commit.
+Maintain additive migrations, atomic services, source-of-truth histories and measured test evidence. Update project_state.json/Markdown and run scripts/render_status.py after each increment.

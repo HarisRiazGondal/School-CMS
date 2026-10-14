@@ -2,24 +2,26 @@
 
 ## Current checkpoint
 
-School-CMS began empty. It is now a local, testable Django pilot with authentication, scoped portals, academic foundation, student identity/enrollment/promotion, attendance, text assignments/submissions/grading and audit events. No assessment, finance or production release is complete.
+School-CMS is an expanded local Django pilot with session authentication, scoped portals, academic foundation, permanent student identities/enrollment/promotion history, attendance, assignments/grading, assessments/transcripts, fees/receipts/reversals and audit events.
 
-Current work: Phase 2/3 increments **In progress**. **50% of eight equally weighted pilot implementation milestones** meet the local acceptance criteria in `project_state.json`; this measures those slices and does not certify completion of the full product brief. Phase 2/3 still have broader requirements outstanding.
+**75%: six of eight equally weighted pilot milestones meet documented local acceptance criteria.** This is the same denominator used at the 50% checkpoint. Full phase scope and production readiness remain incomplete.
 
-Verified: **48 automated tests pass**, Django system/migration-drift checks pass, fresh SQLite migrations apply and synthetic demo seeding is idempotent. PostgreSQL and hosted production acceptance are unverified.
+Latest verification: **79 automated tests pass**; Django checks, migration-drift and migration application pass. A fresh SQLite database passed the combined assessment scoring/publication, payment/receipt/reversal, promotion/history and idempotent demo-reseed workflow. PostgreSQL and hosted production acceptance are unverified.
+
+Current increments: Phase 4/5 pilot slices locally verified; broader Phases 1–6 retain unfinished scope. Milestones 7 (oversight/operations) and 8 (production release) remain Not started.
 
 ## Architecture and invariants
 
-Django 5.2 modular monolith; server-rendered portals and sessions; PostgreSQL intended for deployment, SQLite verified locally. User login remains username-based. `SchoolMembership` may grant multiple school-scoped roles. No teacher access from role alone: an active subject/section assignment is required. Student access uses their linked user and active membership/enrollment.
+Django 5.2 modular monolith, server-rendered portals and database sessions; PostgreSQL intended for deployment, SQLite verified locally. Username login remains. Roles are active school memberships; teachers additionally require subject/section assignments; students require their linked identity and enrollment. Permission queries verify actual database user/school activation, including when callers hold cached objects.
 
-`Student` has one immutable UUID and school-scoped generated `STU-` code. `Enrollment` holds year, section and roll number. Promotion creates a new year record and closes the old one atomically; preview never writes. Re-admission requires the prior active enrollment to be closed. Corrections to immutable placement are not exposed as silent edits.
+Student UUID/STU code is permanent. Enrollment owns year, section and roll. Promotion creates a new year record and preserves prior placement. Re-admission requires prior active enrollment closure. Historical transcripts and fee statements remain accessible after promotion.
 
-`SchoolClass` is the current Grade model; `Section` is a year-bound SectionOffering with optional Campus; Term is separate. Avoid renaming persisted models without explicit migrations.
+New apps: `assessment` owns school-subject question banks, frozen assessment copies, schedules/attempts/answers, objective/manual scoring, admin finalization/publication and historical transcripts. `finance` owns plans, historical-enrollment invoices, immutable Decimal receivable ledger, idempotent payments/receipts and reasoned reversals. No IELTS engine was copied.
 
-History/audit guards cover normal application writes, including protected queryset mutations; raw database access remains an operational privilege. Student and learning Admin interfaces are scoped/read-only; no blanket private-record access from superuser status.
+Private access is scoped; financial reads and report-card reads are audited. Django superuser status alone grants no private school records. Normal model/queryset/service writes protect histories; privileged raw SQL remains outside those guards.
 
 ## Resume
 
-Read this file, `09_NEXT_ACTIONS.md`, `project_state.json` and impacted docs before changes. Trust tested code when docs disagree. Run tests and record real results, then regenerate HTML with `python scripts/render_status.py`. The status source and Markdown must be updated together. No uncommitted work is intended after the checkpoint commit.
+Read this file, `09_NEXT_ACTIONS.md`, `project_state.json` and impacted design files; inspect code and trust verified behavior. Update Markdown and JSON, run `python scripts/render_status.py`, and commit checkpoints with code. No uncommitted work is intended after this checkpoint.
 
-IELTS projects were inspected and kept separate; see `10_IELTS_REUSE_AUDIT.md`.
+See `../TESTING_MVP.md` for five demo roles and browser workflows. Real SMTP/PostgreSQL/backup/hosted release remain gates; do not introduce real pupils' data based on local acceptance alone.

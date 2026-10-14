@@ -29,4 +29,6 @@ urlpatterns = [
     path("", account_views.home, name="home"),
     path("students/", include("students.urls")),
     path("learning/", include("learning.urls")),
+    path("assessments/", include("assessment.urls")),
+    path("finance/", include("finance.urls")),
 ]

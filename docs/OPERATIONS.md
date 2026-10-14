@@ -4,7 +4,9 @@
 
 Install the pinned Django minor line and other dependencies with `python -m pip install -r requirements.txt`. Copy `.env.example` to `.env` for a local run, then migrate and start the server. `DEBUG=True`, SQLite, and the sample development secret are strictly local conveniences.
 
-Use `python manage.py seed_demo --password <chosen-password>` to populate a synthetic browser demo. The command refuses to run with `DEBUG=False`. The password is supplied at invocation time and is not stored in source control. Demo accounts and records are intentionally predictable, so never seed a database that contains real data.
+Use `python manage.py seed_demo --password <chosen-password>` to populate a synthetic browser demo. The command requires `DEBUG=True` and an operator-supplied password of at least eight characters; it does not embed or persist that password in source control. Each run applies that password to the known demo accounts (`demo-admin`, `demo-registrar`, `demo-teacher`, `demo-accountant`, and `demo-student`). Demo accounts and records are intentionally predictable, so never seed a database that contains real data.
+
+The seed retains its baseline next-year Grade 8 / B placement fixture, creates an open Fractions mastery assessment with MCQ, true/false and manual short-answer questions, and issues Casey one annual-fee invoice. It creates no assessment attempts and posts no payments automatically. Rerunning the command does not recreate or overwrite existing assessment attempts, answers, posted invoices, payments, receipts or ledger entries; normal enrollment and promotion history is also preserved. Use the browser acceptance flows in `docs/TESTING_MVP.md` to test student submission, teacher marking, admin finalization/publication, statements, receipt issuance and payment reversal.
 
 ## Production baseline
 

@@ -15,6 +15,16 @@
             {% endif %}
             {% if membership.role == "school_admin" or membership.role == "teacher" or membership.role == "student" %}
               <a href="{% url 'learning:home' %}">Learning portal</a>
+              <a href="{% url 'assessment:home' %}">Assessments</a>
+            {% endif %}
+            {% if membership.role == "school_admin" or membership.role == "student" %}
+              <a href="{% url 'assessment:report-card' %}">Report cards</a>
+            {% endif %}
+            {% if membership.role == "school_admin" or membership.role == "accountant" %}
+              <a href="{% url 'finance:school-home' membership.school.slug %}">Fees and accounts</a>
+            {% endif %}
+            {% if membership.role == "student" %}
+              <a href="{% url 'finance:student-statement' %}">My fee statement</a>
             {% endif %}
           </div>
         </li>

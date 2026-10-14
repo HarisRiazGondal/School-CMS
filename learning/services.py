@@ -11,6 +11,8 @@ from .models import AttendanceRecord, AttendanceSession, Assignment, GradeRevisi
 
 def can_manage_section(user, section, subject=None):
     """School admins may manage their school; teachers need a live matching assignment."""
+    if not user.is_authenticated or not user.is_active:
+        return False
     school = section.school_class.school
     if not school.is_active:
         return False
@@ -22,6 +24,7 @@ def can_manage_section(user, section, subject=None):
         user__school_memberships__school=school,
         user__school_memberships__role=SchoolMembership.Role.TEACHER,
         user__school_memberships__is_active=True,
+        user__school_memberships__school__is_active=True,
     )
     if subject is not None:
         assignments = assignments.filter(subject=subject)
@@ -162,6 +165,8 @@ def require_grade_access(user, submission):
 
 def teacher_sections(user):
     """Sections visible to the user through active school admin membership or assignments."""
+    if not user.is_authenticated or not user.is_active:
+        return Section.objects.none()
     admin_school_ids = SchoolMembership.objects.filter(
         user=user, school__is_active=True, is_active=True,
         role=SchoolMembership.Role.SCHOOL_ADMIN,
@@ -171,6 +176,7 @@ def teacher_sections(user):
         section__school_class__school__is_active=True,
         user__school_memberships__school=F("section__school_class__school"),
         user__school_memberships__is_active=True,
+        user__school_memberships__school__is_active=True,
         user__school_memberships__role=SchoolMembership.Role.TEACHER,
     ).values_list("section_id", flat=True)
     return Section.objects.filter(

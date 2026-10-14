@@ -10,7 +10,9 @@ Django 5.2 modular monolith with templates, CSRF and database sessions. No extra
 | students | Student/Guardian/Enrollment, scoped registration/history, preview/confirmation and lifecycle services |
 | learning | TeacherAssignment, attendance sessions/records, assignments, submissions and grade/revision history |
 | audit | Actor/school-scoped metadata events, limited JSON payloads and ordinary append guards |
-| assessment, finance, communications | Planned; no implementation claim |
+| assessment | Reusable question bank snapshots, scheduled attempts, answers, raw scoring and finalized/published policy snapshots with historical transcripts |
+| finance | Fee plans, immutable invoices/payment/receipt/ledger records and compensating reversals |
+| communications | Planned; no implementation claim |
 
 ## Request flow
 
@@ -21,3 +23,9 @@ Password hashes are owned by Django; no raw passwords or secrets are committed. 
 Student/Enrollment protected writes and placement changes go through services; promotion locks and revalidates rather than trusting a preview. Attendance checks the exact active roster. Work publication/submission/grading and audit writes are atomic. Scoped read-only private Admin views are supplementary maintenance tools, not the regular-user product UI.
 
 Deployment: PostgreSQL, HTTPS, environment-managed configuration, controlled migrations, private uploads, backups and tested restores; see `../OPERATIONS.md`. Only SQLite runtime acceptance is verified so far.
+
+## Assessment and finance request boundaries
+
+Assessment views scope authoring choices and student enrollment before forms render. Teacher assignment controls marking; school admins alone finalize and publish complete attempts. Published results are frozen. Bank questions are copied into assessment-specific snapshots so later bank authoring does not change earlier exams. Deadline submissions use already saved work; incoming late answers are ignored. Admin report-card selectors validate scope and UUID input; student selectors always resolve their own profile.
+
+Finance views and services require accountant/admin membership to write; students may read only their own historical invoices/receipts. Atomic posting, invoice/plan uniqueness and per-school idempotency keys enforce ordinary duplicate protection. Balances are calculated from signed immutable ledger entries using exact Decimal row sums, including SQLite verification. Currency groups are never mixed. The ledger is a receivables subledger, not a complete general ledger.

@@ -41,3 +41,15 @@ class SchoolMembershipTests(TestCase):
         self.school.is_active = False
         self.school.save(update_fields=["is_active"])
         self.assertFalse(has_school_role(self.user, self.school, SchoolMembership.Role.TEACHER))
+
+    def test_stale_user_object_does_not_bypass_database_deactivation(self):
+        SchoolMembership.objects.create(user=self.user, school=self.school, role=SchoolMembership.Role.TEACHER)
+        User.objects.filter(pk=self.user.pk).update(is_active=False)
+        self.assertTrue(self.user.is_active)
+        self.assertFalse(has_school_role(self.user,self.school,SchoolMembership.Role.TEACHER))
+
+    def test_stale_school_object_does_not_bypass_database_deactivation(self):
+        SchoolMembership.objects.create(user=self.user, school=self.school, role=SchoolMembership.Role.TEACHER)
+        School.objects.filter(pk=self.school.pk).update(is_active=False)
+        self.assertTrue(self.school.is_active)
+        self.assertFalse(has_school_role(self.user,self.school,SchoolMembership.Role.TEACHER))

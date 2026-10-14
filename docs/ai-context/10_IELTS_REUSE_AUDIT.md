@@ -16,3 +16,7 @@ A school assessment owns scheduled questions and attempt policy. `score_attempt(
 ## Remaining audit limitations
 
 No IELTS runtime or model-accuracy tests were executed. No validated licensing/extraction approval or reliable scorer calibration is established. This audit supports the keep-separate decision; it is not evidence of scoring quality or completed assessment implementation.
+
+## Current implementation outcome
+
+The School-CMS assessment pilot is now implemented independently in `assessment/` with Django domain models/services for bank snapshots, attempts, objective/manual scoring, moderation/publication and historical transcripts. No source from either IELTS repository was copied. Any future advisory essay adapter remains a separate, unverified integration.

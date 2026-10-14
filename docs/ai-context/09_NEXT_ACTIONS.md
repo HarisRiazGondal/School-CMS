@@ -1,11 +1,11 @@
 # Next Actions
 
-Current: local pilot, 48 passing tests, 4/8 pilot milestones verified (50%); Phase 2/3 broader scope In progress.
+Current: expanded local pilot, **79 passing tests**, six of eight unchanged pilot milestones verified (**75%**). Full module/release scope remains in progress.
 
-1. Complete admissions application/decision workflow and batch/conditional promotion previews with conflict and rollback tests.
-2. Add attendance correction approvals, student attendance history and overdue/completed learning dashboards.
-3. Implement independent question-bank/attempt/scoring/exam/report-card module; use the recorded IELTS keep-separate boundary.
-4. Implement Decimal-safe fee plans, invoices, payment/receipt/reversal ledger and accountant authorization tests.
-5. Validate PostgreSQL, SMTP delivery, throttling/MFA, private uploads, backup restoration and hosted pilot acceptance before release.
+1. Complete admissions decisions and batch/conditional promotion with preview/confirmation/rollback tests.
+2. Add attendance correction requests/approvals, student attendance history and overdue/completed workload views.
+3. Build timetable/notices/settings and scoped oversight reports to meet milestone 7 acceptance.
+4. Validate PostgreSQL locking, financial concurrency, SMTP, login throttling/MFA, private files and backup restoration.
+5. Perform accessibility/security/privacy and hosted human pilot acceptance before marking production milestone 8 Verified or Released.
 
-Before implementation: read impacted memory files, inspect models/services and use existing registrations/promotions instead of bypassing guarded writes. After work: run focused/integrated checks, update project_state.json and affected Markdown, run `python scripts/render_status.py` and commit a reviewable checkpoint. Do not reuse IELTS scoring without a new evidence-based adapter review.
+Read memory/design and inspect services before changes. Use assessment lifecycle and finance posting/reversal services; do not bypass immutable histories or count stored balances as a second truth. Update JSON/Markdown, regenerate PROJECT_STATUS.html, record actual checks, and commit a reviewable checkpoint.

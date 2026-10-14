@@ -34,7 +34,7 @@ def has_school_role(user, school, *roles):
         and user.is_active
         and school.is_active
         and SchoolMembership.objects.filter(
-            user=user, school=school, is_active=True, role__in=roles
+            user=user, user__is_active=True, school=school, school__is_active=True, is_active=True, role__in=roles
         ).exists()
     )
 

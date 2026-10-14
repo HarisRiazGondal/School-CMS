@@ -1,0 +1,6 @@
+{% extends "base.html" %}
+{% block title %}Finance | School-CMS{% endblock %}
+{% block content %}
+<div class="page-header"><div><p class="eyebrow">Finance</p><h1>Your schools</h1><p class="muted">Open a school finance workspace.</p></div></div>
+<ul class="membership-list">{% for membership in memberships %}<li><h2>{{ membership.school.name }}</h2><p class="muted">{{ membership.get_role_display }}</p><a class="button button-primary" href="{% url 'finance:school-home' school_slug=membership.school.slug %}">Open finance</a></li>{% endfor %}</ul>
+{% endblock %}

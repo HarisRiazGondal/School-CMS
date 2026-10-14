@@ -1,0 +1,5 @@
+{% extends "base.html" %}
+{% block content %}
+<section class="page-header"><div><p class="eyebrow">Assessment workspace</p><h1>Assessments</h1></div><div><a class="button button-primary" href="{% url 'assessment:question-create' %}">Add bank question</a> <a class="button button-primary" href="{% url 'assessment:create' %}">Create assessment</a></div></section>
+{% for assessment in assessments %}<article class="card"><h2><a href="{% url 'assessment:detail' assessment.pk %}">{{ assessment.title }}</a></h2><p>{{ assessment.subject }} · {{ assessment.section }} · {{ assessment.academic_year }}</p><p>{{ assessment.get_status_display }} · {{ assessment.opens_at }} – {{ assessment.closes_at }}</p></article>{% empty %}<p class="card">No assessments are available in your assigned sections.</p>{% endfor %}
+{% endblock %}

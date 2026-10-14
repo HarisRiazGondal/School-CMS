@@ -30,6 +30,8 @@ INSTALLED_APPS = [
     "academics",
     "students",
     "learning",
+    "assessment",
+    "finance",
     "audit.apps.AuditConfig",
 ]
 

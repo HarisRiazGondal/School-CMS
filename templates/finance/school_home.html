@@ -1,0 +1,10 @@
+{% extends "base.html" %}
+{% block title %}Finance | {{ school.name }}{% endblock %}
+{% block content %}
+<div class="page-header"><div><p class="eyebrow">Finance · {{ school.name }}</p><h1>School ledger</h1><p class="muted">Balances are the sum of posted ledger entries, grouped by currency.</p></div></div>
+<div class="card"><h2>Ledger balances</h2>{% if balances %}<ul>{% for item in balances %}<li>{{ item.balance|floatformat:2 }} {{ item.currency }}</li>{% endfor %}</ul>{% else %}<p class="muted">No posted transactions yet.</p>{% endif %}</div>
+<div class="page-header"><h2>Fee plans</h2><a class="button button-primary" href="{% url 'finance:plan-create' school_slug=school.slug %}">Create fee plan</a></div>
+{% if plans %}<div class="table-wrap"><table><thead><tr><th>Plan</th><th>Year</th><th>Grade</th><th>Amount</th></tr></thead><tbody>{% for plan in plans %}<tr><td>{{ plan.name }}</td><td>{{ plan.academic_year.name }}</td><td>{{ plan.grade.name|default:"All grades" }}</td><td>{{ plan.amount }} {{ plan.currency }}</td></tr>{% endfor %}</tbody></table></div>{% else %}<p class="muted">No fee plans have been created.</p>{% endif %}
+<div class="page-header"><h2>Invoices</h2><a class="button button-primary" href="{% url 'finance:invoice-issue' school_slug=school.slug %}">Issue invoice</a></div>
+{% if invoices %}<div class="table-wrap"><table><thead><tr><th>Student</th><th>Year</th><th>Plan</th><th>Balance</th><th></th></tr></thead><tbody>{% for invoice in invoices %}<tr><td>{{ invoice.enrollment.student.student_code }}</td><td>{{ invoice.enrollment.academic_year.name }}</td><td>{{ invoice.fee_plan.name }}</td><td>{{ invoice.balance }} {{ invoice.currency }}</td><td><a href="{% url 'finance:invoice-detail' invoice_id=invoice.pk %}">View</a></td></tr>{% endfor %}</tbody></table></div>{% else %}<p class="muted">No invoices have been issued.</p>{% endif %}
+{% endblock %}
