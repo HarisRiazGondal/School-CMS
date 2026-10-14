@@ -31,7 +31,18 @@ class SchoolMembership(models.Model):
 def has_school_role(user, school, *roles):
     return bool(
         user.is_authenticated
+        and user.is_active
+        and school.is_active
         and SchoolMembership.objects.filter(
             user=user, school=school, is_active=True, role__in=roles
         ).exists()
     )
+
+
+def active_school_memberships(user):
+    """Return the user's currently usable school roles, with active schools only."""
+    if not user.is_authenticated or not user.is_active:
+        return SchoolMembership.objects.none()
+    return SchoolMembership.objects.filter(
+        user=user, is_active=True, school__is_active=True
+    ).select_related("school").order_by("school__name", "role")

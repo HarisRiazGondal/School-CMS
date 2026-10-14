@@ -1,26 +1,32 @@
 # School-CMS
 
-A configurable school management platform built around a Django modular monolith.
+A Django modular monolith for school administration and learning workflows. The current MVP includes account access, school setup, student identity and enrollment, teacher assignments, and basic assignments/attendance workflows.
 
-## Current status
+## Local development
 
-The repository started empty. Phase 0 design artifacts and a Phase 1 foundation are now committed. The foundation includes Django entrypoints/settings, a custom user and school membership schema, School/Campus/AcademicYear, SchoolClass/Section/Subject models, admin registrations, and baseline tests. Migrations and runtime verification are still pending.
+Use Python 3.11 or newer and Django 5.2. From the repository root:
 
-Read [docs/ai-context/00_PROJECT_MEMORY.md](docs/ai-context/00_PROJECT_MEMORY.md) before continuing work. The durable project handoff is maintained under docs/ai-context/.
+```sh
+python -m venv .venv
+source .venv/bin/activate
+python -m pip install -r requirements.txt
+cp .env.example .env
+python manage.py migrate
+python manage.py check
+python manage.py test
+```
 
-## Direction
+The example environment is for local development only. For an isolated browser demo, create synthetic records with a password you choose:
 
-- Django with PostgreSQL for deployment.
-- School and optional campus boundaries in domain records.
-- One immutable student identity with separate academic-year enrollments and contextual roll numbers.
-- Backend-enforced permissions and audit trails.
-- Django Admin for trusted maintenance and role-specific portals for daily workflows.
+```sh
+python manage.py seed_demo --password 'choose-a-local-demo-password'
+python manage.py runserver
+```
 
-## Local setup
+Open <http://127.0.0.1:8000/>. The demo command is idempotent and is restricted to `DEBUG=True`. It resets the known demo accounts to the supplied password each time it runs. Do not use demo records or credentials in a production database.
 
-1. Create a virtual environment.
-2. Install requirements.txt.
-3. Copy .env.example to .env and set a development secret.
-4. Run python manage.py check, generate migrations, migrate, and run tests.
+For test coverage and role-by-role acceptance steps, see [docs/TESTING_MVP.md](docs/TESTING_MVP.md). For deployment and runtime operations guidance, see [docs/OPERATIONS.md](docs/OPERATIONS.md).
 
-No production deployment, migration, or database readiness is claimed until those commands have been run and recorded.
+## Project direction
+
+The data model preserves one permanent student identity across year-specific enrollment records. Role and school scope are enforced in application workflows. PostgreSQL is the deployment target; local SQLite is provided for development and testing. Review [docs/ai-context/00_PROJECT_MEMORY.md](docs/ai-context/00_PROJECT_MEMORY.md) for design invariants and current status.

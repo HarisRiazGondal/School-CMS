@@ -1,0 +1,9 @@
+{% extends "base.html" %}
+{% block title %}{{ assignment.title }} · School CMS{% endblock %}
+{% block content %}
+<h1>{{ assignment.title }}</h1><p>{{ assignment.subject.name }} · {{ assignment.section.school_class.name }} / {{ assignment.section.name }}</p>
+{% if assignment.due_at %}<p>Due {{ assignment.due_at }}</p>{% endif %}<div>{{ assignment.instructions|linebreaks }}</div>
+{% if own_submission %}<h2>Your submission</h2><div>{{ own_submission.response|linebreaks }}</div>{% if own_submission.grade != None %}<p>Grade: {{ own_submission.grade }}</p>{% endif %}{% if own_submission.feedback %}<p>Feedback: {{ own_submission.feedback|linebreaks }}</p>{% endif %}{% if own_submission.graded_at %}<p>This response is locked after grading.</p>{% else %}<p><a href="{% url 'learning:assignment-submit' assignment.pk %}">Update submission</a></p>{% endif %}
+{% elif assignment.is_published and request.user.student_profile %}<p><a href="{% url 'learning:assignment-submit' assignment.pk %}">Submit your response</a></p>{% endif %}
+{% if submissions != None %}<h2>Student submissions</h2><ul>{% for submission in submissions %}<li>{{ submission.enrollment.student }} · {{ submission.submitted_at }}{% if assignment.due_at and submission.submitted_at > assignment.due_at %} · submitted late{% endif %}{% if submission.grade != None %} · grade {{ submission.grade }}{% endif %} · <a href="{% url 'learning:submission-grade' submission.pk %}">Review and grade</a></li>{% empty %}<li>No submissions yet.</li>{% endfor %}</ul>{% endif %}
+{% endblock %}

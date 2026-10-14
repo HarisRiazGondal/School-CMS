@@ -1,0 +1,10 @@
+{% extends "base.html" %}
+{% block title %}Record attendance · School CMS{% endblock %}
+{% block content %}
+<h1>Record attendance</h1><p>{{ section.school_class.name }} · {{ section.name }} · {{ section.academic_year.name }}</p>
+<form method="post">{% csrf_token %}{{ form.non_field_errors }}
+<p>{{ form.date.label_tag }} {{ form.date }} {{ form.date.errors }}</p>
+<table><thead><tr><th>Student</th><th>Status</th></tr></thead><tbody>
+{% for field in form %}{% if field.name != "date" %}<tr><td>{{ field.label }}</td><td>{{ field }} {{ field.errors }}</td></tr>{% endif %}{% endfor %}
+</tbody></table><button type="submit">Save attendance</button></form>
+{% endblock %}

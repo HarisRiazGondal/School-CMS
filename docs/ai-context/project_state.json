@@ -1,0 +1,81 @@
+{
+  "updated": "2026-10-14",
+  "objective": "One-school launch with campus boundaries, permanent student records, role-scoped learning and staged assessment/finance.",
+  "phase": "Phase 2/3 \u2014 identity and core education increments in progress",
+  "readiness": "Local pilot ready for testing",
+  "tests": {
+    "passed": 48,
+    "environment": "Python 3.12 / Django 5.2 / SQLite. Fresh database migrations and demo seeding verified; production PostgreSQL not tested.",
+    "commands": [
+      "DJANGO_DEBUG=true python manage.py check \u2014 passed",
+      "DJANGO_DEBUG=true python manage.py makemigrations --check --dry-run \u2014 no changes",
+      "DJANGO_DEBUG=true python manage.py migrate --noinput \u2014 passed",
+      "DJANGO_DEBUG=true python manage.py test \u2014 48 tests passed",
+      "Fresh SQLite migrate + seed_demo twice \u2014 idempotent synthetic data",
+      "git diff --check \u2014 passed"
+    ]
+  },
+  "milestones": [
+    {
+      "name": "Foundation and academics",
+      "status": "Verified",
+      "criteria": "Clean SQLite migrations; school/year/campus/term constraints; migration drift check and admin maintenance schema pass."
+    },
+    {
+      "name": "Session auth and scoped portals",
+      "status": "Verified",
+      "criteria": "CSRF login, POST logout, password reset token flow, deactivation, active membership filtering and role dashboards pass HTTP tests."
+    },
+    {
+      "name": "Student identity and year progression",
+      "status": "Verified",
+      "criteria": "Registration/guardians, immutable IDs, contextual roll uniqueness, history, preview/admin confirmation, repeat/graduation and controlled re-admission pass model/service/HTTP tests."
+    },
+    {
+      "name": "Basic attendance and classwork",
+      "status": "Verified",
+      "criteria": "Assigned teacher roster attendance, duplicate prevention, student self submissions, revision history, grading and school/role denials pass tests."
+    },
+    {
+      "name": "Assessment and report cards",
+      "status": "Not started",
+      "criteria": "Question banks, attempt policies, objective/manual scoring, moderation, publication and transcript tests pass."
+    },
+    {
+      "name": "Fees and accounting",
+      "status": "Not started",
+      "criteria": "Decimal invoice/payment/receipt/reversal ledger reconciles and accountant scope tests pass."
+    },
+    {
+      "name": "Oversight and complete operations",
+      "status": "Not started",
+      "criteria": "Correction approvals, timetable/notices, settings, dashboards and batch workflows pass scoped acceptance tests."
+    },
+    {
+      "name": "Production pilot release",
+      "status": "Not started",
+      "criteria": "PostgreSQL, privacy/security, uploads, SMTP, backup restoration, accessibility and hosted pilot acceptance are evidenced."
+    }
+  ],
+  "limitations": [
+    "The pilot runs locally with synthetic data. No hosted deployment or production readiness is claimed.",
+    "PostgreSQL, real SMTP delivery, rate limiting/MFA, private file uploads and backup restoration are not verified.",
+    "Application/approval intake, conditional and batch promotions, transfer and section-correction browser flows remain incomplete.",
+    "Attendance correction approvals, quizzes, examinations, report cards and finance are not implemented.",
+    "History and audit guards cover normal model/service/queryset paths; privileged raw SQL can bypass application guards. Production database controls and concurrency tests remain release work."
+  ],
+  "decisions": [
+    "Django 5.2 modular monolith with same-origin templates and sessions; no React/API split, queues or caches for this pilot.",
+    "One permanent Student UUID and STU code; year-specific Enrollment stores roll number and preserved placement/history.",
+    "SchoolClass denotes Grade and Section is a year-bound SectionOffering. Campus may be null for a schoolwide offering; Term belongs to AcademicYear.",
+    "No blanket superuser access to private student/learning records. Active school roles and teacher/student relationships determine scope; sensitive student reads and changes are audited.",
+    "IELTS projects remain separate; school scoring will be implemented independently after their feasibility audit."
+  ],
+  "next_actions": [
+    "Complete admissions application/decision workflow and batch/conditional promotion previews with conflict and rollback tests.",
+    "Add attendance correction approvals, student attendance history and overdue/completed learning dashboards.",
+    "Implement independent question-bank/attempt/scoring/exam/report-card module; use the recorded IELTS keep-separate boundary.",
+    "Implement Decimal-safe fee plans, invoices, payment/receipt/reversal ledger and accountant authorization tests.",
+    "Validate PostgreSQL, SMTP delivery, throttling/MFA, private uploads, backup restoration and hosted pilot acceptance before release."
+  ]
+}

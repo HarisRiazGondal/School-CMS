@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+{% block title %}Students · {{ school.name }}{% endblock %}
+{% block content %}
+<section class="page-header">
+  <div><p class="eyebrow">{{ school.name }}</p><h1>Students</h1><p>Permanent identities with year-by-year enrollment history.</p></div>
+  <a class="button button-primary" href="{% url 'students:register' school_slug=school.slug %}">Register student</a>
+</section>
+<div class="card">
+  {% if students %}<div class="table-wrap"><table><thead><tr><th>Student</th><th>Code</th><th>Current enrollment</th><th>History</th></tr></thead><tbody>
+  {% for student in students %}<tr><td><a href="{% url 'students:detail' school_slug=school.slug student_code=student.student_code %}">{{ student.first_name }} {{ student.last_name }}</a></td><td>{{ student.student_code }}</td><td>{% for enrollment in student.enrollments.all %}{% if enrollment.status == 'active' %}{{ enrollment.academic_year.name }} · {{ enrollment.section.school_class.name }} · {{ enrollment.section.name }}{% endif %}{% endfor %}</td><td>{{ student.enrollments.count }} year{{ student.enrollments.count|pluralize }}</td></tr>{% endfor %}
+  </tbody></table></div>{% else %}<p class="empty-state">No students registered yet.</p>{% endif %}
+</div>
+{% endblock %}

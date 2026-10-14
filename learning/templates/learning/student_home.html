@@ -1,0 +1,9 @@
+{% extends "base.html" %}
+{% block title %}My learning · School CMS{% endblock %}
+{% block content %}
+<h1>My learning</h1>
+<h2>My active enrollments</h2>
+<ul>{% for enrollment in enrollments %}<li>{{ enrollment.section.school_class.name }} · {{ enrollment.section.name }} ({{ enrollment.academic_year.name }}) — roll {{ enrollment.roll_number }}</li>{% empty %}<li>No active enrollments.</li>{% endfor %}</ul>
+<h2>Published assignments</h2>
+<ul>{% for assignment in assignments %}<li><a href="{% url 'learning:assignment-detail' assignment.pk %}">{{ assignment.title }}</a> · {{ assignment.subject.name }}{% if assignment.due_at %} · due {{ assignment.due_at }}{% endif %}</li>{% empty %}<li>No published assignments.</li>{% endfor %}</ul>
+{% endblock %}

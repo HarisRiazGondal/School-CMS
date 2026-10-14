@@ -1,16 +1,17 @@
 # Roles and Permissions
 
-Default deny. Permissions combine action, resource, scope, and workflow state. Apply them to pages, APIs, querysets, search, dashboards, exports, attachments, and bulk operations.
+Default deny. Action permission is combined with active User, active School and active SchoolMembership. Search/list/detail/form choices, services, learning roster and private Admin interfaces enforce scope. Platform superuser status alone grants no student/learning data access; scoped authorized student reads are audited.
 
-| Role | Default scope |
-|---|---|
-| Platform Super Admin | Global configuration and operational health; private student/finance access is explicit, purposeful, and logged |
-| School Admin / Principal | Full school/campus operations within delegated authority |
-| Admissions / Registrar | Applications, guardians, documents, registration, enrollments, transfers, and student history |
-| Teacher | Assigned subject + section + academic year; attendance, assignments, grading, and feedback |
-| Student | Own profile, current placement, attendance, learning, published results, notices, and history allowed by policy |
-| Accountant / Fee Office | Fee plans, invoices, payments, receipts, concessions, adjustments, and finance reports |
+| Role | Implemented pilot access | Limit |
+|---|---|---|
+| Platform Super Admin | Trusted configuration Admin | Private records require explicit active school role and audited access |
+| School Admin | School register/history, promotion confirmation, attendance oversight and permitted grading | No automatic other-school access |
+| Registrar | School registration/guardians/history and promotion preview | Cannot confirm promotion |
+| Teacher | Assigned subject/section/year attendance, publishing and grading | Membership alone cannot grant section access |
+| Student | Own active enrollment, eligible published work, own responses and feedback | Cannot select another enrollment or read another submission |
+| Accountant | Membership schema and home only | Finance workflow is not implemented |
+| Guardian | Contact relation only | Guardian portal is not implemented |
 
-Teacher role never grants school-wide access. Finance scope does not grant private academic access. Guardian access is optional and requires a verified relationship. Deactivated users cannot authenticate; historical attribution remains.
+Login uses username and Django session cookies. Account deactivation flushes stored session identity. Password reset responses avoid account enumeration; inactive accounts receive no reset mail. POST logout and mutating forms require CSRF tokens.
 
-Required authorization tests cover direct-object access, modified IDs, exports, files, aggregates, and cross-school/campus attempts.
+The implementation does not yet include a configurable granular permission-template editor, campus-restricted staff memberships, public login throttling or MFA. Campus data consistency is enforced, but staff authority currently spans their authorized school/explicit teacher assignments. Do not claim campus-level staff restriction is implemented.

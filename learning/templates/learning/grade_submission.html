@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+{% block title %}Review submission · School CMS{% endblock %}
+{% block content %}
+<h1>Review submission: {{ submission.assignment.title }}</h1>
+<p>{{ submission.enrollment.student }} · submitted {{ submission.submitted_at }}</p>
+{% if submission.assignment.due_at and submission.submitted_at > submission.assignment.due_at %}<p>Submitted late.</p>{% endif %}
+<h2>Current response</h2><div>{{ submission.response|linebreaks }}</div>
+{% if submission.revisions.exists %}<h2>Earlier responses</h2>{% for revision in submission.revisions.all %}<details><summary>{{ revision.submitted_at }}</summary>{{ revision.response|linebreaks }}</details>{% endfor %}{% endif %}
+{% if submission.grade_revisions.exists %}<h2>Earlier grades</h2>{% for revision in submission.grade_revisions.all %}<details><summary>{{ revision.graded_at }} · {{ revision.grade }}</summary>{{ revision.feedback|linebreaks }}</details>{% endfor %}{% endif %}
+<form method="post">{% csrf_token %}{{ form.non_field_errors }}
+{% for field in form %}<p>{{ field.label_tag }} {{ field }} {{ field.errors }}</p>{% endfor %}
+<button type="submit">Save grade and feedback</button></form>
+{% endblock %}

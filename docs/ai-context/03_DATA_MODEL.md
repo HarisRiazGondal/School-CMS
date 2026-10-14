@@ -1,21 +1,40 @@
 # Data Model
 
-## Identity rule
+## Implemented relations
 
-Student is one permanent profile. Enrollment is a student's placement for one academic year. Roll number belongs to that enrollment/section context and is never the primary identity.
+```mermaid
+erDiagram
+    SCHOOL ||--o{ CAMPUS : owns
+    SCHOOL ||--o{ ACADEMIC_YEAR : owns
+    ACADEMIC_YEAR ||--o{ TERM : includes
+    SCHOOL ||--o{ SCHOOL_CLASS : defines
+    SCHOOL_CLASS ||--o{ SECTION : offers
+    ACADEMIC_YEAR ||--o{ SECTION : scopes
+    CAMPUS o|--o{ SECTION : hosts
+    SCHOOL ||--o{ STUDENT : registers
+    STUDENT ||--o{ ENROLLMENT : retains
+    SECTION ||--o{ ENROLLMENT : places
+    GUARDIAN ||--o{ GUARDIAN_RELATION : links
+    STUDENT ||--o{ GUARDIAN_RELATION : links
+    SECTION ||--o{ TEACHER_ASSIGNMENT : assigns
+    SUBJECT ||--o{ TEACHER_ASSIGNMENT : teaches
+    SECTION ||--o{ ATTENDANCE_SESSION : records
+    ENROLLMENT ||--o{ ATTENDANCE_RECORD : attends
+    ATTENDANCE_SESSION ||--o{ ATTENDANCE_RECORD : includes
+    ASSIGNMENT ||--o{ SUBMISSION : collects
+    ENROLLMENT ||--o{ SUBMISSION : submits
+    SUBMISSION ||--o{ SUBMISSION_REVISION : retains
+    SUBMISSION ||--o{ GRADE_REVISION : retains
+```
 
-## Core entities
+Student UUID and generated school-scoped STU code are permanent. The optional one-to-one User link supplies student portal identity. Student school/code/UUID cannot be changed through supported saves or queryset updates; registration is service-controlled.
 
-School -> Campus, AcademicYear -> Term, Grade -> SectionOffering, Student -> Enrollment, Guardian <-> Student through GuardianStudentRelation, Teacher -> TeacherAssignment, Enrollment -> AttendanceRecord/Invoice, Assessment -> Result/ReportCard, and AuditLog across sensitive changes.
+Enrollment has its own UUID, Student, AcademicYear, Section, roll_number, status, prior Enrollment and registration date. Unique(student, year) prevents duplicate annual enrollment; unique(section, roll) is contextual. Placement/roll and completed outcomes are protected; enrollment history cannot be deleted through supported model/queryset paths. Promotion creates a new Enrollment and closes the old status atomically. Audited outcome events preserve actor/source/target context.
 
-Student uses an immutable UUID primary key and a school-scoped human-facing student_code generated once. Do not put current class, section, year, or roll number on Student.
+Section belongs to SchoolClass and AcademicYear, plus optional Campus. Null campus means schoolwide offering. Conditional uniqueness permits the same section label in different campuses while rejecting duplicates inside one scope. Normal Section.save validates school alignment; Term dates must fit its year. Joined foreign-key consistency is enforced by normal saves/services rather than cross-table SQL CHECK constraints.
 
-Enrollment stores student, school, campus, academic_year, section_offering, roll_number, status, dates, outcome, and promotion lineage. Default policy is one enrollment per student/year; unique section_offering + roll_number. Withdrawn/completed rows remain queryable.
+Attendance uniqueness: section/date sessions and session/enrollment records. Submission uniqueness: assignment/enrollment; resubmission snapshots prior text, post-grade student edits are locked, and regrading retains GradeRevision.
 
-PromotionDecision stores source enrollment, optional target enrollment, outcome (promoted, repeated, conditional, graduated, withdrawn, transferred), actor, approval, reason, and batch reference. Promotion creates a new Enrollment and never overwrites source history.
+PROTECT prevents deletion of referenced identity/history records. AuditEvent actor is SET_NULL and school PROTECT; private payload fields are rejected. Application guards do not constrain privileged raw SQL. Database-level operational protection remains a production gate.
 
-AttendanceRecord is unique per session/enrollment. Posted finance entries are decimal-safe and corrected using adjustment/reversal records. Use protected deletes for students, historical enrollments, finalized marks, and posted payments. Validate that related school/campus/year records agree.
-
-## Required lifecycle tests
-
-Registration creates one permanent code and first enrollment. Promotion preserves the code and old enrollment. Re-admission reuses the student. Duplicate year enrollment and contextual roll numbers are blocked. Attendance duplication is blocked. Corrections and reversals preserve original history.
+Future schema: application decisions/documents, batch/conditional promotion records, attendance corrections, question/attempt/exam/report cards, and Decimal financial ledger. Do not treat conceptual entities as implemented tables.

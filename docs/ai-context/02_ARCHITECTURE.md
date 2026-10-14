@@ -1,34 +1,23 @@
 # Architecture
 
-## Status
+Django 5.2 modular monolith with templates, CSRF and database sessions. No extra API/frontend split or worker infrastructure is required by the current pilot. `requirements.txt` bounds Django to the tested 5.2 series.
 
-Phase 1 foundation is in progress. The repository now contains a Django entrypoint, custom User and SchoolMembership schema, School/Campus/AcademicYear, SchoolClass/Section/Subject, admin registrations, and baseline tests. No migrations or runtime verification exist yet.
+| App | Current ownership |
+|---|---|
+| accounts | Custom User, school role grants, active-session enforcement, portal home |
+| schools | School, Campus, AcademicYear, synthetic demo management command |
+| academics | SchoolClass (Grade), year-bound Section (SectionOffering), Subject, Term |
+| students | Student/Guardian/Enrollment, scoped registration/history, preview/confirmation and lifecycle services |
+| learning | TeacherAssignment, attendance sessions/records, assignments, submissions and grade/revision history |
+| audit | Actor/school-scoped metadata events, limited JSON payloads and ordinary append guards |
+| assessment, finance, communications | Planned; no implementation claim |
 
-## Shape
+## Request flow
 
-Use a modular Django monolith with PostgreSQL in deployment. Keep domain logic in explicit service functions and transaction boundaries. Retain Django Admin for trusted maintenance and build custom role workflows for regular staff, students, and finance users.
+URL → Django session identity/active-account middleware → view scope/form querysets → service role/assignment checks → validated transaction + database uniqueness → audit metadata → scoped template response. Form CSRF is enforced; no browser JWTs or local-storage credential storage exists.
 
-## Current app boundaries
+Password hashes are owned by Django; no raw passwords or secrets are committed. Reset links use Django's time-limited token flow. Production settings reject missing/placeholder secrets and secure cookies; SMTP/proxy/HSTS settings must be configured per hosting. Public login throttling and MFA remain release work.
 
-- accounts: custom User, membership, roles, permissions, account status.
-- schools: School, Campus, academic-year settings.
-- academics: SchoolClass, year-bound Section, Subject; reconcile terminology with the planned Grade/SectionOffering model before dependent modules.
-- people: Student, Guardian, StaffProfile, TeacherProfile.
-- admissions: applications, decisions, documents.
-- enrollments: Enrollment, roll assignment, promotion, transfer, withdrawal.
-- attendance: sessions, records, corrections.
-- learning: teacher assignments, assignments, submissions, feedback.
-- assessment: questions, quizzes, exams, marks, report cards.
-- finance: fee plans, invoices, payments, receipts, ledger, adjustments.
-- communications: notices and notifications.
-- audit: append-oriented sensitive-action events.
+Student/Enrollment protected writes and placement changes go through services; promotion locks and revalidates rather than trusting a preview. Attendance checks the exact active roster. Work publication/submission/grading and audit writes are atomic. Scoped read-only private Admin views are supplementary maintenance tools, not the regular-user product UI.
 
-Authorization is action + resource + school/campus/academic scope + workflow state. Views and APIs must scope querysets; services repeat critical checks. The current helper proves active role membership only; it is not yet a complete object-level authorization layer. Superuser status does not imply unlogged access to private student or finance records.
-
-## Transaction services
-
-register_student, preview_promotion, commit_promotion, record_attendance, correct_attendance, finalize_assessment, post_payment, and reverse_payment use atomic transactions and preserve history.
-
-## Deployment
-
-Environment-managed secrets, HTTPS, PostgreSQL, private media storage, controlled migrations, structured logs, and tested backup/restore. Avoid Redis/Celery until a measured need exists.
+Deployment: PostgreSQL, HTTPS, environment-managed configuration, controlled migrations, private uploads, backups and tested restores; see `../OPERATIONS.md`. Only SQLite runtime acceptance is verified so far.

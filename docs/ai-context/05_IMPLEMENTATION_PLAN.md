@@ -1,39 +1,22 @@
 # Implementation Plan
 
-Status vocabulary: Not started, In progress, Blocked, Verified, Released.
+Use: Not started, In progress, Blocked, Verified, Released.
 
-## Phase 0 — Discovery and design
+| Phase | Status | Current boundary / acceptance still needed |
+|---|---|---|
+| 0 Discovery/design | Verified | Empty repo confirmed; requirements/relationships/permissions/workflows/IELTS audit documented |
+| 1 Foundation | In progress | Local schema/auth/portals verified; PostgreSQL and fuller provisioning/authorization/privacy release checks remain |
+| 2 Admissions/identity | In progress | Registration, individual outcomes and history verified; intake approval, batch/conditional, transfer/section correction UI remain |
+| 3 Core education | In progress | Basic assigned attendance/text work/grading verified; correction approvals, student attendance/to-do and files remain |
+| 4 Assessment | Not started | Attempt rules/scoring/moderation/report-card and authorization tests required |
+| 5 Finance | Not started | Decimal ledger, reconciliation/reversal and scope tests required |
+| 6 Oversight | Not started | Notices, timetable, policy editor and scoped analytics required |
+| 7 Rollout | Not started | PostgreSQL, SMTP, uploads, security/accessibility, restore and hosted pilot required |
 
-Status: Verified for the current repository discovery checkpoint. The repo was empty, the requirements/design set was created, and the IELTS repositories were inspected. This does not mean application features are complete.
+## Defined progress score
 
-## Phase 1 — Foundation
+Eight **pilot delivery milestones**, each 12.5%, are defined in `project_state.json`. Count only milestones with Verified local acceptance criteria; 4/8 currently verified gives **50%**. This score is a deliberately defined pilot delivery measure, not completion of every requirement or of production readiness. The full phase table above retains unfinished scope.
 
-Status: In progress. Committed: Django entrypoints/settings, environment and dependency baseline, custom User, SchoolMembership, School/Campus/AcademicYear, SchoolClass/Section/Subject, admin registrations, and baseline tests. Remaining: generate and verify migrations, run check/migrate/tests, add object-level authorization and secure login/password-reset/account-deactivation flows, and reconcile terminology before dependent modules.
+First four gates: clean foundation/academic schema; session auth and scoped portals; identity/year progression; basic attendance/classwork. Remaining four: assessment/report cards; fees/accounting; complete oversight/operations; production pilot release. Their exact acceptance criteria are rendered into PROJECT_STATUS.html.
 
-Acceptance: clean setup passes check/migrations/tests; custom authentication and scoped permissions deny anonymous, inactive, wrong-role, and cross-school access; model constraints are verified against the database.
-
-## Phase 2 — Admissions and identity
-
-Status: Not started. Applications, registration, guardians, immutable IDs, Enrollment, roll numbers, promotion preview/commit, transfers and re-admission.
-
-## Phase 3 — Core education
-
-Status: Not started. Teacher assignments, attendance, assignments, submissions, feedback, and student to-do workflow.
-
-## Phase 4 — Assessment and examinations
-
-Status: Not started. Keep IELTS separate; implement school assessment rules independently after the audit.
-
-## Phase 5 — Finance
-
-Status: Not started. Decimal-safe fee ledger, invoices, payments, receipts, concessions, reversals, and reports.
-
-## Phase 6 — Oversight/configuration
-
-Status: Not started. Dashboards, notices, timetable, policy settings, optional guardian portal, and MFA decision.
-
-## Phase 7 — Quality/release
-
-Status: Not started. Authorization/security, accessibility, backup/restore, performance, pilot acceptance, deployment gates.
-
-No phase is Verified or Released without actual test evidence.
+Run focused tests on every increment and integrated checks before commits. Keep migrations additive, preserve old rows, and update status source and impacted Markdown in the same commit.

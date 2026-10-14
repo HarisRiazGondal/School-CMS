@@ -28,3 +28,16 @@ class SchoolMembershipTests(TestCase):
 
     def test_anonymous_user_is_denied(self):
         self.assertFalse(has_school_role(AnonymousUser(), self.school, SchoolMembership.Role.TEACHER))
+
+    def test_inactive_user_and_school_are_denied(self):
+        SchoolMembership.objects.create(
+            user=self.user, school=self.school, role=SchoolMembership.Role.TEACHER
+        )
+        self.user.is_active = False
+        self.user.save(update_fields=["is_active"])
+        self.assertFalse(has_school_role(self.user, self.school, SchoolMembership.Role.TEACHER))
+        self.user.is_active = True
+        self.user.save(update_fields=["is_active"])
+        self.school.is_active = False
+        self.school.save(update_fields=["is_active"])
+        self.assertFalse(has_school_role(self.user, self.school, SchoolMembership.Role.TEACHER))

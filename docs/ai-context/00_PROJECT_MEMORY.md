@@ -1,30 +1,25 @@
 # Project Memory
 
-## Rehydration summary
+## Current checkpoint
 
-School-CMS is a configurable school operating platform for one school initially, with explicit school and optional campus boundaries. The core lifecycle is admissions, one permanent student identity, historical academic-year enrollments, contextual roll numbers, promotion, role-scoped teaching/attendance/learning, assessments, and auditable fees.
+School-CMS began empty. It is now a local, testable Django pilot with authentication, scoped portals, academic foundation, student identity/enrollment/promotion, attendance, text assignments/submissions/grading and audit events. No assessment, finance or production release is complete.
 
-## Verified state
+Current work: Phase 2/3 increments **In progress**. **50% of eight equally weighted pilot implementation milestones** meet the local acceptance criteria in `project_state.json`; this measures those slices and does not certify completion of the full product brief. Phase 2/3 still have broader requirements outstanding.
 
-- Repository: HarisRiazGondal/School-CMS.
-- Initial state: empty Git repository; no prior source, branches, migrations, tests, or deployment configuration.
-- Current phase: Phase 1 — Foundation, in progress.
-- Committed foundation: Django entrypoints/settings, dependency and environment baseline, custom User, SchoolMembership, School, Campus, AcademicYear, SchoolClass, Section, Subject, admin registrations, initial migrations, and baseline tests.
-- Verified locally from a clean clone: python manage.py check, makemigrations --check --dry-run, migrate, and python manage.py test all pass. The test suite reports 4 tests passed.
-- IELTS audit completed against ielts-prep and IELTS-Essay-Writing-checker-. They remain separate; no code was reused.
+Verified: **48 automated tests pass**, Django system/migration-drift checks pass, fresh SQLite migrations apply and synthetic demo seeding is idempotent. PostgreSQL and hosted production acceptance are unverified.
 
-## Invariants
+## Architecture and invariants
 
-- Student has one immutable internal identity for the full lifecycle.
-- Roll number belongs to a year-specific enrollment/section context and may change.
-- Promotion creates a new enrollment and preserves every earlier enrollment and outcome.
-- Attendance, marks, and posted financial entries require controlled corrections or reversals.
-- Authorization is enforced in backend services and querysets, scoped to school/campus/class/section/subject.
+Django 5.2 modular monolith; server-rendered portals and sessions; PostgreSQL intended for deployment, SQLite verified locally. User login remains username-based. `SchoolMembership` may grant multiple school-scoped roles. No teacher access from role alone: an active subject/section assignment is required. Student access uses their linked user and active membership/enrollment.
 
-## Proposed stack
+`Student` has one immutable UUID and school-scoped generated `STU-` code. `Enrollment` holds year, section and roll number. Promotion creates a new year record and closes the old one atomically; preview never writes. Re-admission requires the prior active enrollment to be closed. Corrections to immutable placement are not exposed as silent edits.
 
-Django modular monolith, PostgreSQL for deployment, Django Admin for trusted maintenance, and role-specific portals. Start with server-rendered Django workflows; introduce an API or React frontend only when a verified requirement justifies it.
+`SchoolClass` is the current Grade model; `Section` is a year-bound SectionOffering with optional Campus; Term is separate. Avoid renaming persisted models without explicit migrations.
 
-## Resume instructions
+History/audit guards cover normal application writes, including protected queryset mutations; raw database access remains an operational privilege. Student and learning Admin interfaces are scoped/read-only; no blanket private-record access from superuser status.
 
-Read this file, 09_NEXT_ACTIONS.md, and impacted design files before changing code. Verify repository behavior over assumptions. Update the memory files and PROJECT_STATUS.html after every implementation increment.
+## Resume
+
+Read this file, `09_NEXT_ACTIONS.md`, `project_state.json` and impacted docs before changes. Trust tested code when docs disagree. Run tests and record real results, then regenerate HTML with `python scripts/render_status.py`. The status source and Markdown must be updated together. No uncommitted work is intended after the checkpoint commit.
+
+IELTS projects were inspected and kept separate; see `10_IELTS_REUSE_AUDIT.md`.

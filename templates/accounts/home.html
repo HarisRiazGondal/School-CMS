@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+{% block title %}Dashboard · School-CMS{% endblock %}
+{% block content %}
+<section class="panel">
+  <h1>Welcome, {{ user.get_full_name|default:user.get_username }}</h1>
+  <p class="muted">Your current school access is shown below.</p>
+  {% if memberships %}
+    <ul class="membership-list">
+      {% for membership in memberships %}
+        <li>
+          <strong>{{ membership.school.name }}</strong><br>{{ membership.get_role_display }}
+          <div style="margin-top: .55rem">
+            {% if membership.role == "school_admin" or membership.role == "registrar" %}
+              <a href="{% url 'students:list' school_slug=membership.school.slug %}">Student records</a>
+            {% endif %}
+            {% if membership.role == "school_admin" or membership.role == "teacher" or membership.role == "student" %}
+              <a href="{% url 'learning:home' %}">Learning portal</a>
+            {% endif %}
+          </div>
+        </li>
+      {% endfor %}
+    </ul>
+  {% else %}
+    <p>No active school memberships are assigned to your account. Contact a school administrator for access.</p>
+  {% endif %}
+</section>
+{% endblock %}

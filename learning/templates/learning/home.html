@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+{% block title %}Learning · School CMS{% endblock %}
+{% block content %}
+<h1>Learning and attendance</h1>
+<p><a href="{% url 'learning:assignment-create' %}">Create assignment</a></p>
+<h2>Your sections</h2>
+{% if sections %}<ul>
+{% for section in sections %}<li>{{ section.school_class.name }} · {{ section.name }} ({{ section.academic_year.name }})
+  <a href="{% url 'learning:attendance-list' section.pk %}">Attendance</a> ·
+  <a href="{% url 'learning:attendance-entry' section.pk %}">Record attendance</a></li>
+{% endfor %}</ul>{% else %}<p>No assigned sections are available.</p>{% endif %}
+{% endblock %}

@@ -1,21 +1,25 @@
 # Decisions and Risks
 
-## Decisions
+## Current decisions
 
-- D-001: Start with one school and explicit optional campus boundaries; defer SaaS billing.
-- D-002: Immutable internal student identity; separate human-facing admission code.
-- D-003: Academic-year Enrollment owns class, section, roll number, status, dates, and outcome.
-- D-004: Promotion previews conflicts, then commits atomically and preserves source history.
-- D-005: Django modular monolith/PostgreSQL; server-rendered workflows first.
-- D-006: IELTS projects remain separate; reuse requires evidence and a clean adapter boundary.
+- Django 5.2 modular monolith with same-origin templates and sessions; no React/API split, queues or caches for this pilot.
+- One permanent Student UUID and STU code; year-specific Enrollment stores roll number and preserved placement/history.
+- SchoolClass denotes Grade and Section is a year-bound SectionOffering. Campus may be null for a schoolwide offering; Term belongs to AcademicYear.
+- No blanket superuser access to private student/learning records. Active school roles and teacher/student relationships determine scope; sensitive student reads and changes are audited.
+- IELTS projects remain separate; school scoring will be implemented independently after their feasibility audit.
 
-## Risks
+## Current limitations and release risks
 
-- Empty repository means all architectural choices are provisional until foundation runs.
-- IELTS projects contain hardcoded credentials/incomplete routes, missing model assets, stale API docs, and heuristic scoring; copying them would introduce security and correctness risks.
-- Student/finance scope leakage, duplicate enrollments, partial promotions, and silent financial edits require authorization tests, constraints, transactions, and audit events.
-- Adding React, queues, or caches early may increase operational cost without evidence.
+- The pilot runs locally with synthetic data. No hosted deployment or production readiness is claimed.
+- PostgreSQL, real SMTP delivery, rate limiting/MFA, private file uploads and backup restoration are not verified.
+- Application/approval intake, conditional and batch promotions, transfer and section-correction browser flows remain incomplete.
+- Attendance correction approvals, quizzes, examinations, report cards and finance are not implemented.
+- History and audit guards cover normal model/service/queryset paths; privileged raw SQL can bypass application guards. Production database controls and concurrency tests remain release work.
 
-## Open policy choices
+## Nonblocking policy defaults
 
-Student code format, one-vs-multiple enrollments per academic year, campus rules, grading scales, attendance correction authority, currency, fee reversals, and promotion criteria.
+Username login, one enrollment per student/year, one section/date attendance session, text submissions may be late but are locked after grading, friendly IDs generated as STU sequence per school, campus-null schoolwide sections, admin confirmation for individual promotion. Re-admission requires prior active placement to be closed. Batch/conditional promotion and configurable scoring/fee policies are not silently inferred.
+
+## Operational limits
+
+Student/audit identity protections are application guards, not guarantees against privileged raw SQL. PostgreSQL locking/uniqueness race behavior needs database-specific verification. Public login throttling, production SMTP/proxy settings, retention policies and tested restore must be completed before real minors' data is introduced.

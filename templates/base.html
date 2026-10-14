@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% block title %}School-CMS{% endblock %}</title>
+  <style>
+    :root { color-scheme: light; font: 16px/1.5 system-ui, sans-serif; color: #17212b; background: #f4f7fa; }
+    body { margin: 0; }
+    header { background: #12324a; color: white; padding: .8rem max(1rem, calc((100% - 960px) / 2)); display: flex; justify-content: space-between; align-items: center; gap: 1rem; }
+    header a { color: inherit; text-decoration: none; font-weight: 650; }
+    nav { display: flex; align-items: center; gap: 1rem; }
+    nav form { margin: 0; }
+    nav button { color: white; background: transparent; border: 1px solid #9ab0bf; padding: .35rem .65rem; border-radius: .35rem; cursor: pointer; }
+    main { max-width: 960px; margin: 2rem auto; padding: 0 1rem; }
+    .panel { background: white; border: 1px solid #d8e1e8; border-radius: .7rem; padding: 1.5rem; box-shadow: 0 2px 8px #0b27350b; }
+    label { font-weight: 600; }
+    input { display: block; max-width: 100%; padding: .6rem; margin-top: .3rem; border: 1px solid #9eacb7; border-radius: .35rem; }
+    button.primary { background: #176b8d; color: white; border: 0; border-radius: .35rem; padding: .65rem 1rem; cursor: pointer; }
+    a { color: #075f82; }
+    .messages { padding: 0; list-style: none; }
+    .messages li, .errorlist { color: #9a2b25; }
+    .muted { color: #536574; }
+    .membership-list { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: .8rem; padding: 0; list-style: none; }
+    .membership-list li { border: 1px solid #d8e1e8; border-radius: .5rem; padding: 1rem; }
+    .page-header { display:flex; align-items:center; justify-content:space-between; gap:1rem; margin-bottom:1.3rem; }
+    .eyebrow { color:#176b8d; font-size:.8rem; letter-spacing:.06em; text-transform:uppercase; font-weight:700; }
+    h1 { font-size:clamp(1.8rem,4vw,2.4rem); line-height:1.2; } h2 { font-size:1.3rem; }
+    .card,.form-card { background:white; border:1px solid #d8e1e8; border-radius:.7rem; padding:1.5rem; margin:1rem 0; }
+    .field { margin-bottom:1.2rem; } select,textarea { display:block; width:100%; max-width:36rem; margin-top:.3rem; padding:.6rem; border:1px solid #9eacb7; border-radius:.35rem; font:inherit; } textarea { min-height:10rem; }
+    .button { display:inline-block; text-decoration:none; font-weight:650; padding:.65rem 1rem; border-radius:.35rem; }
+    .button-primary { background:#176b8d; color:white; border:0; cursor:pointer; }
+    .table-wrap { overflow-x:auto; } table { width:100%; border-collapse:collapse; text-align:left; } th,td { padding:.8rem; border-bottom:1px solid #e3e9ef; vertical-align:top; } th { background:#f4f7fa; }
+    .form-errors { color:#9a2b25; } :focus-visible { outline:3px solid #d28b24; outline-offset:3px; }
+    @media(max-width:640px) { header,.page-header { align-items:flex-start; flex-direction:column; } nav { flex-wrap:wrap; } main { margin:1rem auto; } .card,.panel,.form-card { padding:1rem; } }
+  </style>
+</head>
+<body>
+  <header>
+    <a href="{% url 'home' %}">School-CMS</a>
+    <nav aria-label="Account">
+      {% if user.is_authenticated %}
+        <span>{{ user.get_username }}</span>
+        <form method="post" action="{% url 'logout' %}">{% csrf_token %}<button type="submit">Sign out</button></form>
+      {% else %}
+        <a href="{% url 'login' %}">Sign in</a>
+      {% endif %}
+    </nav>
+  </header>
+  <main>
+    {% if messages %}<ul class="messages">{% for message in messages %}<li>{{ message }}</li>{% endfor %}</ul>{% endif %}
+    {% block content %}{% endblock %}
+  </main>
+</body>
+</html>

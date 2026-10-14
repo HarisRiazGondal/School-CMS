@@ -1,0 +1,118 @@
+from django.contrib import messages
+from django.contrib.auth.decorators import login_required
+from django.core.exceptions import PermissionDenied, ValidationError
+from django.shortcuts import get_object_or_404, redirect, render
+from django.urls import reverse
+from django.views.decorators.http import require_http_methods
+
+from accounts.models import SchoolMembership, has_school_role
+from audit.services import record_event
+from schools.models import School
+from .forms import PromotionForm, RegistrationForm
+from .models import Enrollment, Student
+from .services import commit_promotion, preview_promotion, register_student
+
+
+def _school_for(user, slug):
+    school = get_object_or_404(School, slug=slug, is_active=True)
+    if not has_school_role(user, school, SchoolMembership.Role.SCHOOL_ADMIN, SchoolMembership.Role.REGISTRAR):
+        raise PermissionDenied
+    return school
+
+
+@login_required
+@require_http_methods(["GET"])
+def student_list(request, school_slug):
+    school = _school_for(request.user, school_slug)
+    students = Student.objects.filter(school=school).prefetch_related("enrollments__section__school_class")
+    record_event(school=school, actor=request.user, action="student.list_viewed",
+                 object_type="student_list", object_id=school.slug,
+                 details={"result_count": students.count()})
+    return render(request, "students/list.html", {"school": school, "students": students})
+
+
+@login_required
+@require_http_methods(["GET", "POST"])
+def student_register(request, school_slug):
+    school = _school_for(request.user, school_slug)
+    if request.method == "GET":
+        record_event(school=school, actor=request.user, action="student.register_viewed",
+                     object_type="student_registration", object_id=school.slug)
+    form = RegistrationForm(request.POST or None, school=school)
+    if request.method == "POST" and form.is_valid():
+        try:
+            student, enrollment = register_student(user=request.user, school=school, **form.cleaned_data)
+        except ValidationError as exc:
+            form.add_error(None, exc)
+        else:
+            messages.success(request, f"Registered {student.student_code}.")
+            return redirect("students:detail", school_slug=school.slug, student_code=student.student_code)
+    return render(request, "students/register.html", {"school": school, "form": form})
+
+
+@login_required
+@require_http_methods(["GET"])
+def student_detail(request, school_slug, student_code):
+    school = _school_for(request.user, school_slug)
+    student = get_object_or_404(
+        Student.objects.filter(school=school).prefetch_related(
+            "enrollments__section__school_class", "enrollments__academic_year", "guardian_relations__guardian"
+        ), student_code=student_code
+    )
+    record_event(school=school, actor=request.user, action="student.history_viewed",
+                 object_type="student", object_id=student.student_code,
+                 details={"enrollment_count": student.enrollments.count()})
+    return render(request, "students/detail.html", {"school": school, "student": student})
+
+
+def _source_enrollment(user, school, student_code, year_name):
+    student = get_object_or_404(Student, school=school, student_code=student_code)
+    enrollment = get_object_or_404(
+        Enrollment.objects.select_related("student__school", "academic_year", "section__school_class"),
+        student=student, academic_year__name=year_name,
+    )
+    return enrollment
+
+
+@login_required
+@require_http_methods(["GET", "POST"])
+def promotion_preview_view(request, school_slug, student_code, year_name):
+    school = _school_for(request.user, school_slug)
+    source = _source_enrollment(request.user, school, student_code, year_name)
+    form = PromotionForm(request.POST or None, school=school, source_year=source.academic_year)
+    preview = None
+    if request.method == "POST" and form.is_valid():
+        try:
+            preview = preview_promotion(
+                user=request.user, source=source, outcome=form.cleaned_data["outcome"],
+                target_year=form.cleaned_data.get("target_year"),
+                target_section=form.cleaned_data.get("target_section"),
+                target_roll_number=form.cleaned_data.get("roll_number"),
+            )
+        except (ValidationError, PermissionDenied) as exc:
+            form.add_error(None, exc)
+    return render(request, "students/promotion_preview.html", {
+        "school": school, "student": source.student, "source": source,
+        "form": form, "preview": preview,
+        "can_confirm": has_school_role(request.user, school, SchoolMembership.Role.SCHOOL_ADMIN),
+    })
+
+
+@login_required
+@require_http_methods(["POST"])
+def promotion_commit_view(request, school_slug, student_code, year_name):
+    school = _school_for(request.user, school_slug)
+    if not has_school_role(request.user, school, SchoolMembership.Role.SCHOOL_ADMIN):
+        raise PermissionDenied("Only a school admin can confirm promotion.")
+    source = _source_enrollment(request.user, school, student_code, year_name)
+    form = PromotionForm(request.POST, school=school, source_year=source.academic_year)
+    if not form.is_valid():
+        messages.error(request, "Promotion details were invalid; review them and try again.")
+        return redirect("students:promotion-preview", school_slug=school.slug, student_code=student_code, year_name=year_name)
+    try:
+        old, new = commit_promotion(user=request.user, source=source, **form.cleaned_data)
+    except (ValidationError, PermissionDenied) as exc:
+        messages.error(request, str(exc))
+        return redirect("students:detail", school_slug=school.slug, student_code=student_code)
+    messages.success(request, f"{old.get_status_display()} recorded for {student_code}.")
+    return redirect("students:detail", school_slug=school.slug, student_code=student_code)
