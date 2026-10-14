@@ -2,17 +2,17 @@
 
 ## Status
 
-Phase 0 design draft; Django foundation scaffold has been committed, but no domain models or migrations exist.
+Phase 1 foundation is in progress. The repository now contains a Django entrypoint, custom User and SchoolMembership schema, School/Campus/AcademicYear, SchoolClass/Section/Subject, admin registrations, and baseline tests. No migrations or runtime verification exist yet.
 
 ## Shape
 
 Use a modular Django monolith with PostgreSQL in deployment. Keep domain logic in explicit service functions and transaction boundaries. Retain Django Admin for trusted maintenance and build custom role workflows for regular staff, students, and finance users.
 
-## App boundaries
+## Current app boundaries
 
 - accounts: custom User, membership, roles, permissions, account status.
-- schools: School, Campus, settings.
-- academics: AcademicYear, Term, Grade, SectionOffering, Subject, timetable.
+- schools: School, Campus, academic-year settings.
+- academics: SchoolClass, year-bound Section, Subject; reconcile terminology with the planned Grade/SectionOffering model before dependent modules.
 - people: Student, Guardian, StaffProfile, TeacherProfile.
 - admissions: applications, decisions, documents.
 - enrollments: Enrollment, roll assignment, promotion, transfer, withdrawal.
@@ -23,7 +23,7 @@ Use a modular Django monolith with PostgreSQL in deployment. Keep domain logic i
 - communications: notices and notifications.
 - audit: append-oriented sensitive-action events.
 
-Authorization is action + resource + school/campus/academic scope + workflow state. Views and APIs must scope querysets; services repeat critical checks. Superuser status does not imply unlogged access to private student or finance records.
+Authorization is action + resource + school/campus/academic scope + workflow state. Views and APIs must scope querysets; services repeat critical checks. The current helper proves active role membership only; it is not yet a complete object-level authorization layer. Superuser status does not imply unlogged access to private student or finance records.
 
 ## Transaction services
 
