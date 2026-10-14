@@ -1,3 +1,4 @@
+from django.contrib.auth.models import AnonymousUser
 from django.test import TestCase
 
 from accounts.models import SchoolMembership, User, has_school_role
@@ -13,9 +14,7 @@ class SchoolMembershipTests(TestCase):
 
     def test_active_membership_grants_only_matching_role_and_school(self):
         SchoolMembership.objects.create(
-            user=self.user,
-            school=self.school,
-            role=SchoolMembership.Role.TEACHER,
+            user=self.user, school=self.school, role=SchoolMembership.Role.TEACHER
         )
         self.assertTrue(has_school_role(self.user, self.school, SchoolMembership.Role.TEACHER))
         self.assertFalse(has_school_role(self.user, self.school, SchoolMembership.Role.ACCOUNTANT))
@@ -23,13 +22,9 @@ class SchoolMembershipTests(TestCase):
 
     def test_inactive_membership_is_denied(self):
         SchoolMembership.objects.create(
-            user=self.user,
-            school=self.school,
-            role=SchoolMembership.Role.TEACHER,
-            is_active=False,
+            user=self.user, school=self.school, role=SchoolMembership.Role.TEACHER, is_active=False
         )
         self.assertFalse(has_school_role(self.user, self.school, SchoolMembership.Role.TEACHER))
 
     def test_anonymous_user_is_denied(self):
-        self.user.is_authenticated = False
-        self.assertFalse(has_school_role(self.user, self.school, SchoolMembership.Role.TEACHER))
+        self.assertFalse(has_school_role(AnonymousUser(), self.school, SchoolMembership.Role.TEACHER))
