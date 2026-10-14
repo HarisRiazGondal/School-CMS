@@ -1,14 +1,15 @@
 # Test and Release Status
 
-- Phase: Phase 0 — Discovery and design, in progress.
+- Phase: Phase 1 — Foundation, in progress.
 - Release: Not started.
 - No local tests, migrations, build, lint, security, accessibility, browser, or restore checks have been run.
 - Passing test count: unavailable; no count is inferred.
-- Django foundation files are committed but runtime compatibility is not yet verified in this environment.
+- Foundation source is committed, but runtime compatibility, migration generation, and test execution are not verified in this environment.
 
 ## Release gates
 
 - [ ] Foundation runs from a clean environment.
+- [ ] Initial migrations are generated and apply cleanly.
 - [ ] Custom authentication and scoped permissions tested.
 - [ ] Student identity/enrollment/promotion lifecycle tests pass.
 - [ ] Attendance, assessment, and financial invariants tested.
