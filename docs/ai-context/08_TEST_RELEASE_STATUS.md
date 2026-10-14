@@ -2,18 +2,18 @@
 
 - Phase: Phase 1 — Foundation, in progress.
 - Release: Not started.
-- No local tests, migrations, build, lint, security, accessibility, browser, or restore checks have been run.
-- Passing test count: unavailable; no count is inferred.
-- Foundation source is committed, but runtime compatibility, migration generation, and test execution are not verified in this environment.
+- Verification environment: clean clone of the default branch with dependencies installed.
+- Passed: python manage.py check; python manage.py makemigrations --check --dry-run; python manage.py migrate --noinput; python manage.py test.
+- Test result: 4 tests passed.
+- Not yet verified: production PostgreSQL run, secure login/password reset, object-level authorization, uploads, deployment, accessibility, backup/restore, and browser flows.
 
 ## Release gates
 
-- [ ] Foundation runs from a clean environment.
-- [ ] Initial migrations are generated and apply cleanly.
-- [ ] Custom authentication and scoped permissions tested.
+- [x] Foundation source and initial migrations run cleanly in a local SQLite verification.
+- [ ] Secure authentication and scoped permissions tested end-to-end.
 - [ ] Student identity/enrollment/promotion lifecycle tests pass.
 - [ ] Attendance, assessment, and financial invariants tested.
 - [ ] Private uploads, backups, restore, and deployment verified.
 - [ ] Pilot role journeys accepted.
 
-No item is checked from plans alone.
+Phase 1 remains In progress because authentication, object-level authorization, and future domain workflows are incomplete.
