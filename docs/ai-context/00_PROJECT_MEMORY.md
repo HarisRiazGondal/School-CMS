@@ -2,6 +2,8 @@
 
 ## Current checkpoint
 
+Local PC QA handoff is available in `docs/LOCAL_PC_QA_AGENT_PROMPT.md`: exact release checkout, Windows setup, six parallel worker categories plus coordinator, 72-case browser checklist, known product boundaries, evidence and report requirements. Creating the handoff did not execute new application/browser tests; the verified227/218/9 baseline below is unchanged.
+
 User requested a realistic school scenario plan and actual cloud-browser testing of admissions, classes/timetables, marks, fees by class, promotion and retained history. Added a72-scenario matrix and separate results/JSON evidence on `codex/production-hardening-20261015`, draft PR#1. Main remains unchanged; CI/VPS are still deferred.
 
 The cloud browser rejected the local app URL and explicitly forbade workarounds/proxies/alternate browsers. Do not attempt to bypass this block. No browser/visual/keyboard/axe scenario passed. A permitted browser-accessible test deployment is needed for that stage. In-process Django tests are independent evidence, not a replacement browser pass.

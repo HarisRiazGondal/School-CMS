@@ -1,8 +1,8 @@
-# Next Actions — school scenario acceptance
+# Next Actions — local PC QA handoff
 
 Latest full suite: **227 run,218 passed,9 PostgreSQL-only skips,no failures**. Two connected in-process request/service journeys pass. All72 cloud-browser matrix rows remain unverified due to an explicit URL-policy block.
 
-1. Review docs/SCHOOL_SCENARIO_RESULTS.md and 72-row SCHOOL_SCENARIO_MATRIX.md; distinguish request/service evidence from blocked browser scenarios.
+1. Give docs/LOCAL_PC_QA_AGENT_PROMPT.md to the PC agent and execute the isolated multi-agent QA handoff. Review docs/SCHOOL_SCENARIO_RESULTS.md and 72-row SCHOOL_SCENARIO_MATRIX.md; distinguish request/service evidence from blocked browser scenarios.
 2. For actual cloud-browser UI acceptance, supply a permitted browser-accessible test deployment URL. Do not use proxies, alternate browser surfaces or workarounds for the local URL-policy block.
 3. Run the matrix in the permitted UI target with synthetic accounts, record screenshots/results and fix reproducible defects. No browser row is currently passed.
 4. Prioritize product gaps separately: automatic invoice generation, regular-portal withdrawal/re-admission/account linking, revision-history viewer and any marks/fee-driven promotion rules.

@@ -94,7 +94,7 @@
     "Student result visibility affects student views and service reads; authorized teachers/admins retain result access. Teacher notice authoring is limited to assigned sections."
   ],
   "next_actions": [
-    "Review docs/SCHOOL_SCENARIO_RESULTS.md and 72-row SCHOOL_SCENARIO_MATRIX.md; distinguish request/service evidence from blocked browser scenarios.",
+    "Execute docs/LOCAL_PC_QA_AGENT_PROMPT.md on the user PC: isolated release-branch checkout, six workers plus coordinator, actual browser matrix, bug verification and evidence reports. Existing test totals remain historical until rerun there.",
     "For actual cloud-browser UI acceptance, supply a permitted browser-accessible test deployment URL. Do not use proxies, alternate browser surfaces or workarounds for the local URL-policy block.",
     "Run the matrix in the permitted UI target with synthetic accounts, record screenshots/results and fix reproducible defects. No browser row is currently passed.",
     "Prioritize product gaps separately: automatic invoice generation, regular-portal withdrawal/re-admission/account linking, revision-history viewer and any marks/fee-driven promotion rules.",
