@@ -32,3 +32,9 @@ Review initially found that stale `AuthThrottle` buckets had no cleanup path. A 
 ## Review-local verification
 
 The last integrated local run recorded at commit `2fd821a715eb85e83e6834e62cad9cf7ebc776df` reported 184 tests run, 176 passed, and 8 PostgreSQL-only tests skipped on SQLite. These are baseline results before the release-review, preflight, browser, and combined-recovery additions; they do not assert that those additions or the PostgreSQL workflow passed. The parent integrates runtime regression coverage and records the final full-suite result in `ai-context/08_TEST_RELEASE_STATUS.md`. Documentation wording is reviewed directly rather than tested through exact string assertions.
+
+## Published run follow-up
+
+Runs #8/#9 at 6e3b0a6558267ca3cbed8a3696811e4f5cea73eb each created five jobs but no runners or steps. The public job annotation confirms: "The job was not started because your account is locked due to a billing issue." The account owner must resolve this outside the repository before rerunning CI. No PostgreSQL, recovery, container or browser CI pass occurred.
+
+[Verified public job annotation](https://github.com/HarisRiazGondal/School-CMS/actions/runs/38771801513/job/116549229916). The corrected workflow now creates jobs, unlike the prior invalid-context run. A later repository correction sets the settings module for standalone Python and pins Ubuntu24.04; its focused operations tests pass7/7. The account billing lock prevents runtime verification of those paths.

@@ -1,13 +1,13 @@
 {
   "updated": "2026-10-15",
   "objective": "One-school launch with campus boundaries, permanent student records, role-scoped learning and staged assessment/finance.",
-  "phase": "Production release validation \u2014 recovery, preflight and browser tooling complete",
+  "phase": "Release validation \u2014 local checks pass; CI billing lock and VPS acceptance blocked",
   "readiness": "Release candidate; production acceptance pending",
   "tests": {
     "passed": 214,
     "skipped": 9,
     "total": 223,
-    "environment": "Python 3.12 / Django 5.2.18 / SQLite: 223 tests run, 214 passed, 9 PostgreSQL-only skips (8 concurrency + 1 live preflight). Dependency audit and application-directory source scan clean. Real PostgreSQL/recovery/browser/container CI and target-host acceptance remain unverified.",
+    "environment": "Python 3.12 / Django 5.2.18 / SQLite: 223 tests run, 214 passed, 9 PostgreSQL-only skips (8 concurrency + 1 live preflight). Dependency audit and application-directory source scan clean. Real PostgreSQL/recovery/browser/container CI is blocked by a confirmed GitHub account billing lock; target-host acceptance remains unverified.",
     "commands": [
       "DJANGO_DEBUG=true python manage.py test -v1 \u2014 223 run, 214 passed, 9 PostgreSQL-only skips, no failures",
       "Django check and makemigrations --check --dry-run \u2014 clean/no changes",
@@ -18,8 +18,9 @@
       "Shell syntax, Python compilation, workflow YAML/contracts and git diff --check \u2014 passed",
       "Combined authenticated recovery fixture tests \u2014 passed with PostgreSQL subprocess mocked; real rehearsal pending CI",
       "Chromium installation \u2014 corrupt 0 MiB archive; no local browser/axe pass claimed",
-      "GitHub CI context error corrected and real recovery/browser jobs configured; hosted result pending publication/rerun",
-      "Previous unchanged static/deploy evidence: 127 static assets; production deploy check passes with staged HSTS warnings W005/W021"
+      "Previous unchanged static/deploy evidence: 127 static assets; production deploy check passes with staged HSTS warnings W005/W021",
+      "Published commit6e3b0a6 runs#8/#9 \u2014 five jobs each, no runner/steps; public GitHub annotation confirms account billing lock; no hosted passes",
+      "Follow-up workflow check \u2014 explicit Django settings module and Ubuntu24.04 runner pin; 7 operations tests pass"
     ],
     "failed": 0
   },
@@ -67,6 +68,7 @@
   ],
   "limitations": [
     "Local synthetic-data pilot only; no hosted deployment or production readiness is claimed.",
+    "GitHub Actions cannot start jobs: public run#9 annotation confirms an account billing lock. Account owner resolution is required before hosted validation.",
     "Real PostgreSQL/concurrency/recovery, container startup, Chromium browser/axe, target SMTP/TLS/ClamAV/private-volume restoration and hosted human/privacy/accessibility acceptance remain release blockers. SQLite explicitly skips 9 PostgreSQL-only cases.",
     "Transfer/section-change correction UI, admission documents/imports, formal calendar/notification delivery and richer analytics remain backlog.",
     "Terminology and branding render on oversight pages. Global theming and branded report-card export are not implemented. Policy controls are allowlisted and cover late work, correction windows, student result visibility and notice expiry.",
@@ -91,7 +93,7 @@
     "Student result visibility affects student views and service reads; authorized teachers/admins retain result access. Teacher notice authoring is limited to assigned sections."
   ],
   "next_actions": [
-    "Inspect the new exact-commit Actions run and individual SQLite, PostgreSQL/concurrency/recovery, application security, container and browser jobs; resolve any retrievable failures.",
+    "Account owner must resolve the confirmed GitHub billing lock, then rerun the current-commit five-job workflow and inspect PostgreSQL/concurrency/recovery, browser, application security and container results. See the verified failed-job annotation in ci_evidence.source.",
     "Existing VPS selected: supply host/IP, SSH operator username and public domain with an approved connection; configure secret files, PostgreSQL and SMTP without posting credentials in chat.",
     "Run verify_release --json on the real target, then authorized HTTPS/SMTP/scanner probes; review persistence, signature freshness, secret/key and volume ownership separately.",
     "Rehearse a quiesced database-plus-private-files bundle on an isolated PostgreSQL target; record restored data/downloads, recovery time, off-host retention and named ownership.",
@@ -101,8 +103,8 @@
     {
       "id": "postgresql",
       "name": "PostgreSQL and concurrency",
-      "status": "in_progress",
-      "detail": "Full suite and real recovery harness are configured in CI; no successful hosted result recorded."
+      "status": "blocked",
+      "detail": "Full suite and real recovery harness are configured in CI; no successful hosted result recorded. Hosted execution is blocked by the confirmed GitHub account billing lock."
     },
     {
       "id": "deployment",
@@ -131,14 +133,14 @@
     {
       "id": "recovery",
       "name": "Database and private-file recovery",
-      "status": "in_progress",
-      "detail": "Authenticated complete recovery bundle and disposable rehearsal implemented; real PostgreSQL/target restore evidence pending."
+      "status": "blocked",
+      "detail": "Authenticated complete recovery bundle and disposable rehearsal implemented; real PostgreSQL/target restore evidence pending. Hosted execution is blocked by the confirmed GitHub account billing lock."
     },
     {
       "id": "accessibility",
       "name": "Browser and human accessibility",
-      "status": "in_progress",
-      "detail": "Synthetic browser/axe harness implemented; local Chromium download failed; hosted and human checks pending."
+      "status": "blocked",
+      "detail": "Synthetic browser/axe harness implemented; local Chromium download failed; hosted and human checks pending. Hosted execution is blocked by the confirmed GitHub account billing lock."
     },
     {
       "id": "privacy_security",
@@ -152,5 +154,18 @@
       "status": "blocked",
       "detail": "No target-host pilot or operator acceptance evidence exists."
     }
-  ]
+  ],
+  "ci_evidence": {
+    "commit": "6e3b0a6558267ca3cbed8a3696811e4f5cea73eb",
+    "checked_at": "2026-10-15T16:50:18.887892+00:00",
+    "runs": [
+      38771794751,
+      38771801513
+    ],
+    "status": "blocked",
+    "cause": "GitHub account locked due to billing issue; jobs not started",
+    "source": "https://github.com/HarisRiazGondal/School-CMS/actions/runs/38771801513/job/116549229916",
+    "observed_jobs_per_run": 5,
+    "executed_steps": 0
+  }
 }

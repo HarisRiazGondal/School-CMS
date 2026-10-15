@@ -40,3 +40,9 @@ Production hardening has been implemented with targeted local evidence. Outstand
 ## Evidence accounting and recovery decisions
 
 Preserve the eight milestone denominator and unchanged production criteria. A validated evidence record is only a schema/accounting check and still requires independent operator review. Recovery bundles include private files and quarantine with the encrypted database dump; restoration is limited to explicitly disposable empty targets and a quiesced application. Do not synthesize disposable attestations inside restore tooling. Authentication-throttle cleanup is bounded and dry-run by default; operator scheduling/monitoring remains a target deployment task.
+
+## Confirmed hosted validation blocker
+
+Runs #8/#9 at 6e3b0a6558267ca3cbed8a3696811e4f5cea73eb each created five jobs but no runners or steps. The public job annotation confirms: "The job was not started because your account is locked due to a billing issue." The account owner must resolve this outside the repository before rerunning CI. No PostgreSQL, recovery, container or browser CI pass occurred.
+
+Do not infer a repository test failure from the failed status: no job steps executed. Do not spend money or change billing/security settings as part of a code checkpoint. Operator/account-owner resolution and a real rerun are required.

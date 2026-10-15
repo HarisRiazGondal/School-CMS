@@ -49,6 +49,7 @@ class ProductionDeliveryContractTests(SimpleTestCase):
         postgres_job = workflow.split("  postgres:\n", 1)[1].split("\n  security:\n", 1)[0]
         job_environment = postgres_job.split("    env:\n", 1)[1].split("    steps:\n", 1)[0]
         self.assertNotIn("${{ runner.temp }}", job_environment)
+        self.assertIn("DJANGO_SETTINGS_MODULE: schoolcms.settings", job_environment)
         self.assertIn("PRIVATE_FILE_ROOT: /tmp/schoolcms-private-files", job_environment)
         self.assertIn("BACKUP_ENCRYPTION_KEY_FILE: /tmp/schoolcms-backup-key", job_environment)
 

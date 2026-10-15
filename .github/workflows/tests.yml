@@ -10,7 +10,7 @@ permissions:
 jobs:
   sqlite:
     name: SQLite full suite
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6.1.0
       - uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1 # v6.3.0
@@ -28,7 +28,7 @@ jobs:
 
   postgres:
     name: PostgreSQL full suite, deploy check, and recovery rehearsal
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     services:
       postgres:
         image: postgres:17-bookworm
@@ -45,6 +45,7 @@ jobs:
           --health-retries 10
     env:
       DATABASE_URL: postgresql://schoolcms:ci-only-password@localhost:5432/schoolcms
+      DJANGO_SETTINGS_MODULE: schoolcms.settings
       DJANGO_DEBUG: "true"
       DJANGO_SECRET_KEY: ci-only-key-012345678901234567890123456789012345678901234567890
       DJANGO_ALLOWED_HOSTS: localhost,127.0.0.1
@@ -123,7 +124,7 @@ jobs:
 
   security:
     name: Dependency and source security scans
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6.1.0
       - uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1 # v6.3.0
@@ -135,7 +136,7 @@ jobs:
 
   container:
     name: Container build and nonroot static smoke
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6.1.0
       - run: docker build --tag schoolcms:ci .
@@ -147,7 +148,7 @@ jobs:
 
   browser:
     name: Synthetic five-role Chromium acceptance
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6.1.0
       - uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1 # v6.3.0

@@ -57,3 +57,9 @@ Six Luna owners handled CI, combined recovery, browser acceptance, runtime prefl
 Review fixes: restore no longer manufactures disposable attestations; complete bundle size bounds match restore; preflight pins validated IP through verified TLS; live PG test can query its database; browser runner isolates inherited settings and keeps CSP intact; expected denial diagnostics are narrowly scoped. Exact-document wording assertions were excluded from the final regression suite.
 
 Final local validation: **223 run, 214 passed, 9 PostgreSQL-only skips, no failures**. Django check/drift, fresh SQLite migrations, dependency audit, application-directory Bandit, script syntax/compilation and whitespace checks pass. Chromium install returned corrupt 0 MiB archive; browser runtime not run. Previous GitHub run#7 failed with zero jobs/logs unavailable; current correction still needs hosted verification. Target VPS connection/domain, real SMTP/scanner/persistence/recovery and human acceptance remain open. Score stays87.5%, PR draft, main unchanged.
+
+### Hosted run diagnosis after publication
+
+Runs #8/#9 at 6e3b0a6558267ca3cbed8a3696811e4f5cea73eb each created five jobs but no runners or steps. The public job annotation confirms: "The job was not started because your account is locked due to a billing issue." The account owner must resolve this outside the repository before rerunning CI. No PostgreSQL, recovery, container or browser CI pass occurred.
+
+The connector could read jobs/check-run counts but could not read annotations; a public browser inspection of the exact job page exposed the billing-lock error without sign-in. No billing/payment or account setting was changed. The workflow now sets the settings module for standalone Python and pins Ubuntu24.04 against the announced runner-image migration. Targeted operations checks pass7/7. Account-owner action and VPS details remain blockers to production100.

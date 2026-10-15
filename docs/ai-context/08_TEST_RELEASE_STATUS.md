@@ -26,3 +26,11 @@ The CI regression assertion was narrowed after integration revealed that runner 
 The independent review found and closed restore code synthesizing disposable attestations, mismatched create/restore bundle size limits, and a DNS re-resolution window. Restore now requires caller attestations, a separate production database identity and disposable private-root acknowledgment. Complete encrypted bundles include quarantine/private files as well as the database. These local guards do not establish a successful real recovery.
 
 Prior unchanged candidate evidence remains: static collection127 assets and synthetic production deploy checks pass with staged HSTS W005/W021 warnings. No Docker/PostgreSQL/browser runtime pass is claimed locally. See the gate matrix in project_state.json/PROJECT_STATUS.html and RELEASE_REVIEW.md. Main and the eight acceptance milestones remain unchanged; keep PR #1 draft.
+
+## Hosted CI blocker confirmed after publication
+
+Runs #8/#9 at 6e3b0a6558267ca3cbed8a3696811e4f5cea73eb each created five jobs but no runners or steps. The public job annotation confirms: "The job was not started because your account is locked due to a billing issue." The account owner must resolve this outside the repository before rerunning CI. No PostgreSQL, recovery, container or browser CI pass occurred.
+
+Verified annotation: https://github.com/HarisRiazGondal/School-CMS/actions/runs/38771801513/job/116549229916
+
+Follow-up CI configuration sets `DJANGO_SETTINGS_MODULE=schoolcms.settings` for standalone production-check Python and pins Ubuntu24.04 before the announced ubuntu-latest migration. Operations regressions pass7/7; no hosted execution is claimed. Keep milestone8 In progress and the score87.5%.

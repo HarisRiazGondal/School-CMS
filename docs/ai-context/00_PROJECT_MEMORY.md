@@ -37,3 +37,11 @@ Resume from draft PR #1 and `09_NEXT_ACTIONS.md`; inspect actual CI results. Loc
 ## Latest continuation details
 
 Use `docs/RELEASE_REVIEW.md` and the recovery/preflight/browser/retention/evidence runbooks. Check Actions for the exact published commit before claiming any hosted runtime result. Run `python scripts/render_status.py` after every state change. The final local suite includes eight PostgreSQL concurrency skips plus one live-preflight skip; do not call these passes. Full target acceptance remains the only route to production closure.
+
+## Hosted CI blocker confirmed after publication
+
+Runs #8/#9 at 6e3b0a6558267ca3cbed8a3696811e4f5cea73eb each created five jobs but no runners or steps. The public job annotation confirms: "The job was not started because your account is locked due to a billing issue." The account owner must resolve this outside the repository before rerunning CI. No PostgreSQL, recovery, container or browser CI pass occurred.
+
+Verified annotation: https://github.com/HarisRiazGondal/School-CMS/actions/runs/38771801513/job/116549229916
+
+Follow-up CI configuration sets `DJANGO_SETTINGS_MODULE=schoolcms.settings` for standalone production-check Python and pins Ubuntu24.04 before the announced ubuntu-latest migration. Operations regressions pass7/7; no hosted execution is claimed. Keep milestone8 In progress and the score87.5%.
