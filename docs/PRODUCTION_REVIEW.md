@@ -25,3 +25,7 @@ These are deployment acceptance gates, not defects that a local code test can cl
 ## Local review regressions
 
 `DJANGO_DEBUG=true python manage.py test tests.test_production_review -v 1` — **4 tests passed**. These cover strict production startup configuration, explicit proxy trust, and fail-closed private storage permission handling. This focused run is not a substitute for the full test suite or target-host acceptance.
+
+## Parent integrated evidence update
+
+Final local suite:183 run,175 passed,8 real-PG concurrency tests skipped. Source scan0 findings with narrow documented false-positive exceptions; dependency audit clean after pypdf6.20.1 upgrade. First draftPR CI reported failure; log retrieval returned404/BlobNotFound and step metadata was empty, so the cause and PostgreSQL/restore/container results remain unverified. The workflow is consolidated and being retried. These results do not close target-host operational gates.

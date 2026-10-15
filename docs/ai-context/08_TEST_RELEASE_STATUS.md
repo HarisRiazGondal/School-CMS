@@ -1,34 +1,26 @@
 # Test and Release Status
 
-**Expanded local pilot ready for testing. Production release: Not started.**
+**Production release candidate; acceptance pending. Pilot score remains87.5%.**
 
-Latest integrated verification on 2026-10-15: **129 tests passed** in 77.553 seconds on Python 3.12 / Django 5.2 / SQLite.
+2026-10-15 local integrated run: **183 tests run,175 passed,8 PostgreSQL-only concurrency tests skipped** in95.384 seconds. This is not183 PostgreSQL passes.
 
-| Check | Evidence |
+| Check | Actual evidence |
 |---|---|
-| `DJANGO_DEBUG=true python manage.py check` | Passed, no issues |
-| `DJANGO_DEBUG=true python manage.py makemigrations --check --dry-run` | No changes detected |
-| Fresh SQLite `migrate --noinput` | Passed |
-| `DJANGO_DEBUG=true python manage.py test -v 1` | 129 passed |
-| Dedicated independent review regressions | 9 passed, included in integrated suite |
-| Parent policy/scope integration regressions | 4 passed, included in integrated suite |
-| Fresh SQLite combined service acceptance | Publication; payment/reversal; admission/correction approvals; conditional batch; historical transcripts/fees; result hiding — passed |
-| Demo reseed after finalized operations and changed settings | Counts/history preserved |
-| `git diff --check` | Passed |
-| PostgreSQL, hosted human/accessibility/privacy acceptance, real SMTP/restore | Not run |
-| GitHub Actions | Workflow exists; remote success is not claimed by local tests |
+| SQLite full suite |175 passed,8 PG-only skips |
+| Django check / migration drift |Clean / no changes |
+| Fresh SQLite migrate |Passed |
+| Dependency audit |No known vulnerabilities after pypdf6.20.1 upgrade |
+| Bandit app source |0 findings; narrow reviewed inline exceptions documented in OPERATIONS |
+| Static collection |127 assets and compressed manifest generated |
+| Synthetic production deploy check |No errors; intentional W005/W021 retained for staged HSTS |
+| Shell syntax / YAML / restore refusal |Passed |
+| First draft PR CI |Failure reported; logs404 and step details empty; cause not established |
+| Real PostgreSQL concurrency/restore and image build |CI configured; success unverified |
+| Real SMTP/TLS/ClamAV/private-volume restore |Not exercised |
+| Hosted human/privacy/accessibility pilot |Not performed |
 
-New coverage includes admission approval/rejection/retries and rollback; account-link safeguards; batch preview/conflicts/conditional reasons/graduation/revalidation and atomic rollback; immutable attributed decisions; session/attendance ORM guards; correction approval/rejection/staleness/attribution; own attendance history and workload; effective settings/timezone; notice scope/revisions/audit rollback; timetable overlaps and active teacher scope; role-bounded summaries; scoped read-only Admin; cached activation and append-only audit regressions. The baseline assessment and financial coverage remains included.
+Targeted coverage includes DB login/reset/MFA throttling (including Admin, rotating IPs and replay/recovery), required and optional MFA, strict production startup, private attachment content/scanner/scope/history/permission/integrity guards, grading/upload row rechecks, health/headers/proxy, deployment/restore refusal and accessibility semantics. Baseline129 pilot tests remain included. Eight new PostgreSQL tests intentionally skip on SQLite.
 
-Seven unchanged pilot milestone gates meet local acceptance = **87.5%**. Broader module scope and production release remain open. HTTP render/form tests supplement services; interactive human browser/accessibility/hosted acceptance is still required. Expected permission-denial logs are exercised by passing authorization tests.
+A deadline HTTP test advances the shared clock beyond a one-hour session lifetime. Its fixture now uses a longer session to test late-body exclusion independently of session expiry; the affected33-test suite and final integrated suite pass. Production session protection was not weakened.
 
-- [x] Admissions decisions and individual/batch/conditional yearly progression.
-- [x] Guarded attendance, correction decisions and student history/workload.
-- [x] Scoped timetable/notices/settings/dashboards and independent bug review.
-- [x] Assessment and finance history retained through progression/reseed.
-- [ ] PostgreSQL concurrency, restore and production operating controls.
-- [ ] Throttling/MFA, SMTP, private files, accessibility and hosted human pilot.
-
-## Production release candidate — validation running
-
-The 129-test result above is the prior checkpoint. New auth, private-files, configuration, operations and review suites pass locally. Eight PostgreSQL concurrency tests deliberately skip on SQLite. The first new integrated suite had183 tests with one deadline-test failure caused by advancing the shared clock beyond the new one-hour session expiry; the test now isolates deadline behavior with a longer fixture session and its33-test affected suite passes. The final full suite and PostgreSQL CI run are pending. Dependency audit is clean after upgrading pypdf6.20.1; static collection and source scan pass. PostgreSQL/Docker, real SMTP/ClamAV/private-volume restoration and human hosted acceptance are not yet established.
+See PRODUCTION_REVIEW, PRIVACY_OPERATIONS, ACCESSIBILITY_ACCEPTANCE and OPERATIONS for reviewed changes and open operational gates. CI configuration and code presence do not certify production readiness.

@@ -2,11 +2,11 @@
 
 ## Current checkpoint
 
-School-CMS is a Django school pilot with session authentication, scoped portals, permanent student identities, admission decisions, individual/batch yearly progression, guarded attendance/corrections, classwork, assessments/transcripts, fees/receipts/reversals and school oversight.
+School-CMS has a saved production release candidate on branch `codex/production-hardening-20261015`, draft PR1. Main remains the verified87.5% pilot; do not merge/release merely because hardening code exists. Production milestone8 is In progress.
 
-**87.5%: seven of the same eight equally weighted pilot milestones meet documented local acceptance criteria.** This score measures pilot milestones, not complete product scope or production readiness. Milestone 7 (oversight/operations) is Verified; milestone 8 (production release) is In progress.
+**Local verification:183 tests run,175 passed,8 PostgreSQL-only concurrency tests skipped**, Python3.12 / Django5.2.18 / SQLite. Dependency audit has no known vulnerabilities after upgrading pypdf6.20.1; source scan has0 findings with narrow reviewed exceptions. Checks, drift, static manifest and fresh SQLite migrations pass. Default deploy check retains intentional W005/W021 until subdomain/preload acceptance.
 
-Last completed pilot checkpoint verification on 2026-10-15: **129 automated tests passed**. Django checks, migration drift and fresh SQLite migrations pass. A combined fresh-database workflow passed assessment publication, payment/reversal, admission approval, attendance correction, conditional batch progression, historical transcripts/fees, hidden student results and history-preserving reseeding. Dedicated reviewer regressions: 9 passed; parent policy/scope regressions: 4 passed, included in the full suite. PostgreSQL and hosted acceptance are unverified.
+The first draftPR GitHub CI run reported failure; connector job logs returned404/BlobNotFound and job steps were empty. Real PostgreSQL, restore and container evidence remain pending. The CI workflow has been consolidated into the existing `.github/workflows/tests.yml` and includes SQLite, PostgreSQL17/concurrency+restore, dependency/source and container-build jobs. Actual target-host SMTP/TLS/ClamAV/private-file recovery and human acceptance are still open. Score remains **7/8 =87.5%**, not production-ready.
 
 ## Architecture and invariants
 
@@ -26,8 +26,10 @@ Read this file, `09_NEXT_ACTIONS.md`, `project_state.json` and impacted design f
 
 Use `../TESTING_MVP.md` for five-role synthetic workflows and `../PROJECT_REVIEW.md` for resolved findings and limits. Update affected Markdown/JSON, regenerate HTML with `python scripts/render_status.py`, and commit checkpoints with code. Next work is production validation and the separately tracked broader backlog; do not count code presence as release evidence.
 
-## Production hardening in progress — 2026-10-15
+## Production hardening implementation
 
-Added DB-backed login/reset/MFA throttling, encrypted TOTP and one-use recovery, required/opt-in MFA session gates, strict production startup/proxy/cookie settings, private file scanning and guarded historical downloads, nonroot deployment/health/static configuration, concurrency fixes with eight PostgreSQL-only regressions, and guarded encrypted backup/restore scripts. Dependencies are pinned; pypdf was updated to 6.20.1 after a failed audit, and the repeat audit reports no known vulnerabilities. Bandit has reviewed narrow false-positive exceptions.
+Shared DB throttles cover account+IP, account-global and source-IP buckets; TOTP secrets are Fernet-encrypted and one-use recovery uses keyed hashes. Required and opted-in accounts must complete MFA, with password-bound five-minute pending sessions and replay protection. Production settings fail closed without PostgreSQL, explicit hosts/HTTPS origins, distinct secret keys, persistent private storage/scanner and SMTP.
 
-This checkpoint is a release candidate, not a production release. Last baseline full verification was129; new integrated verification and GitHub PostgreSQL/restore CI are pending. Local uid namespace maps only root and has no Docker, so PostgreSQL server startup is not available; do not bypass its root protection. A Playwright browser download also failed. Mark production milestone8 In progress, keep score87.5%, and replace these pending results with actual CI evidence before closing the gate.
+Private assignment/submission files use opaque keys, bounded content/PDF checks, quarantine, owner-only permissions and guarded historical downloads. Nonroot/read-only deployment, liveness/readiness/static assets, lock ordering fixes, safe encrypted database recovery scripts and accessibility semantics are implemented. New migrations: accounts0002 and privatefiles0001. Existing memory/design invariants remain in force.
+
+Resume from draft PR1 and `09_NEXT_ACTIONS.md`; inspect actual CI results. Local uid namespace maps only root, with no Docker; a Playwright browser download failed, so no local PostgreSQL/container/browser runtime acceptance was claimed. Never bypass PostgreSQL's root protection. Keep all code and memory checkpoints on the release branch until release gates are evidenced.
