@@ -1,5 +1,13 @@
 # Test and Release Status
 
+## Latest local acceptance — user-requested focus
+
+**224 tests run, 215 passed, 9 PostgreSQL-only skips, no failures**, final post-fix run99.824s. Five-role CSRF HTTP journeys,73 role-scoped linked GETs and16 malformed form POST cases pass; no 404/500/transport failures in the final crawl. Fresh SQLite migrations, checks/drift, dependency compatibility/audit and application source scan pass.
+
+Fixed two reproduced defects: excessive financial Decimal magnitude now raises ValidationError without writes; teacher oversight no longer links to the administrator review queue, while backend denial remains enforced. Browser/axe has not run (Chromium absent); nine PG-only tests skip. CI/VPS work is deferred. See [LOCAL_TEST_REPORT.md](../LOCAL_TEST_REPORT.md) for the complete evidence and review inventory.
+
+## Prior release-validation checkpoint
+
 **Release candidate; production acceptance pending. Pilot score 7/8 (87.5%).**
 
 Final 2026-10-15 integrated local run: **223 tests run, 214 passed, 9 PostgreSQL-only skips, no failures**, Python3.12 / Django5.2.18 / SQLite. The skips are eight concurrency tests and one live PostgreSQL preflight test. They are not PostgreSQL passes.

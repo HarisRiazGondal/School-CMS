@@ -46,3 +46,7 @@ Preserve the eight milestone denominator and unchanged production criteria. A va
 Runs #8/#9 at 6e3b0a6558267ca3cbed8a3696811e4f5cea73eb each created five jobs but no runners or steps. The public job annotation confirms: "The job was not started because your account is locked due to a billing issue." The account owner must resolve this outside the repository before rerunning CI. No PostgreSQL, recovery, container or browser CI pass occurred.
 
 Do not infer a repository test failure from the failed status: no job steps executed. Do not spend money or change billing/security settings as part of a code checkpoint. Operator/account-owner resolution and a real rerun are required.
+
+## Local acceptance focus
+
+User deferred CI/VPS/hosted work on2026-10-15. Run and review local synthetic SQLite acceptance first; preserve production gates without treating them as prerequisites for local testing. Full local post-fix suite224 run/215 pass/9 PG skips. Concrete Decimal and teacher-navigation defects are closed in this checkpoint. Browser behavior and PostgreSQL concurrency remain outside this evidence; an enrollment/assessment-start race candidate needs a separate PostgreSQL reproduction.

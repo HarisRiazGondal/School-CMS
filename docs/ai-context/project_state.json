@@ -1,26 +1,27 @@
 {
   "updated": "2026-10-15",
   "objective": "One-school launch with campus boundaries, permanent student records, role-scoped learning and staged assessment/finance.",
-  "phase": "Release validation \u2014 local checks pass; CI billing lock and VPS acceptance blocked",
+  "phase": "Local acceptance \u2014 two defects fixed; user testing next",
   "readiness": "Release candidate; production acceptance pending",
   "tests": {
-    "passed": 214,
+    "passed": 215,
     "skipped": 9,
-    "total": 223,
-    "environment": "Python 3.12 / Django 5.2.18 / SQLite: 223 tests run, 214 passed, 9 PostgreSQL-only skips (8 concurrency + 1 live preflight). Dependency audit and application-directory source scan clean. Real PostgreSQL/recovery/browser/container CI is blocked by a confirmed GitHub account billing lock; target-host acceptance remains unverified.",
+    "total": 224,
+    "environment": "Python3.12.14 / Django5.2.18 / SQLite: 224 run, 215 passed, 9 PostgreSQL-only skips, no failures. Post-fix local suite passed; 73 role-scoped HTTP GETs and 16 malformed form cases passed. Chromium/axe and PostgreSQL runtime remain unexecuted. CI/VPS work is deferred by user request.",
     "commands": [
-      "DJANGO_DEBUG=true python manage.py test -v1 \u2014 223 run, 214 passed, 9 PostgreSQL-only skips, no failures",
+      "DJANGO_DEBUG=true python manage.py test -v1 \u2014 224 run, 215 passed, 9 PostgreSQL-only skips, no failures (99.824s)",
+      "Fresh SQLite migrations and synthetic demo \u2014 passed",
+      "Five-role CSRF-enforced Django client journeys and same-origin link crawl \u2014 73 GETs, no 404/500/transport failures",
+      "Empty/malformed forms \u2014 16 cases across8 forms, no server errors",
+      "Post-fix correction access \u2014 teacher no review link/direct403; school administrator link/direct200",
+      "Financial excessive-magnitude service regression \u2014 ValidationError and unchanged financial records; focused14-test finance suite passed",
       "Django check and makemigrations --check --dry-run \u2014 clean/no changes",
-      "Fresh SQLite migrations including accounts0003 retention index \u2014 passed",
-      "python -m pip_audit -r requirements.txt \u2014 no known vulnerabilities",
-      "Bandit scan of listed Django application directories \u2014 0 findings with narrow reviewed inline exceptions; scripts are manually reviewed, not included in this scan",
-      "Development verify_release --json \u2014 correctly exits1 with failed/blocked release checks; no network, email or scanner probes requested",
-      "Shell syntax, Python compilation, workflow YAML/contracts and git diff --check \u2014 passed",
-      "Combined authenticated recovery fixture tests \u2014 passed with PostgreSQL subprocess mocked; real rehearsal pending CI",
-      "Chromium installation \u2014 corrupt 0 MiB archive; no local browser/axe pass claimed",
-      "Previous unchanged static/deploy evidence: 127 static assets; production deploy check passes with staged HSTS warnings W005/W021",
-      "Published commit6e3b0a6 runs#8/#9 \u2014 five jobs each, no runner/steps; public GitHub annotation confirms account billing lock; no hosted passes",
-      "Follow-up workflow check \u2014 explicit Django settings module and Ubuntu24.04 runner pin; 7 operations tests pass"
+      "python -m pip check \u2014 no broken requirements",
+      "python -m pip_audit -r requirements.txt \u2014 no known vulnerabilities at this check",
+      "Bandit listed Django application directories \u2014 no findings; existing narrow exceptions; scripts are outside this scan",
+      "git diff --check and status renderer \u2014 passed",
+      "Chromium executable absent \u2014 no browser/axe pass; PostgreSQL-specific cases skipped explicitly",
+      "GitHub CI, VPS and external production acceptance \u2014 deferred by user request; historical evidence retained separately"
     ],
     "failed": 0
   },
@@ -93,11 +94,11 @@
     "Student result visibility affects student views and service reads; authorized teachers/admins retain result access. Teacher notice authoring is limited to assigned sections."
   ],
   "next_actions": [
-    "Account owner must resolve the confirmed GitHub billing lock, then rerun the current-commit five-job workflow and inspect PostgreSQL/concurrency/recovery, browser, application security and container results. See the verified failed-job annotation in ci_evidence.source.",
-    "Existing VPS selected: supply host/IP, SSH operator username and public domain with an approved connection; configure secret files, PostgreSQL and SMTP without posting credentials in chat.",
-    "Run verify_release --json on the real target, then authorized HTTPS/SMTP/scanner probes; review persistence, signature freshness, secret/key and volume ownership separately.",
-    "Rehearse a quiesced database-plus-private-files bundle on an isolated PostgreSQL target; record restored data/downloads, recovery time, off-host retention and named ownership.",
-    "Install and monitor bounded auth-throttle retention; complete hosted five-role, assistive-technology, privacy/security and operational acceptance before verifying milestone8."
+    "Test the release branch locally using docs/TESTING_MVP.md; review docs/LOCAL_TEST_REPORT.md for current findings and earlier review links.",
+    "Complete all five synthetic role journeys on the user computer: admissions/corrections, assessment marking/publication, payments/reversals and promotion/history.",
+    "Log reproducible issues with role, route, synthetic input, expected/actual behavior and traceback/screenshot; fix and rerun affected checks.",
+    "When local dependencies are available, run Chromium/axe and PostgreSQL-specific tests; real antivirus/mail/recovery checks require their configured services.",
+    "Resume CI/VPS/hosted production acceptance separately when requested; retain existing open release gates."
   ],
   "release_gates": [
     {
@@ -167,5 +168,18 @@
     "source": "https://github.com/HarisRiazGondal/School-CMS/actions/runs/38771801513/job/116549229916",
     "observed_jobs_per_run": 5,
     "executed_steps": 0
+  },
+  "local_acceptance": {
+    "checked_at": "2026-10-15T17:22:30.478035+00:00",
+    "scope": "Disposable synthetic SQLite; server-side HTTP clients",
+    "status": "passed_for_exercised_cases",
+    "fixes": [
+      "Excessive Decimal quantization becomes validation error without financial writes",
+      "Teacher dashboard no longer links to administrator-only correction queue"
+    ],
+    "http_gets": 73,
+    "invalid_form_cases": 16,
+    "browser_executed": false,
+    "report": "docs/LOCAL_TEST_REPORT.md"
   }
 }

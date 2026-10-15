@@ -1,21 +1,13 @@
-# Next Actions
+# Next Actions — local acceptance
 
-Release branch `codex/production-hardening-20261015`, draft [PR #1](https://github.com/HarisRiazGondal/School-CMS/pull/1). Final local suite: **223 run, 214 passed, 9 PostgreSQL-only skips, no failures**. Pilot score 87.5%; production milestone8 In progress.
+User instruction: defer CI/VPS work, test locally and identify remaining bugs. Release branch `codex/production-hardening-20261015`, draft PR#1. Final local regression: **224 tests run, 215 passed, 9 PostgreSQL-only skips, no failures**.
 
-1. Account owner: resolve the confirmed GitHub billing lock, then rerun the current-commit Actions workflow and inspect actual job steps/results. The verified annotation below identifies the blocker.
-2. Existing VPS selected: supply host/IP, SSH operator username and public domain with an approved connection; configure secret files, PostgreSQL and SMTP without posting credentials in chat.
-3. Run verify_release --json on the real target, then authorized HTTPS/SMTP/scanner probes; review persistence, signature freshness, secret/key and volume ownership separately.
-4. Rehearse a quiesced database-plus-private-files bundle on an isolated PostgreSQL target; record restored data/downloads, recovery time, off-host retention and named ownership.
-5. Install and monitor bounded auth-throttle retention; complete hosted five-role, assistive-technology, privacy/security and operational acceptance before verifying milestone8.
+1. Test the release branch locally using docs/TESTING_MVP.md; review docs/LOCAL_TEST_REPORT.md for current findings and earlier review links.
+2. Complete all five synthetic role journeys on the user computer: admissions/corrections, assessment marking/publication, payments/reversals and promotion/history.
+3. Log reproducible issues with role, route, synthetic input, expected/actual behavior and traceback/screenshot; fix and rerun affected checks.
+4. When local dependencies are available, run Chromium/axe and PostgreSQL-specific tests; real antivirus/mail/recovery checks require their configured services.
+5. Resume CI/VPS/hosted production acceptance separately when requested; retain existing open release gates.
 
-Runbooks: RELEASE_PREFLIGHT.md, RECOVERY_REHEARSAL.md, BROWSER_ACCEPTANCE.md, AUTH_RETENTION.md, RELEASE_EVIDENCE.md and RELEASE_REVIEW.md under docs. Preflight defaults to no network/mail/scanner probes and cannot prove volume persistence. Recovery requires quiescence and explicit disposable empty DB/file targets. Browser runner owns loopback-only synthetic SQLite. No external timer, live deployment, email or user pilot was performed.
+Two confirmed defects are fixed: excessive financial Decimal magnitude and teacher dashboard correction navigation. No failing local automated check remains in the exercised cases. Browser/axe execution is unverified because Chromium is absent. Nine PostgreSQL tests skip under SQLite. Use synthetic data and disposable DBs; keep real pupil data and credentials outside the repository.
 
-Update exact test totals, source/target evidence, blockers, all affected AI-context Markdown/JSON and generated HTML in every checkpoint. Keep PR draft/main unchanged until release gates are independently reviewed.
-
-## Hosted CI blocker confirmed after publication
-
-Runs #8/#9 at 6e3b0a6558267ca3cbed8a3696811e4f5cea73eb each created five jobs but no runners or steps. The public job annotation confirms: "The job was not started because your account is locked due to a billing issue." The account owner must resolve this outside the repository before rerunning CI. No PostgreSQL, recovery, container or browser CI pass occurred.
-
-Verified annotation: https://github.com/HarisRiazGondal/School-CMS/actions/runs/38771801513/job/116549229916
-
-Follow-up CI configuration sets `DJANGO_SETTINGS_MODULE=schoolcms.settings` for standalone production-check Python and pins Ubuntu24.04 before the announced ubuntu-latest migration. Operations regressions pass7/7; no hosted execution is claimed. Keep milestone8 In progress and the score87.5%.
+Latest evidence/index: `docs/LOCAL_TEST_REPORT.md`; role checklist: `docs/TESTING_MVP.md`; historical reviews: PROJECT_REVIEW, PRODUCTION_REVIEW and RELEASE_REVIEW. Do not add old review totals together. Keep production acceptance open and update affected memory/JSON/HTML with future changes.

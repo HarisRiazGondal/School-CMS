@@ -92,3 +92,24 @@ The demo includes a next academic year with Grade 8 / B. Sign in as demo-admin, 
 Open `/students/demo-school/students/promotions/batch/` as a registrar or school admin. For each displayed active enrollment, select an outcome, target year/section and roll number; supply a condition reason for conditional outcomes. Leave the target year and section blank for graduation. The form retains the source enrollment identity automatically. Preview must make no changes. Only an admin may confirm. One malformed UUID, duplicate roll, stale source or invalid target blocks the entire batch. Graduation has no target; conditional decisions require a reason. Successful confirmation retains source placement and immutable attributed decision snapshots with a common batch ID.
 
 In school settings, test `late_submission_allowed=false` with overdue text work, `attendance_correction_days` against a record outside that school's local-date window, `student_results_visible=false` against student grades/feedback, assessment detail, transcript and dashboard, and `notice_expiry_days` against a newly published notice without explicit expiry. Authorized teachers/admins retain their permitted result access. Terminology/branding are currently rendered on oversight pages; exported branded report cards and a global theme editor are future work.
+
+## Windows local handoff
+
+The latest checked interpreter is Python3.12. From a checkout of `codex/production-hardening-20261015` (the default main branch is an earlier snapshot), PowerShell can run the virtual-environment interpreter directly (no activation-policy change is needed):
+
+```powershell
+py -3.12 -m venv .venv
+.\.venv\Scripts\python.exe -m pip install -r requirements.txt
+if (!(Test-Path ".env")) { Copy-Item ".env.example" ".env" }
+.\.venv\Scripts\python.exe manage.py migrate
+.\.venv\Scripts\python.exe manage.py check
+.\.venv\Scripts\python.exe manage.py test
+.\.venv\Scripts\python.exe manage.py seed_demo --password 'choose-your-local-demo-password'
+.\.venv\Scripts\python.exe manage.py runserver 127.0.0.1:8000
+```
+
+Replace the sample demo password before seeding and use that same value for the five synthetic accounts listed above. Keep the development server bound to loopback. Open <http://127.0.0.1:8000/>; the school administrator portal is `/oversight/schools/demo-school/`. `demo-admin` is the school portal account; Django's separate `/admin/` maintenance interface needs a deliberately provisioned staff account.
+
+Start with the five role journeys, then submit an assessment, grade/finalize/publish it, post/reverse a synthetic payment, approve an admission/correction, and confirm promotion while checking historical records. The console email backend allows reset-flow inspection without SMTP. Private uploads require a working scanner; missing scanner failures are deliberate, not a successful scan. MFA setup needs its encryption key configured.
+
+For each issue, record: role, page URL, exact synthetic steps, expected result, actual result, traceback or screenshot, and whether it repeats in a fresh demo. See [LOCAL_TEST_REPORT.md](LOCAL_TEST_REPORT.md) for the latest automated findings and fixes. CI/VPS work is deferred while this local acceptance is underway.

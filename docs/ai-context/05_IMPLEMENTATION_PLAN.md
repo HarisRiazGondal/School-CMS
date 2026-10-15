@@ -28,3 +28,7 @@ Production milestone 8 is now In progress: code/configuration hardening is imple
 ## Release validation continuation (2026-10-15)
 
 Parallel Luna owners added combined recovery, runtime preflight, isolated browser acceptance, CI wiring and authentication-throttle retention; an independent reviewer checked safeguards. The production gate remains open. First publish the workflow context correction and harnesses, then inspect actual hosted PostgreSQL/browser/container outcomes. Complete VPS-specific configuration, TLS/SMTP/scanner/persistence/recovery and human acceptance before final closure. The dashboard records gate-specific blockers rather than increasing the score for tooling alone.
+
+## Reprioritized local acceptance
+
+CI/VPS rollout is deferred by user request. Current work is local regression, reproduced defect fixes and the user-computer checklist. LOCAL_TEST_REPORT.md is the consolidated evidence/review index; TESTING_MVP.md is the handoff. Do not request hosting setup during this phase or relabel deferred production gates as passed.

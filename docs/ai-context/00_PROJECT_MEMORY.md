@@ -2,11 +2,13 @@
 
 ## Current checkpoint
 
-Release branch `codex/production-hardening-20261015`, draft PR #1. The next release validation increment implements authenticated database-plus-private-files bundles and guarded restore/rehearsal, a read-only runtime preflight, isolated five-role Playwright/axe acceptance, bounded authentication throttle retention (accounts0003), and nine explicit dashboard release gates. Independent Luna review found and corrected restore-attestation, bundle-limit, preflight DNS/TLS, PostgreSQL-test and CI context issues.
+User reprioritized to local testing and review; CI/VPS/hosted work is deferred. Continue on `codex/production-hardening-20261015`, draft PR #1. Main remains unchanged. Local pilot testing can proceed without resolving the hosting prerequisites.
 
-**Final local verification: 223 tests run, 214 passed, 9 PostgreSQL-only tests skipped, no failures.** Checks, migration drift, fresh SQLite migrations, dependency audit and application-directory Bandit scan pass. Operational scripts are reviewed/tested separately, outside the Bandit scan. Chromium download failed with a corrupt 0 MiB archive; no browser runtime pass is claimed.
+**Latest verification: 224 tests run, 215 passed, 9 PostgreSQL-only skips, no failures** (Python3.12.14 / Django5.2.18 / SQLite). Fresh migrations/seed, five-role CSRF HTTP journeys, 73 role-scoped linked GETs, 16 malformed form submissions, system/drift checks, dependency compatibility/audit and application-directory Bandit all pass. Chromium is absent; HTTP-client checks are not browser/axe execution.
 
-The prior GitHub run #7 at `2fd821a715eb85e83e6834e62cad9cf7ebc776df` failed with zero jobs and unavailable logs. Invalid job-level runner context was corrected; hosted verification of the new exact commit remains required. Existing VPS selected but host/IP, SSH user, public domain and approved access remain unavailable. Main is unchanged, PR stays draft. Score remains **7/8 = 87.5%**; production milestone8 In progress. Evidence accounting validates records and totals, not authenticity or production approval.
+Two new defects were reproduced and fixed: financial Decimal quantization overflow now becomes ValidationError with no writes; teacher oversight navigation no longer offers the admin-only correction queue or duplicate review metric. The teacher route stays403; admin review stays200. See `docs/LOCAL_TEST_REPORT.md` for latest evidence and report inventory, and `docs/TESTING_MVP.md` for local role checklists/Windows setup. A PostgreSQL enrollment/assessment-start race is an unverified review candidate, not a reproduced local bug.
+
+Production milestone remains In progress, score7/8=87.5%; this is separate from the current local-testing goal. Existing CI billing and target-host facts are retained as deferred history below. No request for server/billing details is needed during local acceptance.
 
 ## Architecture and invariants
 

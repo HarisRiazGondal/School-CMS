@@ -1,5 +1,8 @@
 # Release review and evidence boundary
 
+Latest local acceptance (15 October2026): **224 run,215 passed,9 PostgreSQL-only skips,no failures**, after the financial-validation and teacher-navigation fixes. See [LOCAL_TEST_REPORT.md](LOCAL_TEST_REPORT.md) for the consolidated report and index. Earlier counts below are historical snapshots; CI/VPS work is currently deferred.
+
+
 Reviewed for the 2026-10-15 production hardening checkpoint. This is an engineering review of repository code and retrievable checks, not a security certification or permission to process real school records. The branch remains a release candidate; production milestone 8 is still in progress and the verified pilot score remains 7/8 (87.5%).
 
 ## Findings and local controls

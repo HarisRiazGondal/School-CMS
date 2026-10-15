@@ -1,5 +1,8 @@
 # Independent production and security review
 
+Latest local acceptance (15 October2026): **224 run,215 passed,9 PostgreSQL-only skips,no failures**, after the financial-validation and teacher-navigation fixes. See [LOCAL_TEST_REPORT.md](LOCAL_TEST_REPORT.md) for the consolidated report and index. Earlier counts below are historical snapshots; CI/VPS work is currently deferred.
+
+
 Reviewed 2026-10-15 against the current repository state. This is an engineering review, not a security certification or a claim that the service is ready for real pupil data.
 
 ## Findings verified in code

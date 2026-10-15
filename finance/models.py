@@ -1,5 +1,5 @@
 import uuid
-from decimal import Decimal
+from decimal import Decimal, InvalidOperation
 
 from django.core.exceptions import ValidationError
 from django.db import models
@@ -26,7 +26,10 @@ def validate_amount(value, *, allow_zero=False):
         raise ValidationError("Amount may have at most two decimal places.")
     if amount < 0 or (not allow_zero and amount == 0):
         raise ValidationError("Amount must be positive." if not allow_zero else "Amount cannot be negative.")
-    return amount.quantize(Decimal("0.01"))
+    try:
+        return amount.quantize(Decimal("0.01"))
+    except InvalidOperation as exc:
+        raise ValidationError("Amount is outside the supported precision.") from exc
 
 
 class ImmutableFinanceQuerySet(models.QuerySet):
