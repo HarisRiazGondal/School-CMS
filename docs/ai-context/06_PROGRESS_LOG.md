@@ -49,3 +49,11 @@ Final local suite 183 run/175 pass/8 PG skips; checks/drift, dependency/source s
 ### Final local release-candidate checkpoint
 
 Final suite 184 run/176 passed/8 PG skips after testing cleanup of temporary pgpass files on early backup validation failure and sanitizing/uniquely naming encrypted artifacts. Status renderer now displays the actual production milestone state. User selected existing VPS; host/domain/access remain missing. CI initial run and retry report failure, with both log requests returning404 and steps empty; the latest workflow run is not returned. No PG/container/restore success is claimed; PR #1 remains draft.
+
+## 2026-10-15 — Release validation and recovery checkpoint
+
+Six Luna owners handled CI, combined recovery, browser acceptance, runtime preflight, independent review and authentication retention. Parent integrated evidence-accounting guardrails and final status/docs. Changed: complete authenticated database/private-file recovery bundles and disposable rehearsal; no-network-by-default preflight with explicit operator probes; loopback synthetic five-role Playwright/axe runner; corrected CI job-env context and hosted harness wiring; bounded dry-run auth-throttle retention plus accounts0003 index; release-gate matrix and validator.
+
+Review fixes: restore no longer manufactures disposable attestations; complete bundle size bounds match restore; preflight pins validated IP through verified TLS; live PG test can query its database; browser runner isolates inherited settings and keeps CSP intact; expected denial diagnostics are narrowly scoped. Exact-document wording assertions were excluded from the final regression suite.
+
+Final local validation: **223 run, 214 passed, 9 PostgreSQL-only skips, no failures**. Django check/drift, fresh SQLite migrations, dependency audit, application-directory Bandit, script syntax/compilation and whitespace checks pass. Chromium install returned corrupt 0 MiB archive; browser runtime not run. Previous GitHub run#7 failed with zero jobs/logs unavailable; current correction still needs hosted verification. Target VPS connection/domain, real SMTP/scanner/persistence/recovery and human acceptance remain open. Score stays87.5%, PR draft, main unchanged.

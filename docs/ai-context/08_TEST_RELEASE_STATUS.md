@@ -1,26 +1,28 @@
 # Test and Release Status
 
-**Production release candidate; acceptance pending. Pilot score remains87.5%.**
+**Release candidate; production acceptance pending. Pilot score 7/8 (87.5%).**
 
-2026-10-15 local integrated run: **184 tests run, 176 passed, 8 PostgreSQL-only concurrency tests skipped** in the final integrated run. This is not 184 PostgreSQL passes.
+Final 2026-10-15 integrated local run: **223 tests run, 214 passed, 9 PostgreSQL-only skips, no failures**, Python3.12 / Django5.2.18 / SQLite. The skips are eight concurrency tests and one live PostgreSQL preflight test. They are not PostgreSQL passes.
 
 | Check | Actual evidence |
 |---|---|
-| SQLite full suite |176 passed, 8 PG-only skips |
+| Final SQLite suite |214 passed, 9 PostgreSQL-only skips |
 | Django check / migration drift |Clean / no changes |
-| Fresh SQLite migrate |Passed |
-| Dependency audit |No known vulnerabilities after pypdf 6.20.1 upgrade |
-| Bandit app source |0 findings; narrow reviewed inline exceptions documented in OPERATIONS |
-| Static collection |127 assets and compressed manifest generated |
-| Synthetic production deploy check |No errors; intentional W005/W021 retained for staged HSTS |
-| Shell syntax / YAML / restore refusal |Passed |
-| First draft PR CI |Failure reported; logs 404 and step details empty; cause not established |
-| Real PostgreSQL concurrency/restore and image build |CI configured; success unverified |
-| Real SMTP/TLS/ClamAV/private-volume restore |Not exercised |
+| Fresh SQLite migrations |Passed including accounts0003 retention index |
+| Dependency audit |No known vulnerabilities |
+| Bandit Django application directories |0 findings; narrow reviewed inline exceptions; scripts excluded |
+| Recovery bundle fixtures |Authentication/tamper/path/cleanup/disposable guards pass; PG subprocess mocked |
+| Runtime preflight tests |Production checks fail/blocked on development setup as intended; no default probes |
+| Release state validation |Rejects inconsistent totals, changed denominator/production criteria, incomplete gate evidence and inconsistent readiness |
+| Browser bootstrap |Synthetic seed/server works; Chromium download corrupt at 0 MiB; browser/axe not run |
+| Shell/Python/YAML/contracts/whitespace |Passed |
+| Prior GitHub run #7 at 2fd821a |Failure, zero jobs, logs unavailable; no runtime evidence |
+| Corrected PostgreSQL/recovery/browser/container CI |Configured; new exact-commit hosted run must be inspected |
+| Target SMTP/TLS/ClamAV/volume/full recovery |Not exercised |
 | Hosted human/privacy/accessibility pilot |Not performed |
 
-Targeted coverage includes DB login/reset/MFA throttling (including Admin, rotating IPs and replay/recovery), required and optional MFA, strict production startup, private attachment content/scanner/scope/history/permission/integrity guards, grading/upload row rechecks, health/headers/proxy, deployment/restore refusal and accessibility semantics. Baseline129 pilot tests remain included. Eight new PostgreSQL tests intentionally skip on SQLite.
+The CI regression assertion was narrowed after integration revealed that runner context is valid in step-level artifact paths but unavailable in job-level env. Preflight's real PostgreSQL regression now uses a database-capable TestCase; SQLite skips it explicitly. The final integrated suite passed after corrections. Source-scan exceptions cover fixed Git argv and trusted configured scanner argv with no shell; SMTP close failures are reported rather than silently ignored.
 
-A deadline HTTP test advances the shared clock beyond a one-hour session lifetime. Its fixture now uses a longer session to test late-body exclusion independently of session expiry; the affected33-test suite and final integrated suite pass. Production session protection was not weakened.
+The independent review found and closed restore code synthesizing disposable attestations, mismatched create/restore bundle size limits, and a DNS re-resolution window. Restore now requires caller attestations, a separate production database identity and disposable private-root acknowledgment. Complete encrypted bundles include quarantine/private files as well as the database. These local guards do not establish a successful real recovery.
 
-See PRODUCTION_REVIEW, PRIVACY_OPERATIONS, ACCESSIBILITY_ACCEPTANCE and OPERATIONS for reviewed changes and open operational gates. CI configuration and code presence do not certify production readiness.
+Prior unchanged candidate evidence remains: static collection127 assets and synthetic production deploy checks pass with staged HSTS W005/W021 warnings. No Docker/PostgreSQL/browser runtime pass is claimed locally. See the gate matrix in project_state.json/PROJECT_STATUS.html and RELEASE_REVIEW.md. Main and the eight acceptance milestones remain unchanged; keep PR #1 draft.

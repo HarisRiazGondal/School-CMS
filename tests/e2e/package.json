@@ -1,0 +1,8 @@
+{
+  "name": "school-cms-browser-acceptance",
+  "private": true,
+  "description": "Pinned axe-core runtime for the School-CMS synthetic browser smoke.",
+  "devDependencies": {
+    "axe-core": "4.14.0"
+  }
+}

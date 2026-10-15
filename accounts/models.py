@@ -37,6 +37,11 @@ class AuthThrottle(models.Model):
     failures = models.PositiveSmallIntegerField(default=0)
     blocked_until = models.DateTimeField(null=True, blank=True)
 
+    class Meta:
+        indexes = [
+            models.Index(fields=["window_started", "blocked_until"], name="auththr_stale_idx"),
+        ]
+
 
 class MFADevice(models.Model):
     """TOTP configuration; the encrypted secret is unusable without a separate key."""

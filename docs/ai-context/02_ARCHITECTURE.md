@@ -18,7 +18,7 @@ Django 5.2 modular monolith with templates, CSRF and database sessions. No extra
 
 URL → Django session identity/active-account middleware → view scope/form querysets → service role/assignment checks → validated transaction + database uniqueness → audit metadata → scoped template response. Form CSRF is enforced; no browser JWTs or local-storage credential storage exists.
 
-Password hashes are owned by Django; no raw passwords or secrets are committed. Reset links use Django's time-limited token flow. Production settings reject missing/placeholder secrets and secure cookies; SMTP/proxy/HSTS settings must be configured per hosting. Public login throttling and MFA remain release work.
+Password hashes are owned by Django; no raw passwords or secrets are committed. Reset links use Django's time-limited token flow. Production settings reject missing/placeholder secrets and secure cookies; SMTP/proxy/HSTS settings must be configured per hosting. Database-backed login throttling and encrypted TOTP MFA are implemented; target-host validation remains release work.
 
 Student/Enrollment protected writes and placement changes go through services; promotion locks and revalidates rather than trusting a preview. Attendance checks the exact active roster. Work publication/submission/grading and audit writes are atomic. Scoped read-only private Admin views are supplementary maintenance tools, not the regular-user product UI.
 
@@ -43,3 +43,9 @@ Teacher dashboards use matching active school membership and exact section/subje
 ## Production candidate update
 
 Production candidate: sole DB-throttled ModelBackend, required or opted-in TOTP login with encrypted MFA secrets and one-use recovery, five-minute password-bound pending sessions, role-independent MFA middleware (including Admin). Strict configuration requires PostgreSQL, explicit HTTPS hosts/origins, separate secret keys, persistent private storage/scanner and SMTP. WhiteNoise serves immutable static files; private data uses cache/security headers and scoped streamed file downloads. Readiness checks DB and migrations, liveness is process-only. Compose/Gunicorn/Caddy and recovery scripts remain subject to runtime acceptance.
+
+## Release validation and operational retention
+
+The read-only `verify_release` command records source, settings and live runtime checks; optional network/scanner probes are explicit. Complete recovery bundles authenticate the database dump, private files and versioned integrity manifest; restoration requires empty disposable targets and application quiescence. The synthetic browser harness owns its disposable SQLite database and loopback server. Neither a configured workflow nor a local fixture proves target-host acceptance.
+
+Authentication throttle retention uses a bounded, database-clock query, dry-run default and explicit deletion, preserving active blocks. Migration accounts0003 adds its stale-window index. Release gate accounting validates the status document before rendering; evidence still needs independent operator review. See RELEASE_PREFLIGHT, RECOVERY_REHEARSAL, BROWSER_ACCEPTANCE, AUTH_RETENTION and RELEASE_EVIDENCE under docs.

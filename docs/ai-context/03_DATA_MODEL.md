@@ -68,3 +68,7 @@ SchoolSetting is one-to-one with School. Each save creates an immutable versione
 ## Production candidate update
 
 Production candidate adds AuthThrottle (HMAC buckets and timed counters), MFADevice (encrypted TOTP secret, accepted-step replay guard), MFARecoveryCode (keyed hashes), and PrivateAttachment metadata linked exclusively to Assignment or Submission. Opaque stored keys, bounded content/hash/size, clean/quarantined scan status and owner/scope checks keep files out of public media. Private root/file permissions and integrity are enforced; submission row locking coordinates grading/upload edits. New migrations are accounts0002 and privatefiles0001.
+
+## Operational retention index
+
+Additive accounts migration0003 indexes AuthThrottle window_started/blocked_until for bounded stale-bucket retirement. No student, financial, assessment or audit history is deleted by this operation; active authentication lockouts remain protected.

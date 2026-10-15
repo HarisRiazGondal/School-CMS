@@ -2,11 +2,11 @@
 
 ## Current checkpoint
 
-School-CMS has a saved production release candidate on branch `codex/production-hardening-20261015`, draft PR #1. Main remains the verified87.5% pilot; do not merge/release merely because hardening code exists. Production milestone 8 is In progress.
+Release branch `codex/production-hardening-20261015`, draft PR #1. The next release validation increment implements authenticated database-plus-private-files bundles and guarded restore/rehearsal, a read-only runtime preflight, isolated five-role Playwright/axe acceptance, bounded authentication throttle retention (accounts0003), and nine explicit dashboard release gates. Independent Luna review found and corrected restore-attestation, bundle-limit, preflight DNS/TLS, PostgreSQL-test and CI context issues.
 
-**Local verification:184 tests run, 176 passed, 8 PostgreSQL-only concurrency tests skipped**, Python 3.12 / Django 5.2.18 / SQLite. Dependency audit has no known vulnerabilities after upgrading pypdf 6.20.1; source scan has0 findings with narrow reviewed exceptions. Checks, drift, static manifest and fresh SQLite migrations pass. Default deploy check retains intentional W005/W021 until subdomain/preload acceptance.
+**Final local verification: 223 tests run, 214 passed, 9 PostgreSQL-only tests skipped, no failures.** Checks, migration drift, fresh SQLite migrations, dependency audit and application-directory Bandit scan pass. Operational scripts are reviewed/tested separately, outside the Bandit scan. Chromium download failed with a corrupt 0 MiB archive; no browser runtime pass is claimed.
 
-The first draftPR GitHub CI run reported failure; connector job logs returned404/BlobNotFound and job steps were empty. Real PostgreSQL, restore and container evidence remain pending. The CI workflow has been consolidated into the existing `.github/workflows/tests.yml` and includes SQLite, PostgreSQL 17/concurrency+restore, dependency/source and container-build jobs. Actual target-host SMTP/TLS/ClamAV/private-file recovery and human acceptance are still open. Score remains **7/8 =87.5%**, not production-ready.
+The prior GitHub run #7 at `2fd821a715eb85e83e6834e62cad9cf7ebc776df` failed with zero jobs and unavailable logs. Invalid job-level runner context was corrected; hosted verification of the new exact commit remains required. Existing VPS selected but host/IP, SSH user, public domain and approved access remain unavailable. Main is unchanged, PR stays draft. Score remains **7/8 = 87.5%**; production milestone8 In progress. Evidence accounting validates records and totals, not authenticity or production approval.
 
 ## Architecture and invariants
 
@@ -36,4 +36,4 @@ Resume from draft PR #1 and `09_NEXT_ACTIONS.md`; inspect actual CI results. Loc
 
 ## Latest continuation details
 
-User selected an existing VPS as deployment target; server/IP, SSH user and domain have not been supplied. Integration search did not find a suitable connected SSH/VPS capability, and no connection credentials were probed. Final local suite 184 run/176 passed/8 PG skips. Backup credential cleanup on early failure is now regression-tested; artifacts use sanitized unique names. The initial CI job and its rerun both failed before any retrievable step/log detail; the latest consolidated workflow still has no returned run. Keep PR #1 draft and main unchanged.
+Use `docs/RELEASE_REVIEW.md` and the recovery/preflight/browser/retention/evidence runbooks. Check Actions for the exact published commit before claiming any hosted runtime result. Run `python scripts/render_status.py` after every state change. The final local suite includes eight PostgreSQL concurrency skips plus one live-preflight skip; do not call these passes. Full target acceptance remains the only route to production closure.

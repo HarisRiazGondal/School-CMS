@@ -36,3 +36,7 @@ Campus consistency is validated, but staff memberships are school-wide rather th
 ## Production candidate update
 
 Production hardening has been implemented with targeted local evidence. Outstanding acceptance remains environment-specific: PostgreSQL, full container startup, file-volume/secret ownership, TLS, real SMTP, current ClamAV signatures, restored files/database, monitoring and hosted human privacy/accessibility. Preserve87.5% until all milestone 8 criteria are evidenced.
+
+## Evidence accounting and recovery decisions
+
+Preserve the eight milestone denominator and unchanged production criteria. A validated evidence record is only a schema/accounting check and still requires independent operator review. Recovery bundles include private files and quarantine with the encrypted database dump; restoration is limited to explicitly disposable empty targets and a quiesced application. Do not synthesize disposable attestations inside restore tooling. Authentication-throttle cleanup is bounded and dry-run by default; operator scheduling/monitoring remains a target deployment task.

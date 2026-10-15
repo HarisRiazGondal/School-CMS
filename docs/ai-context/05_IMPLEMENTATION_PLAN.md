@@ -24,3 +24,7 @@ Maintain additive migrations, atomic services, source-of-truth histories and mea
 ## Production candidate update
 
 Production milestone 8 is now In progress: code/configuration hardening is implemented, but PostgreSQL concurrency/restore CI and actual deployment, SMTP/ClamAV, privacy/accessibility and human acceptance evidence must close before Verified.
+
+## Release validation continuation (2026-10-15)
+
+Parallel Luna owners added combined recovery, runtime preflight, isolated browser acceptance, CI wiring and authentication-throttle retention; an independent reviewer checked safeguards. The production gate remains open. First publish the workflow context correction and harnesses, then inspect actual hosted PostgreSQL/browser/container outcomes. Complete VPS-specific configuration, TLS/SMTP/scanner/persistence/recovery and human acceptance before final closure. The dashboard records gate-specific blockers rather than increasing the score for tooling alone.
