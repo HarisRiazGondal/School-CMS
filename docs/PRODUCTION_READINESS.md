@@ -4,7 +4,7 @@ Status: **release candidate, not approved for real pupil data**. Draft PR #1: ht
 
 | Gate | Current evidence | Required before release |
 |---|---|---|
-| Application regression |215 pass, 9 PG skips |Green target PostgreSQL full suite/concurrency |
+| Application regression |218 pass, 9 PG skips |Green target PostgreSQL full suite/concurrency |
 | Authentication |DB throttles, encrypted TOTP, recovery/replay/session tests |Provision accounts and verify MFA/recovery on target |
 | Dependencies/source |Pinned packages; clean audit/source scan |Repeat on final built artifact |
 | Private files |16 scanner/content/scope/integrity tests |Real ClamAV fresh signatures; mounted-volume smoke and restore |

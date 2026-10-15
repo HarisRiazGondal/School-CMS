@@ -1,5 +1,14 @@
 # Test and Release Status
 
+## Latest school scenario checkpoint
+
+**227 run,218 passed,9 PostgreSQL-only skips,no failures** in103.664s. Connected scenario runner:2 request/service lifecycle tests passed with actual CSRF/forms/views and domain checks; no browser/network transport. Post-fix student suite26 passed; prior independent edge suite78 passed. These are included/overlapping counts, not additive.
+
+New graduation guard was reproduced red then passed after fix. Browser URL security policy blocked the local target; all72 planned browser rows remain unverified. Automatic class/year invoice generation is not implemented; explicit staff invoice issuance preserves old/new-year fees and history. See [scenario results](../SCHOOL_SCENARIO_RESULTS.md), [matrix](../SCHOOL_SCENARIO_MATRIX.md) and [JSON evidence](../school_scenario_evidence.json).
+
+## Earlier local evidence
+
+
 ## Latest local acceptance — user-requested focus
 
 **224 tests run, 215 passed, 9 PostgreSQL-only skips, no failures**, final post-fix run99.824s. Five-role CSRF HTTP journeys,73 role-scoped linked GETs and16 malformed form POST cases pass; no 404/500/transport failures in the final crawl. Fresh SQLite migrations, checks/drift, dependency compatibility/audit and application source scan pass.

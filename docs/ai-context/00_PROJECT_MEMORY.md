@@ -2,13 +2,15 @@
 
 ## Current checkpoint
 
-User reprioritized to local testing and review; CI/VPS/hosted work is deferred. Continue on `codex/production-hardening-20261015`, draft PR #1. Main remains unchanged. Local pilot testing can proceed without resolving the hosting prerequisites.
+User requested a realistic school scenario plan and actual cloud-browser testing of admissions, classes/timetables, marks, fees by class, promotion and retained history. Added a72-scenario matrix and separate results/JSON evidence on `codex/production-hardening-20261015`, draft PR#1. Main remains unchanged; CI/VPS are still deferred.
 
-**Latest verification: 224 tests run, 215 passed, 9 PostgreSQL-only skips, no failures** (Python3.12.14 / Django5.2.18 / SQLite). Fresh migrations/seed, five-role CSRF HTTP journeys, 73 role-scoped linked GETs, 16 malformed form submissions, system/drift checks, dependency compatibility/audit and application-directory Bandit all pass. Chromium is absent; HTTP-client checks are not browser/axe execution.
+The cloud browser rejected the local app URL and explicitly forbade workarounds/proxies/alternate browsers. Do not attempt to bypass this block. No browser/visual/keyboard/axe scenario passed. A permitted browser-accessible test deployment is needed for that stage. In-process Django tests are independent evidence, not a replacement browser pass.
 
-Two new defects were reproduced and fixed: financial Decimal quantization overflow now becomes ValidationError with no writes; teacher oversight navigation no longer offers the admin-only correction queue or duplicate review metric. The teacher route stays403; admin review stays200. See `docs/LOCAL_TEST_REPORT.md` for latest evidence and report inventory, and `docs/TESTING_MVP.md` for local role checklists/Windows setup. A PostgreSQL enrollment/assessment-start race is an unverified review candidate, not a reproduced local bug.
+**Latest full suite:227 run,218 passed,9 PostgreSQL-only skips,no failures** in103.664s. Two connected request/service lifecycle tests pass: five-role CSRF/forms/views and a separate domain-service cycle cover admission, conflicting timetable, attendance correction, homework/assessment marks/publication, Class7 PKR10,000/Class8 PKR12,000 plans, manual invoices, payments/reversals, promotion and historical identity/results/balances. Independent edge suite78 and post-fix student suite26 also pass; they overlap the full suite and must not be added to it.
 
-Production milestone remains In progress, score7/8=87.5%; this is separate from the current local-testing goal. Existing CI billing and target-host facts are retained as deferred history below. No request for server/billing details is needed during local acceptance.
+New reproduced/fixed defect: individual graduation preview/commit silently ignored supplied target placement, unlike form/batch paths. Service guard now rejects it before writes; new regression checks active status, enrollment/audit counts. Earlier financial-overflow and teacher-navigation fixes remain included. No migration is needed.
+
+Confirmed product gaps: automatic invoice generation/repricing is absent (explicit accountant issuance works); withdrawal/re-admission/account linking lack dedicated regular-portal routes; inspected edit templates have no dedicated revision-history viewer. Automatic marks/fee-driven promotion is not established. Reports: SCHOOL_SCENARIO_MATRIX.md, SCHOOL_SCENARIO_RESULTS.md, SCHOOL_EDGE_RESULTS.md and school_scenario_evidence.json under docs. Production score remains7/8=87.5%; do not relabel a blocked browser plan as complete.
 
 ## Architecture and invariants
 

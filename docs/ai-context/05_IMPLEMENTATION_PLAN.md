@@ -32,3 +32,7 @@ Parallel Luna owners added combined recovery, runtime preflight, isolated browse
 ## Reprioritized local acceptance
 
 CI/VPS rollout is deferred by user request. Current work is local regression, reproduced defect fixes and the user-computer checklist. LOCAL_TEST_REPORT.md is the consolidated evidence/review index; TESTING_MVP.md is the handoff. Do not request hosting setup during this phase or relabel deferred production gates as passed.
+
+## School scenario testing phase
+
+72-case scenario matrix, connected request/service tests and the individual graduation guard are complete at their documented layers. Actual cloud-browser execution is blocked by local-URL policy; require a permitted accessible test target and do not bypass the restriction. Track automatic invoice generation and missing regular-portal lifecycle/history screens as product gaps, not passed tests.

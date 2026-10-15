@@ -1,13 +1,11 @@
-# Next Actions — local acceptance
+# Next Actions — school scenario acceptance
 
-User instruction: defer CI/VPS work, test locally and identify remaining bugs. Release branch `codex/production-hardening-20261015`, draft PR#1. Final local regression: **224 tests run, 215 passed, 9 PostgreSQL-only skips, no failures**.
+Latest full suite: **227 run,218 passed,9 PostgreSQL-only skips,no failures**. Two connected in-process request/service journeys pass. All72 cloud-browser matrix rows remain unverified due to an explicit URL-policy block.
 
-1. Test the release branch locally using docs/TESTING_MVP.md; review docs/LOCAL_TEST_REPORT.md for current findings and earlier review links.
-2. Complete all five synthetic role journeys on the user computer: admissions/corrections, assessment marking/publication, payments/reversals and promotion/history.
-3. Log reproducible issues with role, route, synthetic input, expected/actual behavior and traceback/screenshot; fix and rerun affected checks.
-4. When local dependencies are available, run Chromium/axe and PostgreSQL-specific tests; real antivirus/mail/recovery checks require their configured services.
-5. Resume CI/VPS/hosted production acceptance separately when requested; retain existing open release gates.
+1. Review docs/SCHOOL_SCENARIO_RESULTS.md and 72-row SCHOOL_SCENARIO_MATRIX.md; distinguish request/service evidence from blocked browser scenarios.
+2. For actual cloud-browser UI acceptance, supply a permitted browser-accessible test deployment URL. Do not use proxies, alternate browser surfaces or workarounds for the local URL-policy block.
+3. Run the matrix in the permitted UI target with synthetic accounts, record screenshots/results and fix reproducible defects. No browser row is currently passed.
+4. Prioritize product gaps separately: automatic invoice generation, regular-portal withdrawal/re-admission/account linking, revision-history viewer and any marks/fee-driven promotion rules.
+5. Run PostgreSQL concurrency and configured scanner/email/recovery checks when those services are available; CI/VPS rollout remains deferred unless requested.
 
-Two confirmed defects are fixed: excessive financial Decimal magnitude and teacher dashboard correction navigation. No failing local automated check remains in the exercised cases. Browser/axe execution is unverified because Chromium is absent. Nine PostgreSQL tests skip under SQLite. Use synthetic data and disposable DBs; keep real pupil data and credentials outside the repository.
-
-Latest evidence/index: `docs/LOCAL_TEST_REPORT.md`; role checklist: `docs/TESTING_MVP.md`; historical reviews: PROJECT_REVIEW, PRODUCTION_REVIEW and RELEASE_REVIEW. Do not add old review totals together. Keep production acceptance open and update affected memory/JSON/HTML with future changes.
+Current reports: SCHOOL_SCENARIO_RESULTS.md, SCHOOL_SCENARIO_MATRIX.md, SCHOOL_EDGE_RESULTS.md and school_scenario_evidence.json under docs. New graduation-target service guard is verified. Earlier LOCAL_TEST_REPORT.md remains historical and links the prior reviews. Record source/target/test evidence and update affected AI-context Markdown/JSON/HTML together. Do not count test methods, matrix rows and prior focused runs as disjoint totals.

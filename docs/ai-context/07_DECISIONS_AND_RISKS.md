@@ -50,3 +50,7 @@ Do not infer a repository test failure from the failed status: no job steps exec
 ## Local acceptance focus
 
 User deferred CI/VPS/hosted work on2026-10-15. Run and review local synthetic SQLite acceptance first; preserve production gates without treating them as prerequisites for local testing. Full local post-fix suite224 run/215 pass/9 PG skips. Concrete Decimal and teacher-navigation defects are closed in this checkpoint. Browser behavior and PostgreSQL concurrency remain outside this evidence; an enrollment/assessment-start race candidate needs a separate PostgreSQL reproduction.
+
+## Scenario evidence and product boundaries
+
+Cloud-browser policy explicitly blocks this local URL and forbids workaround/alternate browser execution. Record zero browser scenarios passed. The227-test suite (218 pass/9 PG skips) and two connected request/service journeys establish their stated checks only. Graduation cannot take a target year/section at any service entry point. Class/year fee plans require explicit invoice issuance; promotion preserves old invoices/marks and does not automatically reprice/generate fees. Missing withdrawal/re-admission/account-linking portal forms and revision viewers are product gaps, separate from the tested services.

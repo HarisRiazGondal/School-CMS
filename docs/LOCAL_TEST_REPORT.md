@@ -1,5 +1,8 @@
 # Local testing report and review index
 
+Latest continuation: **227 run,218 passed,9 PostgreSQL-only skips,no failures**. See [SCHOOL_SCENARIO_RESULTS.md](SCHOOL_SCENARIO_RESULTS.md) for connected school lifecycle evidence, the graduation fix, product gaps and the explicit cloud-browser URL-policy block. The224-test figures below describe the earlier local pass.
+
+
 Updated 15 October 2026 (Asia/Karachi). Current focus: test the local School-CMS pilot, fix reproducible defects, and prepare the user's own local acceptance. GitHub CI, VPS setup and hosted rollout are deferred by the user's instruction; they do not block the local checks below.
 
 ## Latest verification

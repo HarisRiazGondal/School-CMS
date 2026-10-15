@@ -1,0 +1,52 @@
+{
+  "acceptance_type": "django_request_and_service_level",
+  "browser_or_ui_executed": false,
+  "django_request_views_executed": true,
+  "errors": 0,
+  "failures": 0,
+  "full_browser_scenarios_passed": 0,
+  "manual_fee_workflow": "Automatic invoice generation is not implemented; explicit staff issuance is the exercised workflow.",
+  "matrix_areas_exercised": [
+    "admission approval and rejection",
+    "valid timetable slot and overlapping teacher booking",
+    "attendance correction request and administrator approval",
+    "student classwork submission and teacher grading",
+    "objective/manual assessment scoring, administrator finalization and publication",
+    "class 7 fee plan, concession, partial payment and reversal",
+    "manual invoice issuance and duplicate/unauthorized operation denials",
+    "promotion with retained student identity, enrollment and historical records",
+    "class 8 fee plan and explicit invoice issuance",
+    "cross-school access denials"
+  ],
+  "network_or_browser_transport_executed": false,
+  "partial_matrix_coverage": true,
+  "skipped": 0,
+  "status": "passed",
+  "tests_run": 2,
+  "unexpected_errors": [],
+  "validated_assertions": [
+    "PKR 10,000 class 7 fee less PKR 1,000 concession gives PKR 9,000 due.",
+    "PKR 3,000 partial payment reduces the balance to PKR 6,000; reversal restores PKR 9,000 and preserves the receipt.",
+    "A PKR 12,000 class 8 plan is issued against the promoted enrollment; prior year invoice remains available.",
+    "The student UUID and permanent code remain unchanged across promotion, and the published assessment remains in the historical transcript.",
+    "A fee plan alone creates no invoice; an accountant explicitly issues each invoice.",
+    "The request-level journey checks actual login/CSRF/forms/views for five roles; a PKR 10,000 invoice minus PKR 3,000 payment leaves PKR 7,000, with a separate PKR 12,000 next-class invoice."
+  ],
+  "checked_at": "2026-10-15T17:40:38.990516+00:00",
+  "source_base_commit": "e1975c6209bcbf4b31c24e36acc8e68cbb5d97a9",
+  "source_changes": "Graduation target guard and connected request/service tests in this checkpoint",
+  "regression_suite": {
+    "total": 227,
+    "passed": 218,
+    "skipped": 9,
+    "failed": 0,
+    "seconds": 103.664
+  },
+  "cloud_browser": {
+    "status": "blocked",
+    "reason": "Local app URL rejected by cloud browser URL security policy; workarounds forbidden",
+    "scenarios_planned": 72,
+    "scenarios_passed": 0,
+    "all_scenarios_executed": false
+  }
+}
