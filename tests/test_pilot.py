@@ -2,6 +2,7 @@ import io
 from django.core.management import call_command
 from django.test import Client, TestCase, override_settings
 from django.urls import reverse
+from django.utils import timezone
 from learning.models import Assignment, AttendanceRecord, Submission
 from students.models import Student, Enrollment
 from accounts.models import User
@@ -36,9 +37,10 @@ class PilotBrowserFlowTests(TestCase):
         self.client.login(username='demo-teacher', password=self.password)
         url = reverse('learning:attendance-entry', args=[enrollment.section_id])
         self.assertEqual(self.client.get(url).status_code, 200)
-        response = self.client.post(url, {'date':'2026-10-14', f'status_{enrollment.pk}':'present'})
+        attendance_date = timezone.localdate()
+        response = self.client.post(url, {'date':attendance_date.isoformat(), f'status_{enrollment.pk}':'present'})
         self.assertEqual(response.status_code, 302)
-        self.assertEqual(AttendanceRecord.objects.get(enrollment=enrollment).status,'present')
+        self.assertEqual(AttendanceRecord.objects.get(enrollment=enrollment, session__date=attendance_date).status,'present')
         self.client.logout()
         self.client.login(username='demo-student',password=self.password)
         response = self.client.post(reverse('learning:assignment-submit',args=[assignment.pk]), {'response':'Synthetic fractions answer'})

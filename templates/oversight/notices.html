@@ -1,0 +1,7 @@
+{% extends "base.html" %}
+{% load tz %}
+{% block title %}Notices · {{ brand_name }}{% endblock %}
+{% block content %}
+<div class="page-header"><div><p class="eyebrow">{{ brand_name }} · {{ terms.school }}</p><h1>Notice board</h1><p class="muted">{{ role|title }} view</p></div><div><a href="{% url 'oversight:dashboard' school.slug %}">Dashboard</a> {% if can_create_notice %}<a class="button button-primary" href="{% url 'oversight:notice-create' school.slug %}">{% if role == "teacher" %}Create section notice{% else %}Create notice{% endif %}</a>{% endif %}</div></div>
+{% for notice in notices %}<article class="card"><div class="page-header"><div><h2>{{ notice.title }}</h2><p class="muted">{{ notice.get_audience_display }} · {% timezone timezone_label %}{{ notice.publish_at|date:"M j, Y H:i" }}{% if notice.expires_at %} · Expires {{ notice.expires_at|date:"M j, Y H:i" }}{% endif %}{% endtimezone %} ({{ timezone_label }}){% if notice.section %} · {{ terms.section }} {{ notice.section }}{% endif %}</p></div>{% if can_manage or role == "teacher" and notice.section %}<a href="{% url 'oversight:notice-edit' school.slug notice.pk %}">Edit</a>{% endif %}</div>{{ notice.body|linebreaks }}</article>{% empty %}<section class="card"><p>No current notices.</p></section>{% endfor %}
+{% endblock %}

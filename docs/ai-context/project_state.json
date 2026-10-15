@@ -1,18 +1,19 @@
 {
-  "updated": "2026-10-14",
+  "updated": "2026-10-15",
   "objective": "One-school launch with campus boundaries, permanent student records, role-scoped learning and staged assessment/finance.",
-  "phase": "Phase 4/5 \u2014 assessment and finance pilot increments locally verified",
+  "phase": "Phase 6 \u2014 oversight and operations pilot locally verified",
   "readiness": "Expanded local pilot ready for testing",
   "tests": {
-    "passed": 79,
-    "environment": "Python 3.12 / Django 5.2 / SQLite. Fresh migrations and assessment\u2192publish\u2192payment/reversal\u2192promotion/history\u2192reseed acceptance passed. PostgreSQL concurrency and hosted production acceptance are unverified.",
+    "passed": 129,
+    "environment": "Python 3.12 / Django 5.2 / SQLite. Clean migrations, full automated suite and combined fresh-database acceptance passed. PostgreSQL concurrency, hosted acceptance and remote CI success are unverified.",
     "commands": [
-      "DJANGO_DEBUG=true python manage.py check \u2014 passed",
+      "DJANGO_DEBUG=true python manage.py check \u2014 passed, no issues",
       "DJANGO_DEBUG=true python manage.py makemigrations --check --dry-run \u2014 no changes",
-      "DJANGO_DEBUG=true python manage.py migrate --noinput \u2014 passed",
-      "DJANGO_DEBUG=true python manage.py test \u2014 79 tests passed",
-      "Fresh SQLite migrations and combined assessment/finance/promotion/history workflow \u2014 passed",
-      "Demo reseed after submitted/published attempts, payments, reversals and promotion \u2014 history preserved",
+      "Fresh SQLite migrate --noinput \u2014 passed",
+      "DJANGO_DEBUG=true python manage.py test -v 1 \u2014 129 tests passed",
+      "Independent review regressions \u2014 9 passed; parent policy/scope integration regressions \u2014 4 passed (included in full suite)",
+      "Fresh SQLite combined assessment publication, payment/reversal, admission approval, correction approval, conditional batch, historical transcript/fees and policy visibility acceptance \u2014 passed",
+      "Demo reseed after finalized operations and changed settings \u2014 counts and histories preserved",
       "git diff --check \u2014 passed"
     ]
   },
@@ -49,7 +50,7 @@
     },
     {
       "name": "Oversight and complete operations",
-      "status": "Not started",
+      "status": "Verified",
       "criteria": "Correction approvals, timetable/notices, settings, dashboards and batch workflows pass scoped acceptance tests."
     },
     {
@@ -59,12 +60,13 @@
     }
   ],
   "limitations": [
-    "The expanded pilot runs locally with synthetic data; no hosted deployment or production readiness is claimed.",
-    "PostgreSQL row-lock/concurrency acceptance, real SMTP, throttling/MFA, private file uploads and backup restoration remain unverified.",
-    "Admissions intake/approval, batch/conditional promotion, transfer and section-correction UI, attendance correction approvals and complete oversight remain incomplete.",
-    "Assessment grading has versioned fixed A/B/C/D/F bands and configurable pass thresholds; exam calendars, weights, richer scales and branded report-card export remain future work.",
-    "Finance is a two-decimal receivable ledger with one charge per enrollment/plan, partial payments, concessions and reversals; installment schedules, refunds, late fees, expenses/general-ledger reconciliation and approvals remain future work.",
-    "Application history guards can be bypassed by privileged raw SQL; production database controls and operational policy remain release gates."
+    "Local synthetic-data pilot only; no hosted deployment or production readiness is claimed.",
+    "PostgreSQL row-lock/concurrency acceptance, real SMTP, throttling/MFA, private file uploads, backup restoration and hosted human/accessibility acceptance remain unverified.",
+    "Transfer/section-change correction UI, admission documents/imports, formal calendar/notification delivery and richer analytics remain backlog.",
+    "Terminology and branding render on oversight pages. Global theming and branded report-card export are not implemented. Policy controls are allowlisted and cover late work, correction windows, student result visibility and notice expiry.",
+    "Assessment uses versioned fixed A/B/C/D/F bands and configurable pass thresholds; exam calendars, weights and richer scales remain future work.",
+    "Finance is a two-decimal receivable ledger with one invoice per enrollment/plan, partial payments, concessions and reversals; installments, refunds, late fees and a full general ledger remain future work.",
+    "Normal ORM/service guards protect history; privileged raw SQL bypass and PostgreSQL cross-school scheduling/concurrency behavior remain release concerns."
   ],
   "decisions": [
     "Django 5.2 modular monolith with same-origin templates and sessions; no React/API split, queues or caches for this pilot.",
@@ -75,13 +77,18 @@
     "Assessment question-bank items are copied into frozen assessment snapshots; raw answers/marks are distinct from finalized score and policy snapshots.",
     "Result publication is per attempt and does not close the scheduled assessment for other students. After deadline, only already saved answers may be submitted.",
     "Finance balances are exact Decimal sums of immutable ledger rows; invoice uniqueness and payment/reversal idempotency prevent ordinary duplicate postings. Reversal preserves the original receipt/payment.",
-    "PKR is the synthetic demo currency; fee plans carry configurable three-letter currency codes and currencies are reported separately without conversion."
+    "PKR is the synthetic demo currency; fee plans carry configurable three-letter currency codes and currencies are reported separately without conversion.",
+    "Pending admission intake creates no Student until admin approval; the separately authorized walk-in registration path remains available.",
+    "Batch confirmation locks and revalidates all rows; conditional reasons and immutable attributed source/target decision snapshots preserve yearly history.",
+    "Attendance records and session context use guarded services; corrections retain the proposal and admin/system decision rather than silently rewriting history.",
+    "School settings and published notice edits retain revisions; timetable/notices/dashboards enforce active matching school roles and exact teacher assignments.",
+    "Student result visibility affects student views and service reads; authorized teachers/admins retain result access. Teacher notice authoring is limited to assigned sections."
   ],
   "next_actions": [
-    "Complete admissions decisions and batch/conditional promotion with preview/confirmation/rollback tests.",
-    "Add attendance correction requests/approvals, student attendance history and overdue/completed workload views.",
-    "Build timetable/notices/settings and scoped oversight reports to meet milestone 7 acceptance.",
-    "Validate PostgreSQL locking, financial concurrency, SMTP, login throttling/MFA, private files and backup restoration.",
-    "Perform accessibility/security/privacy and hosted human pilot acceptance before marking production milestone 8 Verified or Released."
+    "Verify PostgreSQL migrations, row locking and concurrent payment/reversal, admissions, promotion, correction and timetable writes.",
+    "Configure and test real SMTP, HTTPS/proxy/cookies, password-reset URLs, account provisioning, login throttling/MFA and private file storage.",
+    "Exercise encrypted backup restoration and document retention/access policies and production database history protections.",
+    "Run hosted five-role human pilot, accessibility, privacy/security and operational acceptance before marking production milestone 8 Verified.",
+    "Track broader backlog separately: transfer/section-change UI, admission documents/imports, exam calendars/weighted grading/exports, installments/refunds and general-ledger work."
   ]
 }

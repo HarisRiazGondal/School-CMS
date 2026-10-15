@@ -1,0 +1,8 @@
+{% extends "base.html" %}
+{% block title %}{{ heading }} · {{ brand_name }}{% endblock %}
+{% block content %}
+<div class="page-header"><div><p class="eyebrow">{{ brand_name }} · Administration</p><h1>{{ heading }}</h1><p class="muted">These settings are revisioned and apply to {{ school.name }} only.</p></div><a href="{% url 'oversight:dashboard' school.slug %}">Back to dashboard</a></div>
+<section class="form-card"><form method="post">{% csrf_token %}{% if form.non_field_errors %}<div class="form-errors">{{ form.non_field_errors }}</div>{% endif %}
+{% for field in form %}<div class="field"><label for="{{ field.id_for_label }}">{{ field.label }}</label>{{ field }}{% if field.help_text %}<small class="muted">{{ field.help_text }}</small>{% endif %}{{ field.errors }}</div>{% endfor %}
+<p class="muted">Terminology keys include Student, Teacher, Section and Class. Policy keys include result visibility, late submissions and attendance correction timing. Report branding keys include school_name, logo_url, colors and footer.</p><button class="primary" type="submit">Save settings</button></form></section>
+{% endblock %}

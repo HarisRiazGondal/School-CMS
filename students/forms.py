@@ -37,15 +37,21 @@ class RegistrationForm(forms.Form):
         return cleaned
 
 
+class AdmissionApplicationForm(RegistrationForm):
+    """Same scoped intake fields as legacy walk-in registration."""
+
+
 class PromotionForm(forms.Form):
     outcome = forms.ChoiceField(choices=[
         (Enrollment.Status.PROMOTED, "Promote"),
         (Enrollment.Status.REPEATED, "Repeat year"),
+        (Enrollment.Status.CONDITIONAL, "Conditional placement"),
         (Enrollment.Status.GRADUATED, "Graduate"),
     ])
     target_year = forms.ModelChoiceField(queryset=AcademicYear.objects.none(), required=False)
     target_section = forms.ModelChoiceField(queryset=Section.objects.none(), required=False)
     roll_number = forms.CharField(max_length=40, required=False)
+    condition_reason = forms.CharField(max_length=500, required=False)
 
     def __init__(self, *args, school, source_year, **kwargs):
         super().__init__(*args, **kwargs)
@@ -65,7 +71,7 @@ class PromotionForm(forms.Form):
     def clean(self):
         cleaned = super().clean()
         outcome = cleaned.get("outcome")
-        if outcome in {Enrollment.Status.PROMOTED, Enrollment.Status.REPEATED}:
+        if outcome in {Enrollment.Status.PROMOTED, Enrollment.Status.REPEATED, Enrollment.Status.CONDITIONAL}:
             year, section = cleaned.get("target_year"), cleaned.get("target_section")
             if not year:
                 self.add_error("target_year", "Select a target academic year.")
@@ -75,6 +81,9 @@ class PromotionForm(forms.Form):
                 self.add_error("target_section", "Choose a section in the selected year.")
             if not cleaned.get("roll_number"):
                 cleaned["roll_number"] = ""
+            if not cleaned.get("condition_reason", "").strip():
+                if outcome == Enrollment.Status.CONDITIONAL:
+                    self.add_error("condition_reason", "Explain the conditions for this placement.")
         elif cleaned.get("target_year") or cleaned.get("target_section"):
             raise ValidationError("Graduation does not take a target year or section.")
         return cleaned

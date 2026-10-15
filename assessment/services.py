@@ -22,7 +22,8 @@ def _active_student_enrollment(user, assessment):
     if not user.is_authenticated or not user.is_active or not assessment.school.is_active:
         return None
     if not SchoolMembership.objects.filter(
-        user=user, school=assessment.school, role=SchoolMembership.Role.STUDENT, is_active=True,
+        user=user, user__is_active=True, school=assessment.school, school__is_active=True,
+        role=SchoolMembership.Role.STUDENT, is_active=True,
     ).exists():
         return None
     return Enrollment.objects.filter(
@@ -413,10 +414,16 @@ def published_transcript(student, actor):
     if not actor.is_authenticated or not actor.is_active or not student.school.is_active:
         raise PermissionDenied("An active account and school are required to read a report card.")
     owns_profile = student.user_id == actor.pk and SchoolMembership.objects.filter(
-        user=actor, school=student.school, role=SchoolMembership.Role.STUDENT, is_active=True,
+        user=actor, user__is_active=True, school=student.school, school__is_active=True,
+        role=SchoolMembership.Role.STUDENT, is_active=True,
     ).exists()
     if not owns_profile and not has_school_role(actor, student.school, SchoolMembership.Role.SCHOOL_ADMIN):
         raise PermissionDenied("You are not authorized to view this student's published report card.")
+
+    from oversight.services import get_school_policy
+    if (owns_profile and not has_school_role(actor, student.school, SchoolMembership.Role.SCHOOL_ADMIN)
+            and not get_school_policy(student.school, "student_results_visible", True)):
+        return {}
 
     attempts = Attempt.objects.filter(
         enrollment__student=student, status=Attempt.Status.PUBLISHED,

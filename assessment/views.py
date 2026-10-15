@@ -12,6 +12,7 @@ from students.models import Enrollment
 from .forms import AnswerForm, AssessmentForm, AttachQuestionsForm, GradeAnswerForm, QuestionForm, ReportCardSelectForm
 from .models import Answer, Assessment, Attempt, Question
 from students.models import Student
+from oversight.services import get_school_policy
 from .services import (
     attach_question, begin_attempt, can_manage_assessment, create_assessment,
     create_question, finalize_attempt, grade_answer, open_assessment,
@@ -114,7 +115,10 @@ def assessment_detail(request, assessment_id):
         and len(attempt_rows) < assessment.attempt_limit
         and not any(attempt.status == Attempt.Status.IN_PROGRESS for attempt in attempt_rows)
     )
-    return render(request, "assessment/student_detail.html", {"assessment": assessment, "attempts": attempt_rows, "can_start": can_start})
+    return render(request, "assessment/student_detail.html", {
+        "assessment": assessment, "attempts": attempt_rows, "can_start": can_start,
+        "results_visible": get_school_policy(assessment.school, "student_results_visible", True),
+    })
 
 
 @login_required

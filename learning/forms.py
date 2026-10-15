@@ -23,6 +23,18 @@ class AttendanceEntryForm(forms.Form):
         return {str(enrollment.pk): self.cleaned_data[f"status_{enrollment.pk}"] for enrollment in self.roster}
 
 
+class AttendanceCorrectionForm(forms.Form):
+    new_status = forms.ChoiceField(choices=AttendanceRecord.Status.choices, label="Correct status")
+    new_note = forms.CharField(required=False, max_length=240, label="Corrected note")
+    reason = forms.CharField(max_length=500, widget=forms.Textarea(attrs={"rows": 3}),
+                             help_text="Explain why this attendance record needs correction.")
+
+
+class AttendanceCorrectionReviewForm(forms.Form):
+    decision = forms.ChoiceField(choices=(("approve", "Approve"), ("reject", "Reject")))
+    review_note = forms.CharField(required=False, max_length=500, widget=forms.Textarea(attrs={"rows": 2}))
+
+
 class AssignmentForm(forms.Form):
     section = forms.ModelChoiceField(queryset=Section.objects.none())
     subject = forms.ModelChoiceField(queryset=Subject.objects.none())

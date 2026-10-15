@@ -1,11 +1,11 @@
 # Next Actions
 
-Current: expanded local pilot, **79 passing tests**, six of eight unchanged pilot milestones verified (**75%**). Full module/release scope remains in progress.
+Current: **129 passing tests**, seven of the unchanged eight pilot milestones verified (**87.5%**). Oversight/operations local acceptance is complete. Production milestone 8 remains Not started.
 
-1. Complete admissions decisions and batch/conditional promotion with preview/confirmation/rollback tests.
-2. Add attendance correction requests/approvals, student attendance history and overdue/completed workload views.
-3. Build timetable/notices/settings and scoped oversight reports to meet milestone 7 acceptance.
-4. Validate PostgreSQL locking, financial concurrency, SMTP, login throttling/MFA, private files and backup restoration.
-5. Perform accessibility/security/privacy and hosted human pilot acceptance before marking production milestone 8 Verified or Released.
+1. Verify PostgreSQL migrations, row locking and concurrent payment/reversal, admissions, promotion, correction and timetable writes.
+2. Configure and test real SMTP, HTTPS/proxy/cookies, password-reset URLs, account provisioning, login throttling/MFA and private file storage.
+3. Exercise encrypted backup restoration and document retention/access policies and production database history protections.
+4. Run hosted five-role human pilot, accessibility, privacy/security and operational acceptance before marking production milestone 8 Verified.
+5. Track broader backlog separately: transfer/section-change UI, admission documents/imports, exam calendars/weighted grading/exports, installments/refunds and general-ledger work.
 
-Read memory/design and inspect services before changes. Use assessment lifecycle and finance posting/reversal services; do not bypass immutable histories or count stored balances as a second truth. Update JSON/Markdown, regenerate PROJECT_STATUS.html, record actual checks, and commit a reviewable checkpoint.
+Read memory/design and inspect code before changing services. Use admission, progression, attendance-correction, notice/settings, assessment and finance services; do not bypass immutable history or treat stored balances as another truth. Retain teacher source/target notice checks and exact assignment pairs. Keep production gates explicit. Update affected AI context/JSON, regenerate HTML, record actual checks and commit a reviewable checkpoint.

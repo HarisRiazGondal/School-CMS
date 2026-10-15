@@ -32,6 +32,7 @@ INSTALLED_APPS = [
     "learning",
     "assessment",
     "finance",
+    "oversight",
     "audit.apps.AuditConfig",
 ]
 

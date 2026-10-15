@@ -1,0 +1,10 @@
+{% extends "base.html" %}
+{% block title %}Attendance corrections · School CMS{% endblock %}
+{% block content %}
+<h1>Pending attendance corrections</h1>
+<ul>{% for correction in corrections %}<li>
+  <strong>{{ correction.attendance_record.enrollment.student }}</strong> · {{ correction.attendance_record.session.date }} · {{ correction.attendance_record.session.section.school_class.name }} / {{ correction.attendance_record.session.section.name }}
+  <p>{{ correction.old_status }} → {{ correction.new_status }} · Requested by {{ correction.requested_by }} · {{ correction.reason }}</p>
+  <a href="{% url 'learning:attendance-correction-review' correction.pk %}">Review request</a>
+</li>{% empty %}<li>No pending corrections.</li>{% endfor %}</ul>
+{% endblock %}

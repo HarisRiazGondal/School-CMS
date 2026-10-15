@@ -4,14 +4,14 @@
 <section class="page-header"><div><p class="eyebrow">{{ school.name }} · {{ student.student_code }}</p><h1>Process year outcome</h1><p>Current placement: {{ source.academic_year.name }} · {{ source.section.school_class.name }} · {{ source.section.name }} · Roll {{ source.roll_number }}</p></div></section>
 <form method="post" class="form-card">{% csrf_token %}
   {% if form.non_field_errors %}<div class="form-errors">{{ form.non_field_errors }}</div>{% endif %}
-  {% for field in form %}<div class="field"><label for="{{ field.id_for_label }}">{{ field.label }}</label>{{ field }}{{ field.errors }}</div>{% endfor %}
+{% for field in form %}<div class="field"><label for="{{ field.id_for_label }}">{{ field.label }}</label>{{ field }}{{ field.errors }}</div>{% endfor %}
   <button class="button button-primary" type="submit">Preview outcome</button>
 </form>
-{% if preview %}<div class="card"><h2>Review before confirming</h2><p>{{ preview.source.student.student_code }} will be marked <strong>{{ preview.outcome }}</strong>.{% if preview.target_year %} A new enrollment will be created in {{ preview.target_year.name }}, {{ preview.target_section.school_class.name }} · {{ preview.target_section.name }}.{% endif %}</p>
+{% if preview %}<div class="card"><h2>Review before confirming</h2><p>{{ preview.source.student.student_code }} will be marked <strong>{{ preview.outcome }}</strong>.{% if form.cleaned_data.condition_reason %} Condition: {{ form.cleaned_data.condition_reason }}.{% endif %}{% if preview.target_year %} A new enrollment will be created in {{ preview.target_year.name }}, {{ preview.target_section.school_class.name }} · {{ preview.target_section.name }}.{% endif %}</p>
 {% if preview.conflict %}<p class="form-errors">{{ preview.conflict }}</p>{% elif can_confirm %}
 <form method="post" action="{% url 'students:promotion-confirm' school_slug=school.slug student_code=student.student_code year_name=source.academic_year.name %}">{% csrf_token %}
 <input type="hidden" name="outcome" value="{{ form.cleaned_data.outcome }}">
 {% if form.cleaned_data.target_year %}<input type="hidden" name="target_year" value="{{ form.cleaned_data.target_year.pk }}"><input type="hidden" name="target_section" value="{{ form.cleaned_data.target_section.pk }}">{% endif %}
-<input type="hidden" name="roll_number" value="{{ form.cleaned_data.roll_number|default:source.roll_number }}">
+<input type="hidden" name="roll_number" value="{{ form.cleaned_data.roll_number|default:source.roll_number }}"><input type="hidden" name="condition_reason" value="{{ form.cleaned_data.condition_reason }}">
 <button class="button button-primary" type="submit">Confirm outcome</button></form>{% endif %}</div>{% endif %}
 {% endblock %}

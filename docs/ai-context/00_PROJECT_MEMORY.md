@@ -2,26 +2,26 @@
 
 ## Current checkpoint
 
-School-CMS is an expanded local Django pilot with session authentication, scoped portals, academic foundation, permanent student identities/enrollment/promotion history, attendance, assignments/grading, assessments/transcripts, fees/receipts/reversals and audit events.
+School-CMS is a Django school pilot with session authentication, scoped portals, permanent student identities, admission decisions, individual/batch yearly progression, guarded attendance/corrections, classwork, assessments/transcripts, fees/receipts/reversals and school oversight.
 
-**75%: six of eight equally weighted pilot milestones meet documented local acceptance criteria.** This is the same denominator used at the 50% checkpoint. Full phase scope and production readiness remain incomplete.
+**87.5%: seven of the same eight equally weighted pilot milestones meet documented local acceptance criteria.** This score measures pilot milestones, not complete product scope or production readiness. Milestone 7 (oversight/operations) is Verified; milestone 8 (production release) remains Not started.
 
-Latest verification: **79 automated tests pass**; Django checks, migration-drift and migration application pass. A fresh SQLite database passed the combined assessment scoring/publication, payment/receipt/reversal, promotion/history and idempotent demo-reseed workflow. PostgreSQL and hosted production acceptance are unverified.
-
-Current increments: Phase 4/5 pilot slices locally verified; broader Phases 1–6 retain unfinished scope. Milestones 7 (oversight/operations) and 8 (production release) remain Not started.
+Latest verification on 2026-10-15: **129 automated tests passed**. Django checks, migration drift and fresh SQLite migrations pass. A combined fresh-database workflow passed assessment publication, payment/reversal, admission approval, attendance correction, conditional batch progression, historical transcripts/fees, hidden student results and history-preserving reseeding. Dedicated reviewer regressions: 9 passed; parent policy/scope regressions: 4 passed, included in the full suite. PostgreSQL and hosted acceptance are unverified.
 
 ## Architecture and invariants
 
-Django 5.2 modular monolith, server-rendered portals and database sessions; PostgreSQL intended for deployment, SQLite verified locally. Username login remains. Roles are active school memberships; teachers additionally require subject/section assignments; students require their linked identity and enrollment. Permission queries verify actual database user/school activation, including when callers hold cached objects.
+Django 5.2 modular monolith, server-rendered same-origin portals and database sessions. Username login remains. Active school memberships plus teacher assignments/student ownership determine scope; cached Python activity flags never substitute for database checks. No blanket superuser access to private records.
 
-Student UUID/STU code is permanent. Enrollment owns year, section and roll. Promotion creates a new year record and preserves prior placement. Re-admission requires prior active enrollment closure. Historical transcripts and fee statements remain accessible after promotion.
+Permanent Student UUID/STU code does not change across years. Enrollment stores year/section/roll and preserves completed outcomes. Pending intake creates no identity; admin approval registers atomically. The separate walk-in registration path remains. Admin-only batch confirmation revalidates under locks, commits all rows or none, and retains PromotionDecision snapshots, conditional reasons and batch attribution. Portal links use the controlled admin account-link service.
 
-New apps: `assessment` owns school-subject question banks, frozen assessment copies, schedules/attempts/answers, objective/manual scoring, admin finalization/publication and historical transcripts. `finance` owns plans, historical-enrollment invoices, immutable Decimal receivable ledger, idempotent payments/receipts and reasoned reversals. No IELTS engine was copied.
+Attendance session context and records reject normal direct rewrites. Reasoned correction proposals preserve old/new values; school admins approve/reject, and stale proposals are system-closed. Students retain their historical attendance and current upcoming/overdue/completed/graded workload.
 
-Private access is scoped; financial reads and report-card reads are audited. Django superuser status alone grants no private school records. Normal model/queryset/service writes protect histories; privileged raw SQL remains outside those guards.
+Assessment snapshots/answers/raw marks/finalized policy values remain distinct; only admins finalize/publish. Finance balances are exact Decimal ledger sums; original receipts/payments survive reasoned reversals. Historical transcripts and fee statements survive promotion.
+
+The new oversight app owns validated/versioned school settings, notice revisions, conflict-checked timetable slots and role-bounded summaries. Settings apply school timezone and four effective policies (late submission, correction age, student result visibility, notice expiry). Teacher notices are limited to assigned sections. Terminology/branding render on oversight pages; global themes and branded export are not claimed. Normal model/queryset/service guards protect histories; privileged raw SQL remains outside those guards.
 
 ## Resume
 
-Read this file, `09_NEXT_ACTIONS.md`, `project_state.json` and impacted design files; inspect code and trust verified behavior. Update Markdown and JSON, run `python scripts/render_status.py`, and commit checkpoints with code. No uncommitted work is intended after this checkpoint.
+Read this file, `09_NEXT_ACTIONS.md`, `project_state.json` and impacted design files; inspect actual code. The previous durable baseline was `fcb97554497e8196078ffe6f2f242415965679dd` (75%); the 2026-10-15 increment rebuilds and verifies oversight. Migrations include students 0002/0003, learning 0004/0005 and oversight 0001. No pending migration drift is intended.
 
-See `../TESTING_MVP.md` for five demo roles and browser workflows. Real SMTP/PostgreSQL/backup/hosted release remain gates; do not introduce real pupils' data based on local acceptance alone.
+Use `../TESTING_MVP.md` for five-role synthetic workflows and `../PROJECT_REVIEW.md` for resolved findings and limits. Update affected Markdown/JSON, regenerate HTML with `python scripts/render_status.py`, and commit checkpoints with code. Next work is production validation and the separately tracked broader backlog; do not count code presence as release evidence.

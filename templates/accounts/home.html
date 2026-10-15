@@ -10,6 +10,7 @@
         <li>
           <strong>{{ membership.school.name }}</strong><br>{{ membership.get_role_display }}
           <div style="margin-top: .55rem">
+            <a href="{% url 'oversight:dashboard' school_slug=membership.school.slug %}">School overview</a>
             {% if membership.role == "school_admin" or membership.role == "registrar" %}
               <a href="{% url 'students:list' school_slug=membership.school.slug %}">Student records</a>
             {% endif %}

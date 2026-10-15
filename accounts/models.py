@@ -44,5 +44,5 @@ def active_school_memberships(user):
     if not user.is_authenticated or not user.is_active:
         return SchoolMembership.objects.none()
     return SchoolMembership.objects.filter(
-        user=user, is_active=True, school__is_active=True
+        user=user, user__is_active=True, is_active=True, school__is_active=True
     ).select_related("school").order_by("school__name", "role")

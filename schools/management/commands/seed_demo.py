@@ -11,10 +11,15 @@ from assessment.models import Assessment, Question
 from assessment.services import attach_question, create_assessment, create_question, open_assessment
 from finance.models import FeePlan, Invoice
 from finance.services import create_fee_plan, issue_invoice
-from learning.models import Assignment, TeacherAssignment
+from learning.models import Assignment, AttendanceRecord, AttendanceSession, TeacherAssignment
+from learning.services import create_attendance, request_attendance_correction
+from oversight.models import Notice, SchoolSetting, TimetableSlot
+from oversight.services import create_notice, create_timetable_slot
 from schools.models import AcademicYear, Campus, School
-from students.models import Enrollment, Student
-from students.services import close_enrollment, enroll_existing_student, register_student
+from students.models import AdmissionApplication, Enrollment, Student
+from students.services import (
+    close_enrollment, enroll_existing_student, register_student, submit_admission_application,
+)
 
 
 class Command(BaseCommand):
@@ -126,11 +131,21 @@ class Command(BaseCommand):
                 )
 
             teacher = users[SchoolMembership.Role.TEACHER]
-            TeacherAssignment.objects.update_or_create(
+            teacher_assignment, _ = TeacherAssignment.objects.update_or_create(
                 user=teacher,
                 section=section,
                 subject=subject,
                 defaults={"is_active": True},
+            )
+
+            # Settings are a user-managed singleton. Seed a baseline only when it
+            # does not exist; reruns must never reset changed configuration.
+            SchoolSetting.objects.get_or_create(
+                school=school,
+                defaults={
+                    "timezone": "Asia/Karachi",
+                    "policy_values": {"attendance_correction_days": 7},
+                },
             )
 
             student_user = users[SchoolMembership.Role.STUDENT]
@@ -149,6 +164,67 @@ class Command(BaseCommand):
                     close_enrollment(user=registrar, source=current, outcome=Enrollment.Status.TRANSFERRED)
                 enrollment = enroll_existing_student(
                     user=registrar, student=student, academic_year=year, section=section, roll_number="07",
+                )
+
+            # Keep one pending synthetic application as an admissions review
+            # example. If an operator decides it, preserve that decision on rerun.
+            applicant_name = ("Jordan", "Applicant")
+            if not AdmissionApplication.objects.filter(
+                school=school, first_name=applicant_name[0], last_name=applicant_name[1],
+                academic_year=year,
+            ).exists():
+                submit_admission_application(
+                    user=users[SchoolMembership.Role.REGISTRAR], school=school,
+                    first_name=applicant_name[0], last_name=applicant_name[1],
+                    date_of_birth=date(start_year - 12, 9, 3), academic_year=year,
+                    section=section, roll_number="08", guardian_name="Morgan Applicant",
+                    guardian_relationship="Parent",
+                )
+
+            # Seed one immutable attendance mark one local calendar day ago,
+            # then an open correction proposal. Neither artifact is rewritten
+            # when reviewed or otherwise changed through the UI.
+            correction_reason = "Synthetic demo correction request for a missed check-in."
+            has_demo_correction = AttendanceRecord.objects.filter(
+                session__section=section,
+                correction_requests__reason=correction_reason,
+            ).exists()
+            if not has_demo_correction:
+                attendance_date = today - timedelta(days=1)
+                attendance_session = AttendanceSession.objects.filter(
+                    section=section, date=attendance_date,
+                ).first()
+                if attendance_session is None:
+                    attendance_session = create_attendance(
+                        teacher, section, attendance_date,
+                        {str(pk): AttendanceRecord.Status.ABSENT for pk in Enrollment.objects.filter(
+                            section=section, academic_year=year, status=Enrollment.Status.ACTIVE,
+                        ).values_list("pk", flat=True)},
+                    )
+                attendance_record = AttendanceRecord.objects.filter(
+                    session=attendance_session, enrollment=enrollment,
+                ).first()
+                if attendance_record and not attendance_record.correction_requests.exists():
+                    request_attendance_correction(
+                        teacher, attendance_record, new_status=AttendanceRecord.Status.PRESENT,
+                        reason=correction_reason,
+                    )
+
+            if not TimetableSlot.objects.filter(
+                assignment=teacher_assignment, weekday=0, starts_at=time(9, 0),
+            ).exists():
+                create_timetable_slot(
+                    users[SchoolMembership.Role.SCHOOL_ADMIN], assignment=teacher_assignment,
+                    weekday=0, starts_at=time(9, 0), ends_at=time(9, 45), room="Room 7A",
+                )
+
+            notice_title = "Welcome to the new school year"
+            if not Notice.objects.filter(school=school, title=notice_title).exists():
+                create_notice(
+                    users[SchoolMembership.Role.SCHOOL_ADMIN], school=school,
+                    title=notice_title,
+                    body="Welcome to Demo School. Please review the class timetable and contact the school office with questions.",
+                    audience=Notice.Audience.ALL, publish_at=timezone.now(), publish=True,
                 )
 
             # The finance services post an immutable charge and append-only ledger entry.

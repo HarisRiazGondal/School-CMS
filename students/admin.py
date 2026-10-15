@@ -10,7 +10,7 @@ class SchoolScopedAdmin(admin.ModelAdmin):
         if not request.user.is_authenticated or not request.user.is_active:
             return []
         return SchoolMembership.objects.filter(
-            user=request.user, is_active=True, school__is_active=True,
+            user=request.user, user__is_active=True, is_active=True, school__is_active=True,
             role__in=[SchoolMembership.Role.SCHOOL_ADMIN, SchoolMembership.Role.REGISTRAR],
         ).values_list("school_id", flat=True)
 

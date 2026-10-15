@@ -38,7 +38,22 @@ def validate_details(details):
     return details
 
 
+class AuditEventQuerySet(models.QuerySet):
+    def update(self, **kwargs):
+        raise ValidationError("Audit events are append-only and cannot be updated.")
+
+    def delete(self):
+        raise ValidationError("Audit events are append-only and cannot be deleted.")
+
+    def bulk_update(self, objs, fields, **kwargs):
+        raise ValidationError("Audit events are append-only and cannot be updated.")
+
+    def bulk_create(self, objs, **kwargs):
+        raise ValidationError("Create validated audit events individually through record_event.")
+
+
 class AuditEvent(models.Model):
+    objects = AuditEventQuerySet.as_manager()
     school = models.ForeignKey("schools.School", on_delete=models.PROTECT, related_name="audit_events")
     actor = models.ForeignKey(
         settings.AUTH_USER_MODEL,

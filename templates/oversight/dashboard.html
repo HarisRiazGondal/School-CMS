@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+{% block title %}{{ brand_name }} · Oversight{% endblock %}
+{% block content %}
+<div class="page-header"><div><p class="eyebrow">{{ terms.school }} dashboard · {{ role|title }}</p><h1>{{ brand_name }}</h1><p class="muted">{{ school.name }} · Local time zone: {{ timezone_label }}</p></div>
+  <div class="actions"><a class="button" href="{% url 'oversight:notices' school.slug %}">Notice board</a>{% if can_manage %}<a class="button" href="{% url 'oversight:settings' school.slug %}">Settings</a><a class="button" href="{% url 'oversight:timetable-create' school.slug %}">Add timetable slot</a><a class="button" href="{% url 'oversight:notice-create' school.slug %}">Create notice</a><a class="button" href="{% url 'students:admissions' school.slug %}">Admissions</a><a class="button" href="{% url 'learning:attendance-correction-queue' %}">Attendance corrections</a>{% elif role == "registrar" %}<a class="button" href="{% url 'students:admissions' school.slug %}">Admissions</a>{% elif role == "teacher" %}<a class="button" href="{% url 'oversight:notice-create' school.slug %}">Create section notice</a><a class="button" href="{% url 'learning:attendance-correction-queue' %}">Attendance corrections</a>{% endif %}</div>
+</div>
+{% if branding.logo_url %}<p><img src="{{ branding.logo_url }}" alt="{{ brand_name }} logo" style="max-height:4rem;max-width:16rem"></p>{% endif %}
+{% if summary %}<section class="card"><h2>School operations</h2><ul>
+{% if summary.active_enrollments != None %}<li>Active {{ terms.students|lower }}: {{ summary.active_enrollments }}</li>{% endif %}
+{% if summary.pending_admissions != None %}<li>Applications awaiting decision: {{ summary.pending_admissions }} <a href="{% url 'students:admissions' school.slug %}">Review applications</a></li>{% endif %}
+{% if summary.pending_attendance_corrections != None %}<li>Attendance corrections awaiting review: {{ summary.pending_attendance_corrections }} <a href="{% url 'learning:attendance-correction-queue' %}">Open queue</a></li>{% endif %}
+{% if summary.attendance_sessions_7d != None %}<li>Attendance sessions in the last seven days: {{ summary.attendance_sessions_7d }}</li>{% endif %}
+{% if summary.active_assignments != None %}<li>Active teaching assignments: {{ summary.active_assignments }}</li>{% endif %}
+{% if summary.pending_submissions != None %}<li>Submissions awaiting grading in your assigned subjects: {{ summary.pending_submissions }}</li>{% endif %}
+{% if summary.pending_attendance_corrections != None and role == "teacher" %}<li>Correction requests in your assigned sections: {{ summary.pending_attendance_corrections }}</li>{% endif %}
+{% if summary.attendance_status_counts %}<li>{% if role == "student" %}Your recorded attendance: {% else %}School attendance totals: {% endif %}{% for status,count in summary.attendance_status_counts.items %}{{ status }} {{ count }}{% if not forloop.last %}, {% endif %}{% endfor %}{% if role == "student" %} · <a href="{% url 'learning:student-attendance-history' %}">Full attendance history</a>{% endif %}</li>{% endif %}
+{% if summary.published_attempts != None and role == "student" and result_visible %}<li>Published results available: {{ summary.published_attempts }}</li>{% endif %}
+</ul>
+{% if summary.result_distribution %}<h3>Published result distribution for authorized assessments</h3><ul>{% for grade,count in summary.result_distribution.items %}<li>{{ grade }}: {{ count }}</li>{% endfor %}</ul>{% endif %}
+</section>{% endif %}
+<section class="card"><h2>Notices</h2>
+  {% if notices %}<ul>{% for notice in notices %}<li><strong>{{ notice.title }}</strong> <span class="muted">({{ notice.get_audience_display }}{% if notice.section %}, {{ terms.section }} {{ notice.section }}{% endif %})</span> — {{ notice.body|linebreaksbr }}{% if can_manage or role == "teacher" and notice.section %} <a href="{% url 'oversight:notice-edit' school.slug notice.pk %}">Edit</a>{% endif %}</li>{% endfor %}</ul>{% else %}<p class="muted">No current notices.</p>{% endif %}
+</section>
+{% if role == "school_admin" or role == "teacher" or role == "student" %}
+<section class="card"><h2>Timetable · {{ timezone_label }}</h2>
+  {% if timetable %}<div class="table-wrap"><table><thead><tr><th>Day</th><th>Time ({{ timezone_label }})</th><th>{{ terms.section }}</th><th>Subject</th><th>{{ terms.teacher }}</th><th>Room</th></tr></thead><tbody>
+  {% for slot in timetable %}<tr><td>{{ slot.get_weekday_display }}</td><td>{{ slot.starts_at|time:"H:i" }}–{{ slot.ends_at|time:"H:i" }}</td><td>{{ slot.assignment.section.school_class.name }} · {{ slot.assignment.section.name }}</td><td>{{ slot.assignment.subject.name }}</td><td>{{ slot.assignment.user.get_full_name|default:slot.assignment.user.username }}</td><td>{{ slot.room|default:"—" }}</td></tr>{% endfor %}
+  </tbody></table></div>{% else %}<p class="muted">No timetable slots are available for your school scope.</p>{% endif %}
+</section>
+{% endif %}
+{% if role == "school_admin" or role == "teacher" %}<section class="card"><h2>{{ terms.sections }}</h2>{% if sections %}<ul>{% for section in sections %}<li>{{ section.school_class.name }} · {{ section.name }} · {{ section.academic_year.name }} · <a href="{% url 'learning:attendance-list' section.pk %}">Attendance</a></li>{% endfor %}</ul>{% else %}<p class="muted">No active {{ terms.sections|lower }} are assigned.</p>{% endif %}</section>{% endif %}
+{% if finance_balances != None %}<section class="card"><h2>Receivables summary</h2>{% if finance_balances %}<ul>{% for currency, amount in finance_balances.items %}<li>{{ amount }} {{ currency }}</li>{% endfor %}</ul>{% else %}<p class="muted">No financial balances recorded.</p>{% endif %}<a href="{% url 'finance:school-home' school.slug %}">Open finance</a></section>{% endif %}
+{% if role == "student" %}<section class="card"><h2>Your learning</h2><p><a href="{% url 'learning:home' %}">Open assignments and classwork</a></p>{% if result_visible %}<p><a href="{% url 'assessment:report-card' %}">View published results</a></p>{% else %}<p class="muted">Published results are currently hidden by school policy.</p>{% endif %}{% if branding.footer %}<p class="muted">{{ branding.footer }}</p>{% endif %}</section>{% endif %}
+{% if setting and setting.contact_name or setting and setting.contact_email or setting and setting.contact_phone %}<p class="muted">School contact: {{ setting.contact_name }}{% if setting.contact_email %} · {{ setting.contact_email }}{% endif %}{% if setting.contact_phone %} · {{ setting.contact_phone }}{% endif %}</p>{% endif %}
+{% endblock %}

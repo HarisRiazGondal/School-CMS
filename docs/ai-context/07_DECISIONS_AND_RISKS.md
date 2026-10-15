@@ -7,27 +7,28 @@
 - SchoolClass denotes Grade and Section is a year-bound SectionOffering. Campus may be null for a schoolwide offering; Term belongs to AcademicYear.
 - No blanket superuser access to private student/learning records. Active school roles and teacher/student relationships determine scope; sensitive student reads and changes are audited.
 - IELTS projects remain separate; school scoring will be implemented independently after their feasibility audit.
+- Assessment question-bank items are copied into frozen assessment snapshots; raw answers/marks are distinct from finalized score and policy snapshots.
+- Result publication is per attempt and does not close the scheduled assessment for other students. After deadline, only already saved answers may be submitted.
+- Finance balances are exact Decimal sums of immutable ledger rows; invoice uniqueness and payment/reversal idempotency prevent ordinary duplicate postings. Reversal preserves the original receipt/payment.
+- PKR is the synthetic demo currency; fee plans carry configurable three-letter currency codes and currencies are reported separately without conversion.
+- Pending admission intake creates no Student until admin approval; the separately authorized walk-in registration path remains available.
+- Batch confirmation locks and revalidates all rows; conditional reasons and immutable attributed source/target decision snapshots preserve yearly history.
+- Attendance records and session context use guarded services; corrections retain the proposal and admin/system decision rather than silently rewriting history.
+- School settings and published notice edits retain revisions; timetable/notices/dashboards enforce active matching school roles and exact teacher assignments.
+- Student result visibility affects student views and service reads; authorized teachers/admins retain result access. Teacher notice authoring is limited to assigned sections.
 
-## Current limitations and release risks
+## Remaining limits and release risks
 
-- The pilot runs locally with synthetic data. No hosted deployment or production readiness is claimed.
-- PostgreSQL, real SMTP delivery, rate limiting/MFA, private file uploads and backup restoration are not verified.
-- Application/approval intake, conditional and batch promotions, transfer and section-correction browser flows remain incomplete.
-- Attendance correction approvals and complete oversight remain incomplete. Pilot assessments/report cards and fee ledger are now locally verified.
-- History and audit guards cover normal model/service/queryset paths; privileged raw SQL can bypass application guards. Production database controls and concurrency tests remain release work.
+- Local synthetic-data pilot only; no hosted deployment or production readiness is claimed.
+- PostgreSQL row-lock/concurrency acceptance, real SMTP, throttling/MFA, private file uploads, backup restoration and hosted human/accessibility acceptance remain unverified.
+- Transfer/section-change correction UI, admission documents/imports, formal calendar/notification delivery and richer analytics remain backlog.
+- Terminology and branding render on oversight pages. Global theming and branded report-card export are not implemented. Policy controls are allowlisted and cover late work, correction windows, student result visibility and notice expiry.
+- Assessment uses versioned fixed A/B/C/D/F bands and configurable pass thresholds; exam calendars, weights and richer scales remain future work.
+- Finance is a two-decimal receivable ledger with one invoice per enrollment/plan, partial payments, concessions and reversals; installments, refunds, late fees and a full general ledger remain future work.
+- Normal ORM/service guards protect history; privileged raw SQL bypass and PostgreSQL cross-school scheduling/concurrency behavior remain release concerns.
 
-## Nonblocking policy defaults
+## Policy boundaries
 
-Username login, one enrollment per student/year, one section/date attendance session, text submissions may be late but are locked after grading, friendly IDs generated as STU sequence per school, campus-null schoolwide sections, admin confirmation for individual promotion. Re-admission requires prior active placement to be closed. Batch/conditional promotion and configurable scoring/fee policies are not silently inferred.
+Username login; one enrollment per student/year; section/date attendance sessions; default late text work allowed until grading; immutable permanent identities; admin decisions and confirmation. Correction age defaults to seven school-local calendar days; notice expiry defaults to no automatic expiry; student results are visible by default. These policies have effective consumers and tests, not inert settings controls.
 
-## Operational limits
-
-Student/audit identity protections are application guards, not guarantees against privileged raw SQL. PostgreSQL locking/uniqueness race behavior needs database-specific verification. Public login throttling, production SMTP/proxy settings, retention policies and tested restore must be completed before real minors' data is introduced.
-
-## Assessment/finance decisions and remaining risk
-
-Question-bank snapshots freeze prior tests. Publication is per attempt; grading policy version and pass threshold are snapshotted, with fixed pilot A/B/C/D/F bands. Full grading-scale/weighting configuration and formal exam calendar/export remain future work.
-
-Finance uses a two-decimal receivable ledger, not a full general ledger. Fee plan currency is configurable (synthetic default PKR); totals stay separated by currency. Plans charge once per enrollment/plan; installments/refunds/late fees and approval delegation are not yet built. PostgreSQL row locks/concurrency and real operating controls require verification before production.
-
-Application/service guards protect normal financial and assessment writes; raw SQL is a privileged bypass. Public login throttling/MFA, secure private uploads, real SMTP, retention/restore, accessibility and hosted pilot release remain gates.
+Campus consistency is validated, but staff memberships are school-wide rather than campus-restricted. Notice authoring checks both persisted source and proposed target scope. History protection is application-level and does not replace production database/operator controls. Treat synthetic test evidence as a pilot gate, not authorization to introduce real minors' data before release acceptance.

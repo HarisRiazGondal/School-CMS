@@ -4,6 +4,7 @@
 <h1>My learning</h1>
 <h2>My active enrollments</h2>
 <ul>{% for enrollment in enrollments %}<li>{{ enrollment.section.school_class.name }} · {{ enrollment.section.name }} ({{ enrollment.academic_year.name }}) — roll {{ enrollment.roll_number }}</li>{% empty %}<li>No active enrollments.</li>{% endfor %}</ul>
-<h2>Published assignments</h2>
-<ul>{% for assignment in assignments %}<li><a href="{% url 'learning:assignment-detail' assignment.pk %}">{{ assignment.title }}</a> · {{ assignment.subject.name }}{% if assignment.due_at %} · due {{ assignment.due_at }}{% endif %}</li>{% empty %}<li>No published assignments.</li>{% endfor %}</ul>
+<p><a href="{% url 'learning:student-attendance-history' %}">View historical attendance</a></p>
+{% for category, items in workload.items %}<h2>{{ category|title }} assignments</h2>
+<ul>{% for item in items %}<li><a href="{% url 'learning:assignment-detail' item.assignment.pk %}">{{ item.assignment.title }}</a> · {{ item.assignment.subject.name }}{% if item.assignment.due_at %} · due {{ item.assignment.due_at }}{% endif %}{% if item.submission and item.submission.graded_at %} · Graded{% endif %}</li>{% empty %}<li>None.</li>{% endfor %}</ul>{% endfor %}
 {% endblock %}

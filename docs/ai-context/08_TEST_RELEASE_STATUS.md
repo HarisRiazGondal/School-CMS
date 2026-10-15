@@ -2,27 +2,29 @@
 
 **Expanded local pilot ready for testing. Production release: Not started.**
 
-Latest integrated suite: **79 tests, all passed**, Python 3.12 / Django 5.2 / SQLite.
+Latest integrated verification on 2026-10-15: **129 tests passed** in 77.553 seconds on Python 3.12 / Django 5.2 / SQLite.
 
 | Check | Evidence |
 |---|---|
-| DJANGO_DEBUG=true python manage.py check | Passed, no issues |
-| DJANGO_DEBUG=true python manage.py makemigrations --check --dry-run | Passed, no pending changes |
-| DJANGO_DEBUG=true python manage.py migrate --noinput | Passed |
-| DJANGO_DEBUG=true python manage.py test | 79 passed |
-| Fresh SQLite migrate + combined service workflow | Passed: scoring/publication, payment/receipt/reversal, promotion/history |
-| Demo reseed after those operations | Preserved attempts/answers/payment/receipt/ledger/invoice/question counts |
-| git diff --check | Passed |
-| PostgreSQL, hosted acceptance, real SMTP/backup restoration | Not run |
-| GitHub Actions | Workflow exists; remote CI success is not claimed by local tests |
+| `DJANGO_DEBUG=true python manage.py check` | Passed, no issues |
+| `DJANGO_DEBUG=true python manage.py makemigrations --check --dry-run` | No changes detected |
+| Fresh SQLite `migrate --noinput` | Passed |
+| `DJANGO_DEBUG=true python manage.py test -v 1` | 129 passed |
+| Dedicated independent review regressions | 9 passed, included in integrated suite |
+| Parent policy/scope integration regressions | 4 passed, included in integrated suite |
+| Fresh SQLite combined service acceptance | Publication; payment/reversal; admission/correction approvals; conditional batch; historical transcripts/fees; result hiding — passed |
+| Demo reseed after finalized operations and changed settings | Counts/history preserved |
+| `git diff --check` | Passed |
+| PostgreSQL, hosted human/accessibility/privacy acceptance, real SMTP/restore | Not run |
+| GitHub Actions | Workflow exists; remote success is not claimed by local tests |
 
-New coverage: bank snapshots; MCQ/true-false/exact short answer/manual scoring; attempt limits/schedules/deadline writes; complete admin-only finalization/publication; immutable results and historical transcripts; authoring/student scope; admin selector UUID/scope; Decimal partial/full payment, currency/amount validation, idempotency, reversals/reasons, immutable receipt/ledger, history, reconciliation and CSRF/role denials. Baseline 48-test coverage remains included.
+New coverage includes admission approval/rejection/retries and rollback; account-link safeguards; batch preview/conflicts/conditional reasons/graduation/revalidation and atomic rollback; immutable attributed decisions; session/attendance ORM guards; correction approval/rejection/staleness/attribution; own attendance history and workload; effective settings/timezone; notice scope/revisions/audit rollback; timetable overlaps and active teacher scope; role-bounded summaries; scoped read-only Admin; cached activation and append-only audit regressions. The baseline assessment and financial coverage remains included.
 
-Six unchanged pilot milestone gates meet local acceptance = **75%**. Broader phase requirements and production release remain open. HTTP-render/form tests supplement service tests; interactive human browser/accessibility/hosted acceptance is still required.
+Seven unchanged pilot milestone gates meet local acceptance = **87.5%**. Broader module scope and production release remain open. HTTP render/form tests supplement services; interactive human browser/accessibility/hosted acceptance is still required. Expected permission-denial logs are exercised by passing authorization tests.
 
-- [x] Pilot assessments and report-card/transcript journey verified.
-- [x] Pilot fees/payment/receipt/reversal journey verified.
-- [x] Fresh SQLite migrations and safe repeatable demo setup verified.
-- [ ] Complete admissions/batch/conditional/attendance correction/oversight.
-- [ ] PostgreSQL financial concurrency and restore verification.
-- [ ] Throttling/MFA, SMTP, private files, accessibility and hosted pilot.
+- [x] Admissions decisions and individual/batch/conditional yearly progression.
+- [x] Guarded attendance, correction decisions and student history/workload.
+- [x] Scoped timetable/notices/settings/dashboards and independent bug review.
+- [x] Assessment and finance history retained through progression/reseed.
+- [ ] PostgreSQL concurrency, restore and production operating controls.
+- [ ] Throttling/MFA, SMTP, private files, accessibility and hosted human pilot.

@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+{% block title %}Admission intake · {{ school.name }}{% endblock %}
+{% block content %}
+<section class="page-header"><div><p class="eyebrow">{{ school.name }}</p><h1>New admission application</h1><p>Applications stay pending until a school admin approves them. Intake does not create a student identity.</p></div></section>
+<form method="post" class="form-card">{% csrf_token %}
+  {% if form.non_field_errors %}<div class="form-errors">{{ form.non_field_errors }}</div>{% endif %}
+  <fieldset><legend>Applicant and requested placement</legend>
+    {% for field in form %}{% if field.name != 'guardian_name' and field.name != 'guardian_relationship' and field.name != 'guardian_phone' and field.name != 'guardian_email' %}<div class="field"><label for="{{ field.id_for_label }}">{{ field.label }}</label>{{ field }}{{ field.errors }}</div>{% endif %}{% endfor %}
+  </fieldset>
+  <fieldset><legend>Guardian <span class="muted">optional</span></legend>
+    {% for field in form %}{% if field.name == 'guardian_name' or field.name == 'guardian_relationship' or field.name == 'guardian_phone' or field.name == 'guardian_email' %}<div class="field"><label for="{{ field.id_for_label }}">{{ field.label }}</label>{{ field }}{{ field.errors }}</div>{% endif %}{% endfor %}
+  </fieldset>
+  <div class="actions"><button class="button button-primary" type="submit">Add pending application</button><a class="button" href="{% url 'students:admissions' school_slug=school.slug %}">Cancel</a></div>
+</form>
+{% endblock %}

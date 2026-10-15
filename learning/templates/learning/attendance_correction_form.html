@@ -1,0 +1,8 @@
+{% extends "base.html" %}
+{% block title %}Request attendance correction · School CMS{% endblock %}
+{% block content %}
+<h1>Request attendance correction</h1>
+<p>{{ record.enrollment.student }} · {{ record.session.section.school_class.name }} / {{ record.session.section.name }} · {{ record.session.date }}</p>
+<p>Recorded status: {{ record.get_status_display }}{% if record.note %} · {{ record.note }}{% endif %}</p>
+<form method="post" class="form-card">{% csrf_token %}{{ form.as_p }}<button class="primary" type="submit">Send for review</button></form>
+{% endblock %}

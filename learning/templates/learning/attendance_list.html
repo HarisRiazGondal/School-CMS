@@ -3,7 +3,8 @@
 {% block content %}
 <h1>Attendance · {{ section.school_class.name }} / {{ section.name }}</h1>
 <p><a href="{% url 'learning:attendance-entry' section.pk %}">Record attendance</a></p>
-{% for session in sessions %}<h2>{{ session.date }}</h2><table><thead><tr><th>Roll</th><th>Student</th><th>Status</th></tr></thead><tbody>
-{% for record in session.records.all %}<tr><td>{{ record.enrollment.roll_number }}</td><td>{{ record.enrollment.student }}</td><td>{{ record.get_status_display }}</td></tr>{% empty %}<tr><td colspan="3">No entries.</td></tr>{% endfor %}
+{% if is_school_admin %}<p><a href="{% url 'learning:attendance-correction-queue' %}">Review correction requests</a></p>{% endif %}
+{% for session in sessions %}<h2>{{ session.date }}</h2><table><thead><tr><th>Roll</th><th>Student</th><th>Status</th><th>Note</th><th>Correction</th></tr></thead><tbody>
+{% for record in session.records.all %}<tr><td>{{ record.enrollment.roll_number }}</td><td>{{ record.enrollment.student }}</td><td>{{ record.get_status_display }}</td><td>{{ record.note|default:"—" }}</td><td>{% if record.pk in pending_correction_ids %}Pending review{% else %}<a href="{% url 'learning:attendance-correction-request' record.pk %}">Request correction</a>{% endif %}</td></tr>{% empty %}<tr><td colspan="5">No entries.</td></tr>{% endfor %}
 </tbody></table>{% empty %}<p>No attendance sessions recorded.</p>{% endfor %}
 {% endblock %}

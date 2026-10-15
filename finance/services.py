@@ -35,7 +35,7 @@ def _require_invoice_read(user, invoice):
     student = invoice.enrollment.student
     if (user.is_authenticated and user.is_active and student.user_id == user.pk
             and SchoolMembership.objects.filter(user=user, school=invoice.school, role=SchoolMembership.Role.STUDENT,
-                                                 is_active=True, school__is_active=True).exists()):
+                                                 user__is_active=True, is_active=True, school__is_active=True).exists()):
         return
     raise PermissionDenied("You do not have access to this invoice.")
 
@@ -174,7 +174,7 @@ def fee_statement(*, user, student, academic_year=None):
         pass
     elif (user.is_authenticated and user.is_active and student.user_id == user.pk
           and SchoolMembership.objects.filter(user=user, school=student.school, role=SchoolMembership.Role.STUDENT,
-                                               is_active=True, school__is_active=True).exists()):
+                                               user__is_active=True, is_active=True, school__is_active=True).exists()):
         pass
     else:
         raise PermissionDenied("You may only view your own statement or finance records for your school.")

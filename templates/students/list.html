@@ -3,7 +3,7 @@
 {% block content %}
 <section class="page-header">
   <div><p class="eyebrow">{{ school.name }}</p><h1>Students</h1><p>Permanent identities with year-by-year enrollment history.</p></div>
-  <a class="button button-primary" href="{% url 'students:register' school_slug=school.slug %}">Register student</a>
+  <div class="actions"><a class="button" href="{% url 'students:admissions' school_slug=school.slug %}">Admissions</a><a class="button" href="{% url 'students:batch-promotion' school_slug=school.slug %}">Batch promotion</a><a class="button button-primary" href="{% url 'students:register' school_slug=school.slug %}">Register student</a></div>
 </section>
 <div class="card">
   {% if students %}<div class="table-wrap"><table><thead><tr><th>Student</th><th>Code</th><th>Current enrollment</th><th>History</th></tr></thead><tbody>

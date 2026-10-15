@@ -25,3 +25,15 @@ Acceptance: **79 tests passed**; Django check, migration drift, migrate and whit
 Review fixes: duplicate-invoice DB uniqueness and friendly race handling; exact Decimal totals instead of SQLite SUM residue; required reversal reason; unpublished/other-school results and stale enrollment denial; per-attempt publication without closing other students' window; finite marks/high configured pass threshold; safe admin report selector; late-body exclusion; database activation checks for stale User/School objects.
 
 No IELTS code was copied. Progress is six of the unchanged eight pilot milestones (75%). Operations/oversight and production release remain open; broad unfinished module scope is documented rather than counted as released.
+
+## 2026-10-15 — Oversight and operations checkpoint (87.5%)
+
+Base: `fcb97554497e8196078ffe6f2f242415965679dd` (verified 75%). Six GPT-6 Luna agents owned student operations, attendance, oversight core/UI, demo/docs and independent review; parent integrated policies, activation/audit guards, cross-module acceptance and the checkpoint. Interrupted uncommitted oversight work was rebuilt from the durable baseline rather than counted as complete.
+
+Changed: admission intake/decisions, controlled student account linking, batch/conditional progression and immutable attributed snapshots; guarded attendance session/record writes, corrections and student history/workload; new oversight app (settings/revisions/policies, timetable, notices/revisions, summaries and scoped Admin); demo/test/operating docs; root routes/navigation; all affected memory/JSON and generated status. Additive migrations: students 0002/0003, learning 0004/0005, oversight 0001.
+
+Verified: **129 tests passed**, checks/drift/whitespace clean; fresh SQLite migrations and combined publication/payment-reversal/admission/correction/conditional-batch/history/policy/reseed acceptance passed. Independent reviewer regressions9 and parent scope/policy regressions4 are included. PostgreSQL, hosted acceptance and remote CI success remain unverified.
+
+Review fixes: cached activation, audit/history queryset bypasses, forged promotion decisions, conditional reason preview wiring, stale teacher timetable rows, timetable Admin relation scoping, notice source/target authorization, school settings serialization, atomic notice/timetable audit writes and attendance session recontextualization. No unresolved local blocker is known within the reviewed pilot scope; production and broader-module limits remain explicit.
+
+Seven of eight unchanged local pilot milestone gates now meet criteria (**87.5%**); production release remains Not started. Next: PostgreSQL concurrency and deployment/security/SMTP/restore/hosted acceptance.

@@ -11,7 +11,7 @@ python manage.py migrate
 python manage.py test
 ```
 
-`makemigrations --check --dry-run` must report no model changes pending. The test suite covers account and school workflows, identity/enrollment lifecycle, learning, assessment and finance workflows, and authorization boundaries. `tests/test_demo75.py` verifies that repeat seeding stays idempotent after a student submits an assessment attempt and the accountant posts a payment. Run it against a fresh local database when validating a clean checkout.
+`makemigrations --check --dry-run` must report no model changes pending. The test suite covers account and school workflows, identity/enrollment lifecycle, learning, assessment and finance workflows, and authorization boundaries. `tests/test_demo75.py` verifies reseeding after assessment submission and payment posting. `tests/test_demo87.py` checks the admissions and attendance-correction fixtures, and confirms changed settings/notices and reviewed histories survive reseeding. Run both against a fresh local database when validating a clean checkout.
 
 ## Synthetic browser demo
 
@@ -26,15 +26,31 @@ Visit <http://127.0.0.1:8000/> and use the password supplied to the command with
 
 | Role | Username | Acceptance path |
 | --- | --- | --- |
-| School admin | `demo-admin` | Sign in, then open student records and the learning portal. |
-| Registrar | `demo-registrar` | Open `/students/demo-school/students/` and verify the current-year enrollment. |
-| Teacher | `demo-teacher` | Open `/learning/` and see the assigned class section. |
+| School admin | `demo-admin` | Sign in, then open student records, admissions, attendance corrections, oversight and the learning portal. |
+| Registrar | `demo-registrar` | Open `/students/demo-school/students/`, verify the current-year enrollment, and review the admissions queue. |
+| Teacher | `demo-teacher` | Open `/learning/` and see the assigned class section, attendance, correction workload, timetable and notices. |
 | Accountant | `demo-accountant` | Open `/finance/`, then Demo School. Review the annual fee plan and Casey’s unpaid invoice. |
-| Student | `demo-student` | Open `/learning/` and see the learner's active enrollment and published classwork. |
+| Student | `demo-student` | Open `/learning/` and see the learner's active enrollment, attendance history and published classwork. |
 
-These usernames and all names/records are synthetic. The command does not embed a password; the operator supplies one, and the command refuses to run when `DEBUG` is false. Each invocation sets that password for the known demo accounts. Reruns do not reset assessment attempts, answers, posted invoices, payments, receipts, or ledger entries. The seeded assessment is open and has one MCQ, one true/false question, and one manually marked short-answer question. It creates no attempt and posts no payment automatically; the fee invoice starts unpaid.
+These usernames and all names/records are synthetic. The command does not embed a password; the operator supplies one, and the command refuses to run when `DEBUG` is false. Each invocation sets that password for the known demo accounts. Reruns preserve settings and notice edits, admission decisions, attendance correction histories, assessment attempts, answers, posted invoices, payments, receipts and ledger entries. The seed creates an open assessment and one unpaid invoice, but no admission approval, assessment attempt or payment. The attendance correction fixture is dated one local calendar day ago; the configured default permits requests through day seven.
 
 Run `seed_demo` twice to confirm there are no duplicate schools, memberships, years, sections, students, enrollments, assignments, assessment questions, fee plans, or invoices. After a student submits an attempt and an accountant records a payment, rerun it: the attempt and its answers, invoice balance, receipt, and ledger history must remain unchanged.
+
+## Admissions and attendance corrections
+
+1. Sign in as `demo-registrar` and open `/students/demo-school/students/admissions/`. Jordan Applicant should be pending and have no student identity yet.
+2. Sign in as `demo-admin`, open the admissions queue, and approve or reject the application. Approval creates the identity and first enrollment in the decision transaction; rejection creates neither. Rerun the seed and confirm the decision remains final.
+3. Sign in as `demo-teacher`, open the assigned section's attendance list, and inspect the pending request tied to Casey's one-day-old absence. The stored mark remains absent while the request is pending. The **Request correction** link on any other attendance mark opens the request form; the teacher must provide a reason.
+4. As `demo-admin`, review and approve the request. Confirm Casey's current mark becomes present and the request retains its original and proposed values, requester, reviewer and timestamps. A rejected request leaves the mark unchanged. Requests older than the configured window are refused; day seven is inside the default window.
+5. Sign in as `demo-student` and open `/learning/attendance/history/` to verify that the page contains only the student's own attendance history.
+
+## Timetable, notices and settings
+
+1. Sign in as `demo-admin` and open `/oversight/schools/demo-school/`. Confirm the seeded Monday mathematics slot and published school notice are visible.
+2. Open `/oversight/schools/demo-school/settings/` and change the timezone or attendance correction window. Save and rerun `seed_demo`; the changed value and its revision history must remain intact.
+3. Open `/oversight/schools/demo-school/notices/`, edit the seeded notice, and rerun the seed. Its changed text must remain. Published notices are scoped to their audience and section. School admins manage schoolwide notices; teachers may create/edit notices only for sections they actively teach, and cannot take over a schoolwide or unrelated-section notice.
+4. As `demo-teacher`, use **Create notice** and choose the assigned section. Confirm a schoolwide or unassigned-section notice cannot be submitted or edited.
+5. Create another timetable slot at `/oversight/schools/demo-school/timetable/new/` for an active teacher assignment. Overlapping teacher, section or room bookings should be rejected.
 
 ## Assessment browser acceptance
 
@@ -70,3 +86,9 @@ Record actual command output and any gaps in `docs/ai-context/08_TEST_RELEASE_ST
 ## Promotion test
 
 The demo includes a next academic year with Grade 8 / B. Sign in as demo-admin, open Casey’s student history, preview a promotion to that year/section with a new roll number, then confirm. The code and UUID stay the same; the prior-year row remains visible with its outcome. Registrar users may preview but cannot confirm. The demo seed does not reset completed enrollment history.
+
+## Batch progression and effective policies
+
+Open `/students/demo-school/students/promotions/batch/` as a registrar or school admin. For each displayed active enrollment, select an outcome, target year/section and roll number; supply a condition reason for conditional outcomes. Leave the target year and section blank for graduation. The form retains the source enrollment identity automatically. Preview must make no changes. Only an admin may confirm. One malformed UUID, duplicate roll, stale source or invalid target blocks the entire batch. Graduation has no target; conditional decisions require a reason. Successful confirmation retains source placement and immutable attributed decision snapshots with a common batch ID.
+
+In school settings, test `late_submission_allowed=false` with overdue text work, `attendance_correction_days` against a record outside that school's local-date window, `student_results_visible=false` against student grades/feedback, assessment detail, transcript and dashboard, and `notice_expiry_days` against a newly published notice without explicit expiry. Authorized teachers/admins retain their permitted result access. Terminology/branding are currently rendered on oversight pages; exported branded report cards and a global theme editor are future work.

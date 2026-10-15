@@ -37,7 +37,7 @@ Attendance uniqueness: section/date sessions and session/enrollment records. Sub
 
 PROTECT prevents deletion of referenced identity/history records. AuditEvent actor is SET_NULL and school PROTECT; private payload fields are rejected. Application guards do not constrain privileged raw SQL. Database-level operational protection remains a production gate.
 
-Remaining schema: application decisions/documents, batch/conditional promotion records, attendance corrections, formal exam calendars and advanced financial schedules/refunds. Current assessment and finance tables are described below; conceptual future entities remain unimplemented.
+Remaining schema: admission documents/imports, transfer/section-change correction workflows, formal exam calendars and advanced financial schedules/refunds. Current assessment and finance tables are described below; conceptual future entities remain unimplemented.
 
 ## New implemented assessment schema
 
@@ -56,3 +56,11 @@ Remaining schema: application decisions/documents, batch/conditional promotion r
 - Exact balances are sums of row Decimals; no floating-point total or mutable balance column is a competing source of truth.
 
 Invoices/payments/receipts/entries reject constructed-instance overwrites and ordinary queryset update/delete/bulk mutations. Services lock relevant rows and post ledger+audit atomically. SQLite verifies constraints; PostgreSQL concurrency behavior remains unverified. Full installment/refund/general-ledger entities remain planned.
+
+## Oversight schema
+
+AdmissionApplication retains school, requested year/section/roll, applicant/guardian details, pending/final status and admin attribution; approval links the newly registered identity without replacing an old identity. PromotionDecision retains the finalized source/target enrollment snapshot, outcome, actor/time, conditional reason and batch UUID. These histories reject ordinary mutation/deletion.
+
+AttendanceCorrectionRequest links one attendance record with immutable old/new status/note, reason and requester. A conditional database uniqueness constraint permits at most one pending request per record. Review status/actor/time are constrained, and successful approval updates the record atomically through guarded service writes.
+
+SchoolSetting is one-to-one with School. Each save creates an immutable versioned SchoolSettingRevision. TimetableSlot belongs to an active TeacherAssignment; validation checks school/year/campus consistency and teacher/class/room overlaps. Notice belongs to School with optional Section, audience and publication/expiry window; published edits retain NoticeRevision snapshots. These are bounded pilot entities; no scheduling engine, message delivery service or full report designer is implied.

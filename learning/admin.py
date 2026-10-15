@@ -9,7 +9,7 @@ class SchoolScopedReadOnlyAdmin(admin.ModelAdmin):
 
     def school_ids(self, request):
         return SchoolMembership.objects.filter(
-            user=request.user, is_active=True,
+            user=request.user, user__is_active=True, is_active=True,
             role=SchoolMembership.Role.SCHOOL_ADMIN, school__is_active=True,
         ).values_list("school_id", flat=True)
 

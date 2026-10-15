@@ -6,7 +6,7 @@ ROOT = Path(__file__).resolve().parent.parent
 state = json.loads((ROOT / 'docs/ai-context/project_state.json').read_text())
 esc = lambda value: html.escape(str(value))
 verified = sum(m['status'] == 'Verified' for m in state['milestones'])
-percent = round(100 * verified / len(state['milestones']))
+percent = f"{100 * verified / len(state['milestones']):g}"
 cards = ''.join(f'<article><h3>{esc(m["name"])}</h3><p class="badge">{esc(m["status"])}</p><p>{esc(m["criteria"])}</p></article>' for m in state['milestones'])
 items = lambda values: ''.join(f'<li>{esc(v)}</li>' for v in values)
 page = f'''<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>School-CMS · Project status</title><style>

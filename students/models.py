@@ -6,10 +6,14 @@ from django.db import models
 
 STUDENT_REGISTRATION_TOKEN = object()
 ENROLLMENT_OUTCOME_TOKEN = object()
+STUDENT_ACCOUNT_LINK_TOKEN = object()
+ADMISSION_DECISION_TOKEN = object()
+ADMISSION_INTAKE_TOKEN = object()
+PROMOTION_DECISION_TOKEN = object()
 
 
 class StudentQuerySet(models.QuerySet):
-    protected_fields = {"id", "pk", "school", "school_id", "student_code"}
+    protected_fields = {"id", "pk", "school", "school_id", "student_code", "user", "user_id"}
 
     def update(self, **kwargs):
         if self.protected_fields.intersection(kwargs):
@@ -76,10 +80,12 @@ class Student(models.Model):
         loaded_id = getattr(self, "_loaded_identity_id", None)
         if loaded_id is not None and self.pk != loaded_id:
             raise ValidationError("Student identity UUID is immutable.")
-        previous = type(self).objects.filter(pk=self.pk).values("school_id", "student_code").first()
+        previous = type(self).objects.filter(pk=self.pk).values("school_id", "student_code", "user_id").first()
         if previous:
             if str(previous["school_id"]) != str(self.school_id) or previous["student_code"] != self.student_code:
                 raise ValidationError("Student school and student code are immutable.")
+            if previous["user_id"] != self.user_id and kwargs.pop("_account_link_token", None) is not STUDENT_ACCOUNT_LINK_TOKEN:
+                raise ValidationError("Student portal accounts can only be linked through the account-link service.")
         elif registration_token is not STUDENT_REGISTRATION_TOKEN:
             raise ValidationError("Create permanent student identities through the registration service.")
         super().save(*args, **kwargs)
@@ -126,6 +132,7 @@ class Enrollment(models.Model):
         GRADUATED = "graduated", "Graduated"
         WITHDRAWN = "withdrawn", "Withdrawn"
         TRANSFERRED = "transferred", "Transferred"
+        CONDITIONAL = "conditional", "Conditional"
 
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     student = models.ForeignKey(Student, on_delete=models.PROTECT, related_name="enrollments")
@@ -198,3 +205,131 @@ class Enrollment(models.Model):
 
     def __str__(self):
         return f"{self.student.student_code} / {self.academic_year.name} / {self.roll_number}"
+
+
+class AdmissionApplicationQuerySet(models.QuerySet):
+    def update(self, **kwargs):
+        raise ValidationError("Admission applications must be changed through decision services.")
+
+    def delete(self):
+        raise ValidationError("Admission application history cannot be deleted.")
+
+    def bulk_create(self, objs, **kwargs):
+        raise ValidationError("Create applications through the intake service.")
+
+    def bulk_update(self, objs, fields, **kwargs):
+        raise ValidationError("Admission applications must be changed through decision services.")
+
+
+class AdmissionApplication(models.Model):
+    class Status(models.TextChoices):
+        PENDING = "pending", "Pending"
+        APPROVED = "approved", "Approved"
+        REJECTED = "rejected", "Rejected"
+
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    school = models.ForeignKey("schools.School", on_delete=models.PROTECT, related_name="admission_applications")
+    first_name = models.CharField(max_length=100)
+    last_name = models.CharField(max_length=100, blank=True)
+    date_of_birth = models.DateField(null=True, blank=True)
+    academic_year = models.ForeignKey("schools.AcademicYear", on_delete=models.PROTECT, related_name="admission_applications")
+    section = models.ForeignKey("academics.Section", on_delete=models.PROTECT, related_name="admission_applications")
+    roll_number = models.CharField(max_length=40)
+    guardian_name = models.CharField(max_length=200, blank=True)
+    guardian_phone = models.CharField(max_length=40, blank=True)
+    guardian_email = models.EmailField(blank=True)
+    guardian_relationship = models.CharField(max_length=40, blank=True)
+    status = models.CharField(max_length=12, choices=Status.choices, default=Status.PENDING)
+    decision_note = models.CharField(max_length=500, blank=True)
+    decided_by = models.ForeignKey("accounts.User", null=True, blank=True, on_delete=models.SET_NULL, related_name="admission_decisions")
+    decided_at = models.DateTimeField(null=True, blank=True)
+    student = models.OneToOneField(Student, null=True, blank=True, on_delete=models.PROTECT, related_name="admission_application")
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    objects = AdmissionApplicationQuerySet.as_manager()
+
+    class Meta:
+        ordering = ["created_at", "id"]
+
+    def save(self, *args, **kwargs):
+        token = kwargs.pop("_decision_token", None)
+        intake_token = kwargs.pop("_intake_token", None)
+        previous = type(self).objects.filter(pk=self.pk).values("status").first()
+        if previous is None and intake_token is not ADMISSION_INTAKE_TOKEN:
+            raise ValidationError("Create admission applications through the intake service.")
+        if previous is not None:
+            immutable_values = type(self).objects.filter(pk=self.pk).values(
+                "school_id", "first_name", "last_name", "date_of_birth", "academic_year_id", "section_id",
+                "roll_number", "guardian_name", "guardian_phone", "guardian_email", "guardian_relationship",
+            ).get()
+            current_values = {
+                "school_id": self.school_id, "first_name": self.first_name, "last_name": self.last_name,
+                "date_of_birth": self.date_of_birth, "academic_year_id": self.academic_year_id,
+                "section_id": self.section_id, "roll_number": self.roll_number,
+                "guardian_name": self.guardian_name, "guardian_phone": self.guardian_phone,
+                "guardian_email": self.guardian_email, "guardian_relationship": self.guardian_relationship,
+            }
+            if immutable_values != current_values:
+                raise ValidationError("Admission intake details are immutable after submission.")
+            decision_values = type(self).objects.filter(pk=self.pk).values(
+                "status", "decision_note", "decided_by_id", "decided_at", "student_id"
+            ).get()
+            current_decision_values = {
+                "status": self.status, "decision_note": self.decision_note,
+                "decided_by_id": self.decided_by_id, "decided_at": self.decided_at, "student_id": self.student_id,
+            }
+            if decision_values != current_decision_values and token is not ADMISSION_DECISION_TOKEN:
+                raise ValidationError("Admission decisions must use the decision service.")
+        if previous and previous["status"] != self.Status.PENDING and token is not ADMISSION_DECISION_TOKEN:
+            raise ValidationError("Final admission decisions are immutable.")
+        if previous and previous["status"] != self.status and token is not ADMISSION_DECISION_TOKEN:
+            raise ValidationError("Admission decisions must use the decision service.")
+        super().save(*args, **kwargs)
+
+    def delete(self, *args, **kwargs):
+        raise ValidationError("Admission application history cannot be deleted.")
+
+
+class PromotionDecisionQuerySet(models.QuerySet):
+    def update(self, **kwargs):
+        raise ValidationError("Promotion decisions are immutable.")
+
+    def delete(self):
+        raise ValidationError("Promotion decision history cannot be deleted.")
+
+    def bulk_create(self, objs, **kwargs):
+        raise ValidationError("Create promotion decisions through lifecycle services.")
+
+    def bulk_update(self, objs, fields, **kwargs):
+        raise ValidationError("Promotion decisions are immutable.")
+
+
+class PromotionDecision(models.Model):
+    """Immutable, attributed snapshot of a finalized yearly student outcome."""
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    source_enrollment = models.OneToOneField(Enrollment, on_delete=models.PROTECT, related_name="promotion_decision")
+    target_enrollment = models.ForeignKey(Enrollment, null=True, blank=True, on_delete=models.PROTECT, related_name="prior_decisions")
+    actor = models.ForeignKey("accounts.User", null=True, blank=True, on_delete=models.SET_NULL, related_name="promotion_decisions")
+    outcome = models.CharField(max_length=16, choices=Enrollment.Status.choices)
+    source_year = models.CharField(max_length=80)
+    source_section = models.CharField(max_length=160)
+    source_roll_number = models.CharField(max_length=40)
+    target_year = models.CharField(max_length=80, blank=True)
+    target_section = models.CharField(max_length=160, blank=True)
+    target_roll_number = models.CharField(max_length=40, blank=True)
+    condition_reason = models.CharField(max_length=500, blank=True)
+    batch_id = models.UUIDField(null=True, blank=True)
+    decided_at = models.DateTimeField(auto_now_add=True)
+
+    objects = PromotionDecisionQuerySet.as_manager()
+
+    def save(self, *args, **kwargs):
+        token = kwargs.pop("_decision_token", None)
+        if not self._state.adding or type(self).objects.filter(pk=self.pk).exists():
+            raise ValidationError("Promotion decisions are immutable.")
+        if token is not PROMOTION_DECISION_TOKEN:
+            raise ValidationError("Create promotion decisions through lifecycle services.")
+        super().save(*args, **kwargs)
+
+    def delete(self, *args, **kwargs):
+        raise ValidationError("Promotion decision history cannot be deleted.")
