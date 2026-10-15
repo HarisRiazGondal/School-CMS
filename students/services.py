@@ -108,7 +108,9 @@ def submit_admission_application(*, user, school, first_name, last_name="", date
 @transaction.atomic
 def decide_admission_application(*, user, application, decision, note=""):
     """Approve or reject an application; approval and first registration are one transaction."""
-    application = AdmissionApplication.objects.select_for_update().select_related(
+    # Only the application is nullable-join-safe under PostgreSQL. Locking the
+    # optional ``student`` relation via SELECT FOR UPDATE is rejected by PG.
+    application = AdmissionApplication.objects.select_for_update(of=("self",)).select_related(
         "school", "academic_year", "section__school_class", "student"
     ).get(pk=getattr(application, "pk", application))
     _require_role(user, application.school, (SchoolMembership.Role.SCHOOL_ADMIN,))
@@ -234,6 +236,10 @@ def preview_promotion(*, user, source, outcome, target_section=None, target_year
         raise ValidationError("A condition reason is required for a conditional outcome.")
     if len(condition_reason.strip()) > 500:
         raise ValidationError("Condition reason must be 500 characters or fewer.")
+    if outcome == Enrollment.Status.GRADUATED and (
+        target_year not in (None, "") or target_section not in (None, "")
+    ):
+        raise ValidationError("Graduation cannot include a target year or section.")
     if source.status != Enrollment.Status.ACTIVE:
         raise ValidationError("Only an active enrollment can be processed.")
     section = year = None

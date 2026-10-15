@@ -8,7 +8,7 @@ from django.db import transaction
 from django.db.models import Q
 from django.utils import timezone
 
-from accounts.models import SchoolMembership, has_school_role
+from accounts.models import SchoolMembership, User, has_school_role
 from audit.services import record_event
 from .models import POLICY_DEFAULTS, Notice, NoticeRevision, SchoolSetting, TimetableSlot
 
@@ -66,12 +66,27 @@ def save_school_setting(user, school, **values):
 
 
 def save_timetable_slot(slot, *args, **kwargs):
-    """Serialize timetable overlap checks through the owning school row."""
+    """Serialize timetable checks by teacher and school before checking overlaps."""
     if not slot.assignment_id:
         return super(TimetableSlot, slot).save(*args, **kwargs)
     school = slot.assignment.section.school_class.school
     with transaction.atomic():
-        type(school).objects.select_for_update().get(pk=school.pk)
+        # A teacher may have assignments in several schools. Locking just this
+        # school permits two schools to book that teacher at the same time.
+        teacher_ids = {slot.assignment.user_id}
+        old_school_id = None
+        if slot.pk:
+            old_assignment = TimetableSlot.objects.filter(pk=slot.pk).values(
+                "assignment__user_id", "assignment__section__school_class__school_id"
+            ).first()
+            if old_assignment:
+                teacher_ids.add(old_assignment["assignment__user_id"])
+                old_school_id = old_assignment["assignment__section__school_class__school_id"]
+        list(User.objects.select_for_update().filter(pk__in=sorted(teacher_ids)).order_by("pk"))
+        school_ids = {school.pk}
+        if old_school_id:
+            school_ids.add(old_school_id)
+        list(type(school).objects.select_for_update().filter(pk__in=sorted(school_ids)).order_by("pk"))
         slot.full_clean()
         if slot.is_active:
             overlaps = TimetableSlot.objects.filter(

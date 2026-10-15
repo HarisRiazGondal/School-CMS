@@ -2,7 +2,7 @@
 {% block title %}{{ heading }} · {{ brand_name }}{% endblock %}
 {% block content %}
 <div class="page-header"><div><p class="eyebrow">{{ brand_name }} · Notice board</p><h1>{{ heading }}</h1><p class="muted">Publication and expiry times use {{ timezone_label }}.</p></div><a href="{% url 'oversight:notices' school.slug %}">Back to notices</a></div>
-<section class="form-card"><form method="post">{% csrf_token %}{% if form.non_field_errors %}<div class="form-errors">{{ form.non_field_errors }}</div>{% endif %}
+<section class="form-card"><form method="post">{% csrf_token %}{% include "includes/form_error_summary.html" with form=form %}
 {% for field in form %}<div class="field"><label for="{{ field.id_for_label }}">{{ field.label }}</label>{{ field }}{% if field.help_text %}<small class="muted">{{ field.help_text }}</small>{% endif %}{{ field.errors }}</div>{% endfor %}
 <button class="primary" type="submit">Save notice</button></form></section>
 {% endblock %}

@@ -121,6 +121,20 @@ class FinanceLedgerTests(TestCase):
         with self.assertRaises(ValidationError):
             issue_invoice(user=self.admin, enrollment=self.enrollment, fee_plan=other_plan)
 
+    def test_excessive_decimal_magnitude_is_a_validation_error_without_financial_writes(self):
+        plan_count = FeePlan.objects.count()
+        with self.assertRaises(ValidationError):
+            create_fee_plan(user=self.admin, school=self.school, academic_year=self.year, amount="1e999999")
+        self.assertEqual(FeePlan.objects.count(), plan_count)
+
+        invoice = self.invoice()
+        ledger_before = list(invoice.entries.values_list("kind", "amount", "idempotency_key"))
+        with self.assertRaises(ValidationError):
+            post_payment(user=self.admin, invoice=invoice, amount="1e999999", currency="PKR",
+                         idempotency_key="excessive-magnitude")
+        self.assertEqual(list(invoice.entries.values_list("kind", "amount", "idempotency_key")), ledger_before)
+        self.assertEqual(Payment.objects.count(), 0)
+
     def test_role_school_and_student_scope_are_enforced(self):
         invoice = self.invoice()
         for user in (self.teacher, self.registrar, self.other_admin):

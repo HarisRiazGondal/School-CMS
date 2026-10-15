@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+{% block content %}
+<h1>{{ heading }}</h1>
+<p>PDF and UTF-8 plain text files only. Maximum size is configured by the school service.</p>
+<form method="post" enctype="multipart/form-data">
+  {% csrf_token %}
+  {{ form.as_p }}
+  <button type="submit">Upload and scan</button>
+</form>
+<h2>Available files</h2>
+<ul>
+  {% for attachment in attachments %}
+    <li><a href="{% url 'privatefiles:download' attachment.id %}">{{ attachment.original_name }}</a> ({{ attachment.size }} bytes)</li>
+  {% empty %}
+    <li>No files uploaded.</li>
+  {% endfor %}
+</ul>
+{% endblock %}

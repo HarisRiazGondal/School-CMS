@@ -8,13 +8,15 @@ class SchoolScopedReadOnlyAdmin(admin.ModelAdmin):
     """Admin lists are limited to active school-admin memberships, including superusers."""
 
     def school_ids(self, request):
+        if not request.user.is_authenticated or not request.user.is_active:
+            return SchoolMembership.objects.none().values_list("school_id", flat=True)
         return SchoolMembership.objects.filter(
             user=request.user, user__is_active=True, is_active=True,
             role=SchoolMembership.Role.SCHOOL_ADMIN, school__is_active=True,
         ).values_list("school_id", flat=True)
 
     def get_queryset(self, request):
-        return super().get_queryset(request).filter(self.school_filter(self.school_ids(request)))
+        return super().get_queryset(request).filter(**self.school_filter(self.school_ids(request)))
 
     def school_filter(self, ids):
         raise NotImplementedError

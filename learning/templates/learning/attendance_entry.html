@@ -2,9 +2,9 @@
 {% block title %}Record attendance · School CMS{% endblock %}
 {% block content %}
 <h1>Record attendance</h1><p>{{ section.school_class.name }} · {{ section.name }} · {{ section.academic_year.name }}</p>
-<form method="post">{% csrf_token %}{{ form.non_field_errors }}
+<form method="post">{% csrf_token %}{% include "includes/form_error_summary.html" with form=form %}
 <p>{{ form.date.label_tag }} {{ form.date }} {{ form.date.errors }}</p>
-<table><thead><tr><th>Student</th><th>Status</th></tr></thead><tbody>
-{% for field in form %}{% if field.name != "date" %}<tr><td>{{ field.label }}</td><td>{{ field }} {{ field.errors }}</td></tr>{% endif %}{% endfor %}
-</tbody></table><button type="submit">Save attendance</button></form>
+<div class="table-wrap"><table><caption class="visually-hidden">Attendance status by student</caption><thead><tr><th scope="col">Student</th><th scope="col">Status</th></tr></thead><tbody>
+{% for field in form %}{% if field.name != "date" %}<tr><th scope="row"><label for="{{ field.id_for_label }}">{{ field.label }}</label></th><td>{{ field }} {{ field.errors }}</td></tr>{% endif %}{% endfor %}
+</tbody></table></div><button type="submit">Save attendance</button></form>
 {% endblock %}

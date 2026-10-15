@@ -11,6 +11,11 @@ venv/
 # Django
 staticfiles/
 media/
+privatefiles_data/
+backups/
+deploy/secrets/
+*.dump
+*.dump.enc*
 .coverage
 htmlcov/
 .pytest_cache/

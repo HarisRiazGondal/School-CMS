@@ -46,6 +46,23 @@ class StudentLifecycleTests(TestCase):
         data.update(overrides)
         return register_student(**data)
 
+    def test_graduation_rejects_target_placement_in_preview_and_commit_without_writes(self):
+        student, source = self.register()
+        audit_count = AuditEvent.objects.count()
+        for target in (
+            {"target_year": self.year_two},
+            {"target_section": self.section_two},
+            {"target_year": self.year_two, "target_section": self.section_two},
+        ):
+            for operation in (preview_promotion, commit_promotion):
+                with self.subTest(operation=operation.__name__, target=list(target)):
+                    with self.assertRaises(ValidationError):
+                        operation(user=self.admin, source=source, outcome=Enrollment.Status.GRADUATED, **target)
+                    source.refresh_from_db()
+                    self.assertEqual(source.status, Enrollment.Status.ACTIVE)
+                    self.assertEqual(student.enrollments.count(), 1)
+                    self.assertEqual(AuditEvent.objects.count(), audit_count)
+
     def test_registration_creates_stable_school_scoped_code_and_year_context(self):
         student, enrollment = self.register(guardian_name="Sana Khan", guardian_phone="555-0100", guardian_relationship="Mother")
         self.assertEqual(student.student_code, "STU-000001")

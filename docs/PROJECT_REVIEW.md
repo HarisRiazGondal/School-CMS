@@ -1,5 +1,8 @@
 # Independent project review
 
+Latest local acceptance (15 October2026): **224 run,215 passed,9 PostgreSQL-only skips,no failures**, after the financial-validation and teacher-navigation fixes. See [LOCAL_TEST_REPORT.md](LOCAL_TEST_REPORT.md) for the consolidated report and index. Earlier counts below are historical snapshots; CI/VPS work is currently deferred.
+
+
 ## Scope
 
 Reviewed the active student identity and enrollment safeguards, live membership and school authorization checks, assessment transcript access, finance statement and invoice access, audit event write paths, and the milestone 7 oversight models and services. Review focused on cross-school access, stale authorization state, queryset write shortcuts, retained history, and the project test baseline.

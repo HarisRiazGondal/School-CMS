@@ -1,21 +1,27 @@
 {
   "updated": "2026-10-15",
   "objective": "One-school launch with campus boundaries, permanent student records, role-scoped learning and staged assessment/finance.",
-  "phase": "Phase 6 \u2014 oversight and operations pilot locally verified",
-  "readiness": "Expanded local pilot ready for testing",
+  "phase": "School scenario acceptance \u2014 request/service passes; cloud browser blocked",
+  "readiness": "Release candidate; production acceptance pending",
   "tests": {
-    "passed": 129,
-    "environment": "Python 3.12 / Django 5.2 / SQLite. Clean migrations, full automated suite and combined fresh-database acceptance passed. PostgreSQL concurrency, hosted acceptance and remote CI success are unverified.",
+    "passed": 218,
+    "skipped": 9,
+    "total": 227,
+    "environment": "Python3.12.14 / Django5.2.18 / SQLite: 227 run,218 passed,9 PostgreSQL-only skips,no failures. Two connected request/service lifecycle tests pass. The 72-row school scenario plan is not browser coverage: cloud browser URL security policy blocked the local app. No browser/visual/axe pass. CI/VPS remain deferred.",
     "commands": [
-      "DJANGO_DEBUG=true python manage.py check \u2014 passed, no issues",
-      "DJANGO_DEBUG=true python manage.py makemigrations --check --dry-run \u2014 no changes",
-      "Fresh SQLite migrate --noinput \u2014 passed",
-      "DJANGO_DEBUG=true python manage.py test -v 1 \u2014 129 tests passed",
-      "Independent review regressions \u2014 9 passed; parent policy/scope integration regressions \u2014 4 passed (included in full suite)",
-      "Fresh SQLite combined assessment publication, payment/reversal, admission approval, correction approval, conditional batch, historical transcript/fees and policy visibility acceptance \u2014 passed",
-      "Demo reseed after finalized operations and changed settings \u2014 counts and histories preserved",
-      "git diff --check \u2014 passed"
-    ]
+      "DJANGO_DEBUG=true python manage.py test -v1 \u2014 227 run,218 passed,9 PostgreSQL-only skips,no failures (103.664s)",
+      "python scripts/school_scenario_acceptance.py \u2014 2 connected Django request/service tests passed; no browser or network transport executed",
+      "Five-role request journey \u2014 admission, timetable conflict, attendance correction, classwork/assessment marking/publication, Class7/8 fees, payment/reversal, promotion and retained history passed",
+      "Post-fix tests.test_students tests.test_students_operations \u2014 26 passed including graduation-with-target rejection and no-write assertions",
+      "Independent existing edge regressions \u2014 78 passed before new graduation regression; PG concurrency module8 skipped",
+      "Django check / migration drift \u2014 clean/no changes",
+      "Fresh disposable test database migrations and isolated fixtures \u2014 passed",
+      "Bandit listed application directories \u2014 no findings with existing narrow inline exceptions; scripts outside this scan",
+      "Python compilation, git diff --check and status renderer \u2014 passed",
+      "Cloud browser opening local app \u2014 rejected by URL security policy; no workaround attempted after explicit prohibition; all72 planned browser rows unverified",
+      "Prior local crawl73 GETs / invalid forms16 cases and clean dependency audit remain historical evidence in LOCAL_TEST_REPORT; no fresh browser claim"
+    ],
+    "failed": 0
   },
   "milestones": [
     {
@@ -55,13 +61,16 @@
     },
     {
       "name": "Production pilot release",
-      "status": "Not started",
+      "status": "In progress",
       "criteria": "PostgreSQL, privacy/security, uploads, SMTP, backup restoration, accessibility and hosted pilot acceptance are evidenced."
     }
   ],
   "limitations": [
     "Local synthetic-data pilot only; no hosted deployment or production readiness is claimed.",
-    "PostgreSQL row-lock/concurrency acceptance, real SMTP, throttling/MFA, private file uploads, backup restoration and hosted human/accessibility acceptance remain unverified.",
+    "The 72-row school scenario matrix is a plan; cloud browser URL policy blocks the local app, so no actual browser, visual, keyboard or axe execution occurred. Two connected request/service tests are separate partial evidence.",
+    "Class/year fee plans and manual invoices work across promotion; automatic invoices/fee repricing are not implemented. Withdrawal/re-admission and account linking have guarded services but no dedicated regular-portal routes; revision-history viewer is absent in inspected edit templates.",
+    "GitHub Actions cannot start jobs: public run#9 annotation confirms an account billing lock. Account owner resolution is required before hosted validation.",
+    "Real PostgreSQL/concurrency/recovery, container startup, Chromium browser/axe, target SMTP/TLS/ClamAV/private-volume restoration and hosted human/privacy/accessibility acceptance remain release blockers. SQLite explicitly skips 9 PostgreSQL-only cases.",
     "Transfer/section-change correction UI, admission documents/imports, formal calendar/notification delivery and richer analytics remain backlog.",
     "Terminology and branding render on oversight pages. Global theming and branded report-card export are not implemented. Policy controls are allowlisted and cover late work, correction windows, student result visibility and notice expiry.",
     "Assessment uses versioned fixed A/B/C/D/F bands and configurable pass thresholds; exam calendars, weights and richer scales remain future work.",
@@ -85,10 +94,93 @@
     "Student result visibility affects student views and service reads; authorized teachers/admins retain result access. Teacher notice authoring is limited to assigned sections."
   ],
   "next_actions": [
-    "Verify PostgreSQL migrations, row locking and concurrent payment/reversal, admissions, promotion, correction and timetable writes.",
-    "Configure and test real SMTP, HTTPS/proxy/cookies, password-reset URLs, account provisioning, login throttling/MFA and private file storage.",
-    "Exercise encrypted backup restoration and document retention/access policies and production database history protections.",
-    "Run hosted five-role human pilot, accessibility, privacy/security and operational acceptance before marking production milestone 8 Verified.",
-    "Track broader backlog separately: transfer/section-change UI, admission documents/imports, exam calendars/weighted grading/exports, installments/refunds and general-ledger work."
-  ]
+    "Execute docs/LOCAL_PC_QA_AGENT_PROMPT.md on the user PC: isolated release-branch checkout, six workers plus coordinator, actual browser matrix, bug verification and evidence reports. Existing test totals remain historical until rerun there.",
+    "For actual cloud-browser UI acceptance, supply a permitted browser-accessible test deployment URL. Do not use proxies, alternate browser surfaces or workarounds for the local URL-policy block.",
+    "Run the matrix in the permitted UI target with synthetic accounts, record screenshots/results and fix reproducible defects. No browser row is currently passed.",
+    "Prioritize product gaps separately: automatic invoice generation, regular-portal withdrawal/re-admission/account linking, revision-history viewer and any marks/fee-driven promotion rules.",
+    "Run PostgreSQL concurrency and configured scanner/email/recovery checks when those services are available; CI/VPS rollout remains deferred unless requested."
+  ],
+  "release_gates": [
+    {
+      "id": "postgresql",
+      "name": "PostgreSQL and concurrency",
+      "status": "blocked",
+      "detail": "Full suite and real recovery harness are configured in CI; no successful hosted result recorded. Hosted execution is blocked by the confirmed GitHub account billing lock."
+    },
+    {
+      "id": "deployment",
+      "name": "Container and target deployment",
+      "status": "blocked",
+      "detail": "Existing VPS selected; host, SSH user, domain and approved connection are missing."
+    },
+    {
+      "id": "authentication",
+      "name": "Authentication and privileged MFA",
+      "status": "in_progress",
+      "detail": "Local auth/MFA tests pass; target TLS, cookie and five-role acceptance remain open."
+    },
+    {
+      "id": "uploads",
+      "name": "Private uploads and antivirus",
+      "status": "in_progress",
+      "detail": "Local validation/scope tests pass; live scanner signatures, EICAR and persistent-volume checks remain open."
+    },
+    {
+      "id": "smtp",
+      "name": "SMTP and password reset delivery",
+      "status": "blocked",
+      "detail": "Target encrypted SMTP and controlled-mailbox delivery evidence are unavailable."
+    },
+    {
+      "id": "recovery",
+      "name": "Database and private-file recovery",
+      "status": "blocked",
+      "detail": "Authenticated complete recovery bundle and disposable rehearsal implemented; real PostgreSQL/target restore evidence pending. Hosted execution is blocked by the confirmed GitHub account billing lock."
+    },
+    {
+      "id": "accessibility",
+      "name": "Browser and human accessibility",
+      "status": "blocked",
+      "detail": "Cloud browser URL security policy blocks the local app; no browser/axe/visual run. Request/service tests do not complete this gate. Hosted/human acceptance and prior CI billing issues remain separately open."
+    },
+    {
+      "id": "privacy_security",
+      "name": "Privacy, security and operations",
+      "status": "in_progress",
+      "detail": "Local review/scans pass; operator retention, monitoring and privacy/security signoff remain open."
+    },
+    {
+      "id": "hosted_pilot",
+      "name": "Hosted five-role pilot",
+      "status": "blocked",
+      "detail": "No target-host pilot or operator acceptance evidence exists."
+    }
+  ],
+  "ci_evidence": {
+    "commit": "6e3b0a6558267ca3cbed8a3696811e4f5cea73eb",
+    "checked_at": "2026-10-15T16:50:18.887892+00:00",
+    "runs": [
+      38771794751,
+      38771801513
+    ],
+    "status": "blocked",
+    "cause": "GitHub account locked due to billing issue; jobs not started",
+    "source": "https://github.com/HarisRiazGondal/School-CMS/actions/runs/38771801513/job/116549229916",
+    "observed_jobs_per_run": 5,
+    "executed_steps": 0
+  },
+  "local_acceptance": {
+    "checked_at": "2026-10-15T17:40:38.990516+00:00",
+    "scope": "Disposable synthetic SQLite; in-process Django request/service lifecycle",
+    "status": "passed_for_exercised_cases",
+    "fixes": [
+      "Individual graduation service rejects supplied target year/section before writes"
+    ],
+    "connected_tests": 2,
+    "scenario_plan_rows": 72,
+    "browser_scenarios_passed": 0,
+    "browser_executed": false,
+    "report": "docs/SCHOOL_SCENARIO_RESULTS.md",
+    "prior_report": "docs/LOCAL_TEST_REPORT.md"
+  }
 }

@@ -32,3 +32,25 @@
 Username login; one enrollment per student/year; section/date attendance sessions; default late text work allowed until grading; immutable permanent identities; admin decisions and confirmation. Correction age defaults to seven school-local calendar days; notice expiry defaults to no automatic expiry; student results are visible by default. These policies have effective consumers and tests, not inert settings controls.
 
 Campus consistency is validated, but staff memberships are school-wide rather than campus-restricted. Notice authoring checks both persisted source and proposed target scope. History protection is application-level and does not replace production database/operator controls. Treat synthetic test evidence as a pilot gate, not authorization to introduce real minors' data before release acceptance.
+
+## Production candidate update
+
+Production hardening has been implemented with targeted local evidence. Outstanding acceptance remains environment-specific: PostgreSQL, full container startup, file-volume/secret ownership, TLS, real SMTP, current ClamAV signatures, restored files/database, monitoring and hosted human privacy/accessibility. Preserve87.5% until all milestone 8 criteria are evidenced.
+
+## Evidence accounting and recovery decisions
+
+Preserve the eight milestone denominator and unchanged production criteria. A validated evidence record is only a schema/accounting check and still requires independent operator review. Recovery bundles include private files and quarantine with the encrypted database dump; restoration is limited to explicitly disposable empty targets and a quiesced application. Do not synthesize disposable attestations inside restore tooling. Authentication-throttle cleanup is bounded and dry-run by default; operator scheduling/monitoring remains a target deployment task.
+
+## Confirmed hosted validation blocker
+
+Runs #8/#9 at 6e3b0a6558267ca3cbed8a3696811e4f5cea73eb each created five jobs but no runners or steps. The public job annotation confirms: "The job was not started because your account is locked due to a billing issue." The account owner must resolve this outside the repository before rerunning CI. No PostgreSQL, recovery, container or browser CI pass occurred.
+
+Do not infer a repository test failure from the failed status: no job steps executed. Do not spend money or change billing/security settings as part of a code checkpoint. Operator/account-owner resolution and a real rerun are required.
+
+## Local acceptance focus
+
+User deferred CI/VPS/hosted work on2026-10-15. Run and review local synthetic SQLite acceptance first; preserve production gates without treating them as prerequisites for local testing. Full local post-fix suite224 run/215 pass/9 PG skips. Concrete Decimal and teacher-navigation defects are closed in this checkpoint. Browser behavior and PostgreSQL concurrency remain outside this evidence; an enrollment/assessment-start race candidate needs a separate PostgreSQL reproduction.
+
+## Scenario evidence and product boundaries
+
+Cloud-browser policy explicitly blocks this local URL and forbids workaround/alternate browser execution. Record zero browser scenarios passed. The227-test suite (218 pass/9 PG skips) and two connected request/service journeys establish their stated checks only. Graduation cannot take a target year/section at any service entry point. Class/year fee plans require explicit invoice issuance; promotion preserves old invoices/marks and does not automatically reprice/generate fees. Missing withdrawal/re-admission/account-linking portal forms and revision viewers are product gaps, separate from the tested services.

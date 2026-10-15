@@ -213,6 +213,7 @@ def assignment_create(request):
 
 @login_required
 def assignment_detail(request, assignment_id):
+    from privatefiles.models import PrivateAttachment
     assignment = get_object_or_404(Assignment.objects.select_related("section__school_class__school", "teacher", "subject"), pk=assignment_id)
     student_access = assignment.is_published and student_enrollment_for_assignment(request.user, assignment) is not None
     if not _can_view_section(request.user, assignment.section, assignment.subject) and not student_access:
@@ -224,9 +225,14 @@ def assignment_detail(request, assignment_id):
         return render(request, "learning/assignment_detail.html", {
             "assignment": assignment, "own_submission": own_submission, "show_results": show_results,
             "can_submit": not assignment.due_at or assignment.due_at >= timezone.now() or late_allowed,
+            "assignment_files": assignment.private_attachments.filter(scan_status=PrivateAttachment.ScanStatus.CLEAN),
+            "submission_files": own_submission.private_attachments.filter(scan_status=PrivateAttachment.ScanStatus.CLEAN) if own_submission else [],
         })
-    submissions = assignment.submissions.select_related("enrollment__student") if _can_view_section(request.user, assignment.section, assignment.subject) else None
-    return render(request, "learning/assignment_detail.html", {"assignment": assignment, "submissions": submissions})
+    submissions = assignment.submissions.select_related("enrollment__student").prefetch_related("private_attachments") if _can_view_section(request.user, assignment.section, assignment.subject) else None
+    return render(request, "learning/assignment_detail.html", {
+        "assignment": assignment, "submissions": submissions, "can_upload_material": True,
+        "assignment_files": assignment.private_attachments.filter(scan_status=PrivateAttachment.ScanStatus.CLEAN),
+    })
 
 
 @login_required

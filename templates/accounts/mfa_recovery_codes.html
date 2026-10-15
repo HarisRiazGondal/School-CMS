@@ -1,0 +1,3 @@
+{% extends "base.html" %}
+{% block title %}Save recovery codes · School-CMS{% endblock %}
+{% block content %}<section class="panel" style="max-width: 540px; margin: auto"><h1>Save your recovery codes</h1><p>Each code works once. Store these somewhere safe; they will not be shown again.</p><ul>{% for code in codes %}<li><code>{{ code }}</code></li>{% endfor %}</ul><p><a class="primary" href="{{ next_url }}">Continue</a></p></section>{% endblock %}

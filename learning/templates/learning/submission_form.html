@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 {% block title %}Submit assignment · School CMS{% endblock %}
 {% block content %}
-<h1>Submit: {{ assignment.title }}</h1><form method="post">{% csrf_token %}{{ form.non_field_errors }}
+<h1>Submit: {{ assignment.title }}</h1><form method="post">{% csrf_token %}{% include "includes/form_error_summary.html" with form=form %}
 <p>{{ form.response.label_tag }} {{ form.response }} {{ form.response.errors }}</p><button type="submit">Save response</button></form>
 {% endblock %}

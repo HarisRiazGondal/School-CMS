@@ -1,5 +1,6 @@
 from django.contrib.auth.models import AbstractUser
 from django.db import models
+from django.conf import settings
 
 class User(AbstractUser):
     email = models.EmailField(unique=True)
@@ -27,6 +28,34 @@ class SchoolMembership(models.Model):
 
     def __str__(self):
         return f"{self.user} / {self.school} / {self.get_role_display()}"
+
+
+class AuthThrottle(models.Model):
+    """Database-backed fixed-window throttle shared by all application workers."""
+    key = models.CharField(max_length=64, primary_key=True)
+    window_started = models.DateTimeField()
+    failures = models.PositiveSmallIntegerField(default=0)
+    blocked_until = models.DateTimeField(null=True, blank=True)
+
+    class Meta:
+        indexes = [
+            models.Index(fields=["window_started", "blocked_until"], name="auththr_stale_idx"),
+        ]
+
+
+class MFADevice(models.Model):
+    """TOTP configuration; the encrypted secret is unusable without a separate key."""
+    user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="mfa_device")
+    encrypted_secret = models.TextField()
+    enabled = models.BooleanField(default=False)
+    last_accepted_step = models.BigIntegerField(default=-1)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+
+class MFARecoveryCode(models.Model):
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="mfa_recovery_codes")
+    code_hash = models.CharField(max_length=256)
+    created_at = models.DateTimeField(auto_now_add=True)
 
 def has_school_role(user, school, *roles):
     return bool(
