@@ -40,8 +40,12 @@ Seven of eight unchanged local pilot milestone gates now meet criteria (**87.5%*
 
 ## 2026-10-15 — Production hardening release candidate
 
-Added auth/MFA, strict settings, private files, concurrency regressions/fixes, deployment/recovery tooling and accessibility semantics with six Luna owners including independent review. Local targeted suites/scans pass; integrated suite, PostgreSQL CI and target-host acceptance remain in progress. Pilot score remains87.5%; production milestone8 is In progress.
+Added auth/MFA, strict settings, private files, concurrency regressions/fixes, deployment/recovery tooling and accessibility semantics with six Luna owners including independent review. Local targeted suites/scans pass; integrated suite, PostgreSQL CI and target-host acceptance remain in progress. Pilot score remains87.5%; production milestone 8 is In progress.
 
 ### Production candidate local validation and first CI attempt
 
-Final local suite183 run/175 pass/8 PG skips; checks/drift, dependency/source scans and static collection pass. Deadline fixture was isolated from the new session expiry and affected tests pass. Candidate saved in draft PR1; first CI failure has no retrievable logs/steps, so no PostgreSQL/container/restore success is claimed. Consolidated jobs into the existing workflow and added a container build/nonroot-manifest smoke job. Production milestone8 remains In progress, score87.5%.
+Final local suite 183 run/175 pass/8 PG skips; checks/drift, dependency/source scans and static collection pass. Deadline fixture was isolated from the new session expiry and affected tests pass. Candidate saved in draft PR #1; first CI failure has no retrievable logs/steps, so no PostgreSQL/container/restore success is claimed. Consolidated jobs into the existing workflow and added a container build/nonroot-manifest smoke job. Production milestone 8 remains In progress, score 87.5%.
+
+### Final local release-candidate checkpoint
+
+Final suite 184 run/176 passed/8 PG skips after testing cleanup of temporary pgpass files on early backup validation failure and sanitizing/uniquely naming encrypted artifacts. Status renderer now displays the actual production milestone state. User selected existing VPS; host/domain/access remain missing. CI initial run and retry report failure, with both log requests returning404 and steps empty; the latest workflow run is not returned. No PG/container/restore success is claimed; PR #1 remains draft.

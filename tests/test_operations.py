@@ -10,6 +10,15 @@ ROOT = Path(__file__).resolve().parents[1]
 
 
 class ProductionDeliveryContractTests(SimpleTestCase):
+    def test_backup_early_validation_failure_removes_temporary_credentials(self):
+        with tempfile.TemporaryDirectory() as directory:
+            env = {key: value for key, value in os.environ.items() if key not in {"PGPASSFILE", "BACKUP_ENCRYPTION_KEY_FILE"}}
+            env.update(TMPDIR=directory, PGHOST="localhost", PGPORT="5432", PGDATABASE="disposable", PGUSER="synthetic", PGPASSWORD="synthetic-test-value")
+            result = subprocess.run([str(ROOT / "scripts" / "backup-postgres.sh")], env=env, capture_output=True, text=True, check=False)
+            self.assertNotEqual(result.returncode, 0)
+            self.assertNotIn("synthetic-test-value", result.stderr)
+            self.assertEqual(list(Path(directory).iterdir()), [])
+
     def test_container_and_compose_have_production_boundaries(self):
         dockerfile = (ROOT / "Dockerfile").read_text()
         compose = (ROOT / "compose.yaml").read_text()

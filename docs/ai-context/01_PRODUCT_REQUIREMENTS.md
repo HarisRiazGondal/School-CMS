@@ -31,4 +31,4 @@ Optional/later: guardian portal, library, transport, inventory, HR/payroll, broa
 
 ## Production candidate update
 
-Production release candidate now includes private assignment/submission files, MFA/throttling, strict deployment configuration and encrypted recovery tooling. These implementations still require actual PostgreSQL/runtime/hosted acceptance; they do not close production milestone8 by code presence.
+Production release candidate now includes private assignment/submission files, MFA/throttling, strict deployment configuration and encrypted recovery tooling. These implementations still require actual PostgreSQL/runtime/hosted acceptance; they do not close production milestone 8 by code presence.

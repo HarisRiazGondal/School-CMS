@@ -23,4 +23,4 @@ Maintain additive migrations, atomic services, source-of-truth histories and mea
 
 ## Production candidate update
 
-Production milestone8 is now In progress: code/configuration hardening is implemented, but PostgreSQL concurrency/restore CI and actual deployment, SMTP/ClamAV, privacy/accessibility and human acceptance evidence must close before Verified.
+Production milestone 8 is now In progress: code/configuration hardening is implemented, but PostgreSQL concurrency/restore CI and actual deployment, SMTP/ClamAV, privacy/accessibility and human acceptance evidence must close before Verified.

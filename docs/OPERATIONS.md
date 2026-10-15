@@ -131,3 +131,9 @@ Before launch, record hosted HTTPS/proxy/cookie behavior, SMTP and reset-email d
 ## Reviewed scanner exceptions
 
 Bandit exceptions are narrow inline IDs: the explicitly DEBUG-only fallback secret (production rejects it), public grading percentages misclassified as passwords, and the operator-configured scanner subprocess using an argv list with no shell, opaque app-created paths and a timeout. The dependency scan includes all pinned runtime dependencies; a clean scan is point-in-time evidence rather than a security guarantee.
+
+## Separate MFA key and final backup checks
+
+Generate the MFA key directly into its protected host file using `umask077` (written as `umask 077` in the shell) and `python -c 'from cryptography.fernet import Fernet; print(Fernet.generate_key().decode())' > /etc/school-cms/mfa-encryption-key`. Set deliberate owner/mode for UID10001 readability as described above, and retain a protected recovery copy. Do not reuse the Django signing key. Losing this key prevents decrypting stored TOTP devices; rehearsed recovery is required.
+
+The PostgreSQL helper installs credential-file cleanup before later validation can fail. Encrypted artifact names are sanitized and unique, and no script silently overwrites a previous artifact. Rehearse the DB and private-file restoration together on the selected VPS before onboarding. CI's initial job and retry failed with no retrievable logs/steps; resolve the runner/check failure or run the recorded checks in a controlled staging server.

@@ -2,19 +2,19 @@
 
 **Production release candidate; acceptance pending. Pilot score remains87.5%.**
 
-2026-10-15 local integrated run: **183 tests run,175 passed,8 PostgreSQL-only concurrency tests skipped** in95.384 seconds. This is not183 PostgreSQL passes.
+2026-10-15 local integrated run: **184 tests run, 176 passed, 8 PostgreSQL-only concurrency tests skipped** in the final integrated run. This is not 184 PostgreSQL passes.
 
 | Check | Actual evidence |
 |---|---|
-| SQLite full suite |175 passed,8 PG-only skips |
+| SQLite full suite |176 passed, 8 PG-only skips |
 | Django check / migration drift |Clean / no changes |
 | Fresh SQLite migrate |Passed |
-| Dependency audit |No known vulnerabilities after pypdf6.20.1 upgrade |
+| Dependency audit |No known vulnerabilities after pypdf 6.20.1 upgrade |
 | Bandit app source |0 findings; narrow reviewed inline exceptions documented in OPERATIONS |
 | Static collection |127 assets and compressed manifest generated |
 | Synthetic production deploy check |No errors; intentional W005/W021 retained for staged HSTS |
 | Shell syntax / YAML / restore refusal |Passed |
-| First draft PR CI |Failure reported; logs404 and step details empty; cause not established |
+| First draft PR CI |Failure reported; logs 404 and step details empty; cause not established |
 | Real PostgreSQL concurrency/restore and image build |CI configured; success unverified |
 | Real SMTP/TLS/ClamAV/private-volume restore |Not exercised |
 | Hosted human/privacy/accessibility pilot |Not performed |

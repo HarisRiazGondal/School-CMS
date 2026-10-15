@@ -4,12 +4,12 @@
   "phase": "Production hardening \u2014 release validation in progress",
   "readiness": "Release candidate; production acceptance pending",
   "tests": {
-    "passed": 175,
+    "passed": 176,
     "skipped": 8,
-    "total": 183,
-    "environment": "Python3.12 / Django5.2.18 / SQLite: 183 tests run,175 passed,8 PostgreSQL-only concurrency tests skipped. Dependency audit and reviewed source scan clean. PostgreSQL/restore/container CI and actual target-host acceptance remain unverified.",
+    "total": 184,
+    "environment": "Python3.12 / Django5.2.18 / SQLite: 184 tests run,176 passed,8 PostgreSQL-only concurrency tests skipped. Dependency audit and reviewed source scan clean. PostgreSQL/restore/container CI and actual target-host acceptance remain unverified.",
     "commands": [
-      "DJANGO_DEBUG=true python manage.py test -v1 \u2014183 run,175 passed,8 PostgreSQL-only skips",
+      "DJANGO_DEBUG=true python manage.py test -v1 \u2014184 run,176 passed,8 PostgreSQL-only skips",
       "Django check and migration drift \u2014passed/no changes",
       "Fresh SQLite migrations \u2014passed",
       "python -m pip_audit -r requirements.txt \u2014no known vulnerabilities after pypdf6.20.1 upgrade",
@@ -18,7 +18,8 @@
       "Representative production check --deploy --fail-levelERROR \u2014passes with intentional W005/W021 staged HSTS warnings",
       "Shell syntax, Compose/workflow YAML and restore refusal contract tests \u2014passed; actual runtime remains unverified",
       "git diff --check \u2014passed",
-      "First draftPR CI run \u2014failure reported; job logs returned404 and step details empty; no PostgreSQL success claimed"
+      "DraftPR CI initial attempt and rerun \u2014failure; logs404 and steps empty. Latest consolidated workflow has no returned run yet; PostgreSQL/restore/container success unverified.",
+      "Backup early-failure credential cleanup regression and unique safe artifact names \u2014passed"
     ]
   },
   "milestones": [
@@ -90,7 +91,7 @@
   ],
   "next_actions": [
     "Inspect the draft PR PostgreSQL17/concurrency, encrypted restore, container build and security CI jobs; fix failures. The first CI run failed and its logs/step details were unavailable through the connector.",
-    "Provide a controlled target host/domain and operator-managed PostgreSQL/SMTP/secret files; validate nonroot volume/secret permissions and start the reviewed stack.",
+    "User chose an existing VPS. Obtain host/IP, SSH username and public domain through an approved connection; configure operator-managed PostgreSQL/SMTP/secret files and validate nonroot mount permissions.",
     "Verify TLS/cookie/proxy behavior, real password-reset delivery and ClamAV clean/infected/unavailable paths with current signatures.",
     "Run encrypted database plus private-files backup restoration and record measured recovery time, data checks, retention and operator ownership.",
     "Complete hosted five-role pilot, keyboard/screen-reader/viewport and privacy/security/monitoring acceptance before marking milestone8 Verified."

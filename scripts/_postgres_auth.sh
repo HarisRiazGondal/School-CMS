@@ -31,6 +31,9 @@ done
 
 _pgpass_escape() { local value="$1"; value=${value//\\/\\\\}; value=${value//:/\\:}; printf '%s' "$value"; }
 _pgpass_tmp=$(mktemp)
+_postgres_auth_cleanup() { rm -f -- "${_pgpass_tmp:-}"; }
+# Cover callers that fail validation before installing their fuller cleanup trap.
+trap _postgres_auth_cleanup EXIT
 chmod 600 "$_pgpass_tmp"
 printf '%s:%s:%s:%s:%s\n' \
   "$(_pgpass_escape "$PGHOST")" "$(_pgpass_escape "$PGPORT")" \
@@ -38,4 +41,3 @@ printf '%s:%s:%s:%s:%s\n' \
   "$(_pgpass_escape "$PGPASSWORD")" > "$_pgpass_tmp"
 unset PGPASSWORD
 export PGPASSFILE="$_pgpass_tmp"
-_postgres_auth_cleanup() { rm -f -- "${_pgpass_tmp:-}"; }

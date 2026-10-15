@@ -28,4 +28,6 @@ These are deployment acceptance gates, not defects that a local code test can cl
 
 ## Parent integrated evidence update
 
-Final local suite:183 run,175 passed,8 real-PG concurrency tests skipped. Source scan0 findings with narrow documented false-positive exceptions; dependency audit clean after pypdf6.20.1 upgrade. First draftPR CI reported failure; log retrieval returned404/BlobNotFound and step metadata was empty, so the cause and PostgreSQL/restore/container results remain unverified. The workflow is consolidated and being retried. These results do not close target-host operational gates.
+Final local suite:183 run,175 passed, 8 real-PG concurrency tests skipped. Source scan0 findings with narrow documented false-positive exceptions; dependency audit clean after pypdf 6.20.1 upgrade. First draftPR CI reported failure; log retrieval returned404/BlobNotFound and step metadata was empty, so the cause and PostgreSQL/restore/container results remain unverified. The workflow is consolidated and being retried. These results do not close target-host operational gates.
+
+Latest parent verification supersedes the earlier183 total: **184 run, 176 passed, 8 PostgreSQL-only skips**. Backup early-failure cleanup passes; temporary pgpass credentials are removed even if later validation fails. Artifact names are unique and sanitized. CI retry also failed without retrievable logs; no remote success claim is made. The user chose an existing VPS, with actual connection/domain still required.

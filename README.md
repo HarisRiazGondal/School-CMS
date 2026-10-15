@@ -33,4 +33,4 @@ The data model preserves one permanent student identity across year-specific enr
 
 ## Production release candidate
 
-See [production acceptance](docs/PRODUCTION_READINESS.md), [independent review](docs/PRODUCTION_REVIEW.md), [operations](docs/OPERATIONS.md) and [environment template](deploy/production.env.example). Production boot requires PostgreSQL, explicit HTTPS configuration, separate Django/MFA keys, persistent private scanned storage and SMTP. Run the release workflow and target-host acceptance before real pupil data. The local suite has175 passes and8 explicitly skipped PostgreSQL concurrency tests.
+See [production acceptance](docs/PRODUCTION_READINESS.md), [independent review](docs/PRODUCTION_REVIEW.md), [operations](docs/OPERATIONS.md) and [environment template](deploy/production.env.example). Production boot requires PostgreSQL, explicit HTTPS configuration, separate Django/MFA keys, persistent private scanned storage and SMTP. Run the release workflow and target-host acceptance before real pupil data. The local suite has176 passes and8 explicitly skipped PostgreSQL concurrency tests.

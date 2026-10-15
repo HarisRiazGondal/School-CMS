@@ -35,4 +35,4 @@ Campus consistency is validated, but staff memberships are school-wide rather th
 
 ## Production candidate update
 
-Production hardening has been implemented with targeted local evidence. Outstanding acceptance remains environment-specific: PostgreSQL, full container startup, file-volume/secret ownership, TLS, real SMTP, current ClamAV signatures, restored files/database, monitoring and hosted human privacy/accessibility. Preserve87.5% until all milestone8 criteria are evidenced.
+Production hardening has been implemented with targeted local evidence. Outstanding acceptance remains environment-specific: PostgreSQL, full container startup, file-volume/secret ownership, TLS, real SMTP, current ClamAV signatures, restored files/database, monitoring and hosted human privacy/accessibility. Preserve87.5% until all milestone 8 criteria are evidenced.
