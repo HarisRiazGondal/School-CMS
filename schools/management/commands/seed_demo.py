@@ -254,7 +254,7 @@ class Command(BaseCommand):
                 assessment = create_assessment(
                     teacher, section=section, subject=subject, term=term, title=assessment_title,
                     opens_at=timezone.now() - timedelta(hours=1),
-                    closes_at=timezone.now() + timedelta(days=30), attempt_limit=2, pass_percent="60.00",
+                    closes_at=timezone.now() + timedelta(days=30), attempt_limit=2, pass_percent="60.00",  # nosec B106  # public grade threshold.
                 )
             if assessment.status == Assessment.Status.DRAFT and not assessment.questions.exists():
                 question_specs = (

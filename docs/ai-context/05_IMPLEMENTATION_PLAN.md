@@ -20,3 +20,7 @@ Eight equally weighted pilot delivery milestones each contribute 12.5%. Seven no
 Milestone 7 acceptance is evidenced by correction review, timetable/notices/settings, role dashboards and batch workflow tests. Milestone 8 remains Not started until actual PostgreSQL/privacy/security/upload/SMTP/restore/accessibility/hosted pilot evidence exists. This score does not certify production readiness.
 
 Maintain additive migrations, atomic services, source-of-truth histories and measured evidence. Update project_state.json/Markdown and regenerate PROJECT_STATUS.html with every checkpoint.
+
+## Production candidate update
+
+Production milestone8 is now In progress: code/configuration hardening is implemented, but PostgreSQL concurrency/restore CI and actual deployment, SMTP/ClamAV, privacy/accessibility and human acceptance evidence must close before Verified.

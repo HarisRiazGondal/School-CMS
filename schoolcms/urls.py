@@ -4,13 +4,17 @@ from django.urls import include, path, reverse_lazy
 from django.views.generic import TemplateView
 
 from accounts import views as account_views
+from . import health
 
 urlpatterns = [
     path("admin/", admin.site.urls),
-    path("accounts/login/", auth_views.LoginView.as_view(template_name="registration/login.html"), name="login"),
+    path("accounts/login/", account_views.LoginView.as_view(template_name="registration/login.html"), name="login"),
+    path("accounts/mfa/challenge/", account_views.mfa_challenge, name="mfa_challenge"),
+    path("accounts/mfa/enroll/", account_views.mfa_enroll, name="mfa_enroll"),
+    path("accounts/mfa/disable/", account_views.mfa_disable, name="mfa_disable"),
     path("accounts/logout/", auth_views.LogoutView.as_view(next_page="logged_out"), name="logout"),
     path("accounts/logged-out/", TemplateView.as_view(template_name="registration/logged_out.html"), name="logged_out"),
-    path("accounts/password-reset/", auth_views.PasswordResetView.as_view(
+    path("accounts/password-reset/", account_views.PasswordResetView.as_view(
         template_name="registration/password_reset_form.html",
         email_template_name="registration/password_reset_email.html",
         subject_template_name="registration/password_reset_subject.txt",
@@ -32,4 +36,7 @@ urlpatterns = [
     path("assessments/", include("assessment.urls")),
     path("finance/", include("finance.urls")),
     path("oversight/", include("oversight.urls")),
+    path("private-files/", include("privatefiles.urls")),
+    path("health/live/", health.live, name="health_live"),
+    path("health/ready/", health.ready, name="health_ready"),
 ]

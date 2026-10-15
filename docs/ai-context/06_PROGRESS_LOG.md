@@ -37,3 +37,7 @@ Verified: **129 tests passed**, checks/drift/whitespace clean; fresh SQLite migr
 Review fixes: cached activation, audit/history queryset bypasses, forged promotion decisions, conditional reason preview wiring, stale teacher timetable rows, timetable Admin relation scoping, notice source/target authorization, school settings serialization, atomic notice/timetable audit writes and attendance session recontextualization. No unresolved local blocker is known within the reviewed pilot scope; production and broader-module limits remain explicit.
 
 Seven of eight unchanged local pilot milestone gates now meet criteria (**87.5%**); production release remains Not started. Next: PostgreSQL concurrency and deployment/security/SMTP/restore/hosted acceptance.
+
+## 2026-10-15 — Production hardening release candidate
+
+Added auth/MFA, strict settings, private files, concurrency regressions/fixes, deployment/recovery tooling and accessibility semantics with six Luna owners including independent review. Local targeted suites/scans pass; integrated suite, PostgreSQL CI and target-host acceptance remain in progress. Pilot score remains87.5%; production milestone8 is In progress.

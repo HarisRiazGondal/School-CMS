@@ -28,3 +28,7 @@ Seven unchanged pilot milestone gates meet local acceptance = **87.5%**. Broader
 - [x] Assessment and finance history retained through progression/reseed.
 - [ ] PostgreSQL concurrency, restore and production operating controls.
 - [ ] Throttling/MFA, SMTP, private files, accessibility and hosted human pilot.
+
+## Production release candidate — validation running
+
+The 129-test result above is the prior checkpoint. New auth, private-files, configuration, operations and review suites pass locally. Eight PostgreSQL concurrency tests deliberately skip on SQLite. The first new integrated suite had183 tests with one deadline-test failure caused by advancing the shared clock beyond the new one-hour session expiry; the test now isolates deadline behavior with a longer fixture session and its33-test affected suite passes. The final full suite and PostgreSQL CI run are pending. Dependency audit is clean after upgrading pypdf6.20.1; static collection and source scan pass. PostgreSQL/Docker, real SMTP/ClamAV/private-volume restoration and human hosted acceptance are not yet established.

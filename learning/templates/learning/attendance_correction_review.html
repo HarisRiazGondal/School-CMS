@@ -4,5 +4,5 @@
 <h1>Review attendance correction</h1>
 <p>{{ correction.attendance_record.enrollment.student }} · {{ correction.attendance_record.session.date }} · {{ correction.attendance_record.session.section.school_class.name }} / {{ correction.attendance_record.session.section.name }}</p>
 <dl><dt>Original</dt><dd>{{ correction.old_status }}{% if correction.old_note %} · {{ correction.old_note }}{% endif %}</dd><dt>Proposed</dt><dd>{{ correction.new_status }}{% if correction.new_note %} · {{ correction.new_note }}{% endif %}</dd><dt>Reason</dt><dd>{{ correction.reason }}</dd><dt>Requested by</dt><dd>{{ correction.requested_by }} at {{ correction.requested_at }}</dd></dl>
-<form method="post" class="form-card">{% csrf_token %}{{ form.as_p }}<button class="primary" type="submit">Record decision</button></form>
+<form method="post" class="form-card">{% csrf_token %}{% include "includes/form_error_summary.html" with form=form %}{{ form.as_p }}<button class="primary" type="submit">Record decision</button></form>
 {% endblock %}

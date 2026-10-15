@@ -108,7 +108,9 @@ def submit_admission_application(*, user, school, first_name, last_name="", date
 @transaction.atomic
 def decide_admission_application(*, user, application, decision, note=""):
     """Approve or reject an application; approval and first registration are one transaction."""
-    application = AdmissionApplication.objects.select_for_update().select_related(
+    # Only the application is nullable-join-safe under PostgreSQL. Locking the
+    # optional ``student`` relation via SELECT FOR UPDATE is rejected by PG.
+    application = AdmissionApplication.objects.select_for_update(of=("self",)).select_related(
         "school", "academic_year", "section__school_class", "student"
     ).get(pk=getattr(application, "pk", application))
     _require_role(user, application.school, (SchoolMembership.Role.SCHOOL_ADMIN,))

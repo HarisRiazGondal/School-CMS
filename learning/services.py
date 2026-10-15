@@ -117,7 +117,7 @@ def _save_correction(correction, *, create=False, update_fields=None):
 @transaction.atomic
 def request_attendance_correction(user, attendance_record, *, new_status, reason, new_note=""):
     """Capture a correction proposal without changing the original attendance record."""
-    record = AttendanceRecord.objects.select_for_update().select_related(
+    record = AttendanceRecord.objects.select_for_update(of=("self",)).select_related(
         "session__section__school_class__school", "session__section", "enrollment"
     ).get(pk=attendance_record.pk)
     require_section_access(user, record.session.section)
@@ -152,10 +152,16 @@ def request_attendance_correction(user, attendance_record, *, new_status, reason
 @transaction.atomic
 def review_attendance_correction(user, correction, *, approve, review_note=""):
     """School administrators decide a pending correction; approved changes remain attributed."""
-    correction = AttendanceCorrectionRequest.objects.select_for_update().select_related(
-        "attendance_record__session__section__school_class__school"
-    ).get(pk=correction.pk)
-    record = AttendanceRecord.objects.select_for_update().get(pk=correction.attendance_record_id)
+    # Match the request path's record -> proposal lock order. Locking proposal
+    # first can deadlock with a concurrent request that holds the attendance row.
+    correction_id = getattr(correction, "pk", correction)
+    attendance_record_id = AttendanceCorrectionRequest.objects.values_list(
+        "attendance_record_id", flat=True
+    ).get(pk=correction_id)
+    record = AttendanceRecord.objects.select_for_update(of=("self",)).select_related(
+        "session__section__school_class__school"
+    ).get(pk=attendance_record_id)
+    correction = AttendanceCorrectionRequest.objects.select_for_update(of=("self",)).get(pk=correction_id)
     school = record.session.section.school_class.school
     if not _has_db_school_role(user, school, SchoolMembership.Role.SCHOOL_ADMIN):
         raise PermissionDenied("Only an active school administrator may review attendance corrections.")
@@ -255,6 +261,7 @@ def submit_assignment(user, assignment, response):
         assignment=assignment, enrollment=enrollment, defaults={"response": response}
     )
     if not created:
+        submission = Submission.objects.select_for_update().get(pk=submission.pk)
         if submission.graded_at is not None:
             raise ValidationError("This response is locked after grading. Contact your teacher if it needs correction.")
         SubmissionRevision.objects.create(
@@ -290,6 +297,9 @@ def student_enrollment_for_assignment(user, assignment):
 
 @transaction.atomic
 def grade_submission(user, submission, *, grade=None, feedback=""):
+    submission = Submission.objects.select_for_update().select_related(
+        "assignment__section__school_class__school", "assignment__subject", "enrollment__student"
+    ).get(pk=submission.pk)
     require_grade_access(user, submission)
     if submission.graded_at is not None:
         GradeRevision.objects.create(
@@ -322,7 +332,7 @@ def teacher_sections(user):
     if not user.is_authenticated:
         return Section.objects.none()
     admin_school_ids = SchoolMembership.objects.filter(
-        user=user, school__is_active=True, is_active=True,
+        user=user, user__is_active=True, school__is_active=True, is_active=True,
         role=SchoolMembership.Role.SCHOOL_ADMIN,
     ).values_list("school_id", flat=True)
     assigned = TeacherAssignment.objects.filter(

@@ -1,11 +1,11 @@
 {
   "updated": "2026-10-15",
   "objective": "One-school launch with campus boundaries, permanent student records, role-scoped learning and staged assessment/finance.",
-  "phase": "Phase 6 \u2014 oversight and operations pilot locally verified",
-  "readiness": "Expanded local pilot ready for testing",
+  "phase": "Production hardening \u2014 release validation in progress",
+  "readiness": "Release candidate; production acceptance pending",
   "tests": {
     "passed": 129,
-    "environment": "Python 3.12 / Django 5.2 / SQLite. Clean migrations, full automated suite and combined fresh-database acceptance passed. PostgreSQL concurrency, hosted acceptance and remote CI success are unverified.",
+    "environment": "Last fully verified checkpoint: 129 tests on SQLite. Production hardening targeted suites and dependency/source scans pass; new full suite and PostgreSQL CI acceptance are in progress.",
     "commands": [
       "DJANGO_DEBUG=true python manage.py check \u2014 passed, no issues",
       "DJANGO_DEBUG=true python manage.py makemigrations --check --dry-run \u2014 no changes",
@@ -55,13 +55,13 @@
     },
     {
       "name": "Production pilot release",
-      "status": "Not started",
+      "status": "In progress",
       "criteria": "PostgreSQL, privacy/security, uploads, SMTP, backup restoration, accessibility and hosted pilot acceptance are evidenced."
     }
   ],
   "limitations": [
     "Local synthetic-data pilot only; no hosted deployment or production readiness is claimed.",
-    "PostgreSQL row-lock/concurrency acceptance, real SMTP, throttling/MFA, private file uploads, backup restoration and hosted human/accessibility acceptance remain unverified.",
+    "Production hardening is implemented but PostgreSQL concurrency/restore CI, Docker runtime, real SMTP/TLS/ClamAV, and hosted human/privacy/accessibility acceptance remain unverified.",
     "Transfer/section-change correction UI, admission documents/imports, formal calendar/notification delivery and richer analytics remain backlog.",
     "Terminology and branding render on oversight pages. Global theming and branded report-card export are not implemented. Policy controls are allowlisted and cover late work, correction windows, student result visibility and notice expiry.",
     "Assessment uses versioned fixed A/B/C/D/F bands and configurable pass thresholds; exam calendars, weights and richer scales remain future work.",

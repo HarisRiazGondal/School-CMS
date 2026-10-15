@@ -2,7 +2,7 @@
 {% block title %}Attendance history · School CMS{% endblock %}
 {% block content %}
 <h1>My attendance history</h1>
-<div class="table-wrap"><table><thead><tr><th>Date</th><th>Academic year</th><th>Class / section</th><th>Status</th><th>Note</th></tr></thead><tbody>
+<div class="table-wrap"><table><thead><tr><th scope="col">Date</th><th scope="col">Academic year</th><th scope="col">Class / section</th><th scope="col">Status</th><th scope="col">Note</th></tr></thead><tbody>
 {% for record in records %}<tr><td>{{ record.session.date }}</td><td>{{ record.enrollment.academic_year.name }}</td><td>{{ record.session.section.school_class.name }} / {{ record.session.section.name }}</td><td>{{ record.get_status_display }}</td><td>{{ record.note|default:"—" }}</td></tr>{% empty %}<tr><td colspan="5">No attendance history is available.</td></tr>{% endfor %}
 </tbody></table></div>
 {% endblock %}

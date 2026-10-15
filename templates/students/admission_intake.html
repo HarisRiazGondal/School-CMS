@@ -3,7 +3,7 @@
 {% block content %}
 <section class="page-header"><div><p class="eyebrow">{{ school.name }}</p><h1>New admission application</h1><p>Applications stay pending until a school admin approves them. Intake does not create a student identity.</p></div></section>
 <form method="post" class="form-card">{% csrf_token %}
-  {% if form.non_field_errors %}<div class="form-errors">{{ form.non_field_errors }}</div>{% endif %}
+  {% include "includes/form_error_summary.html" with form=form %}
   <fieldset><legend>Applicant and requested placement</legend>
     {% for field in form %}{% if field.name != 'guardian_name' and field.name != 'guardian_relationship' and field.name != 'guardian_phone' and field.name != 'guardian_email' %}<div class="field"><label for="{{ field.id_for_label }}">{{ field.label }}</label>{{ field }}{{ field.errors }}</div>{% endif %}{% endfor %}
   </fieldset>

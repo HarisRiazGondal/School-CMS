@@ -3,7 +3,7 @@
 {% block content %}
 <section class="page-header"><div><p class="eyebrow">{{ school.name }}</p><h1>Register a student</h1><p>Create a permanent identity and the first year-specific enrollment. For pending intake, <a href="{% url 'students:admission-intake' school_slug=school.slug %}">submit an admission application</a>.</p></div></section>
 <form method="post" class="form-card">{% csrf_token %}
-  {% if form.non_field_errors %}<div class="form-errors">{{ form.non_field_errors }}</div>{% endif %}
+  {% include "includes/form_error_summary.html" with form=form %}
   <fieldset><legend>Student details</legend>
     {% for field in form %}{% if field.name != 'guardian_name' and field.name != 'guardian_relationship' and field.name != 'guardian_phone' and field.name != 'guardian_email' %}<div class="field"><label for="{{ field.id_for_label }}">{{ field.label }}</label>{{ field }}{{ field.errors }}</div>{% endif %}{% endfor %}
   </fieldset>

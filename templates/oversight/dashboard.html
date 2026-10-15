@@ -23,7 +23,7 @@
 </section>
 {% if role == "school_admin" or role == "teacher" or role == "student" %}
 <section class="card"><h2>Timetable · {{ timezone_label }}</h2>
-  {% if timetable %}<div class="table-wrap"><table><thead><tr><th>Day</th><th>Time ({{ timezone_label }})</th><th>{{ terms.section }}</th><th>Subject</th><th>{{ terms.teacher }}</th><th>Room</th></tr></thead><tbody>
+  {% if timetable %}<div class="table-wrap"><table><thead><tr><th scope="col">Day</th><th scope="col">Time ({{ timezone_label }})</th><th scope="col">{{ terms.section }}</th><th scope="col">Subject</th><th scope="col">{{ terms.teacher }}</th><th scope="col">Room</th></tr></thead><tbody>
   {% for slot in timetable %}<tr><td>{{ slot.get_weekday_display }}</td><td>{{ slot.starts_at|time:"H:i" }}–{{ slot.ends_at|time:"H:i" }}</td><td>{{ slot.assignment.section.school_class.name }} · {{ slot.assignment.section.name }}</td><td>{{ slot.assignment.subject.name }}</td><td>{{ slot.assignment.user.get_full_name|default:slot.assignment.user.username }}</td><td>{{ slot.room|default:"—" }}</td></tr>{% endfor %}
   </tbody></table></div>{% else %}<p class="muted">No timetable slots are available for your school scope.</p>{% endif %}
 </section>

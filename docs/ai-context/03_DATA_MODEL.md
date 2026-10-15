@@ -64,3 +64,7 @@ AdmissionApplication retains school, requested year/section/roll, applicant/guar
 AttendanceCorrectionRequest links one attendance record with immutable old/new status/note, reason and requester. A conditional database uniqueness constraint permits at most one pending request per record. Review status/actor/time are constrained, and successful approval updates the record atomically through guarded service writes.
 
 SchoolSetting is one-to-one with School. Each save creates an immutable versioned SchoolSettingRevision. TimetableSlot belongs to an active TeacherAssignment; validation checks school/year/campus consistency and teacher/class/room overlaps. Notice belongs to School with optional Section, audience and publication/expiry window; published edits retain NoticeRevision snapshots. These are bounded pilot entities; no scheduling engine, message delivery service or full report designer is implied.
+
+## Production candidate update
+
+Production candidate adds AuthThrottle (HMAC buckets and timed counters), MFADevice (encrypted TOTP secret, accepted-step replay guard), MFARecoveryCode (keyed hashes), and PrivateAttachment metadata linked exclusively to Assignment or Submission. Opaque stored keys, bounded content/hash/size, clean/quarantined scan status and owner/scope checks keep files out of public media. Private root/file permissions and integrity are enforced; submission row locking coordinates grading/upload edits. New migrations are accounts0002 and privatefiles0001.

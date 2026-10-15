@@ -4,6 +4,7 @@
 <section class="panel">
   <h1>Welcome, {{ user.get_full_name|default:user.get_username }}</h1>
   <p class="muted">Your current school access is shown below.</p>
+  <p>Multi-factor authentication: {% if mfa_enabled %}enabled · <a href="{% url 'mfa_disable' %}">Manage</a>{% else %}not enabled · <a href="{% url 'mfa_enroll' %}">Set up{% if mfa_required %} now{% endif %}</a>{% endif %}</p>
   {% if memberships %}
     <ul class="membership-list">
       {% for membership in memberships %}

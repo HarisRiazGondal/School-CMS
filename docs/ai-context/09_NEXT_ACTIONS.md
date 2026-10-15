@@ -1,11 +1,9 @@
 # Next Actions
 
-Current: **129 passing tests**, seven of the unchanged eight pilot milestones verified (**87.5%**). Oversight/operations local acceptance is complete. Production milestone 8 remains Not started.
+Production release candidate in progress; unchanged pilot score87.5%.
 
-1. Verify PostgreSQL migrations, row locking and concurrent payment/reversal, admissions, promotion, correction and timetable writes.
-2. Configure and test real SMTP, HTTPS/proxy/cookies, password-reset URLs, account provisioning, login throttling/MFA and private file storage.
-3. Exercise encrypted backup restoration and document retention/access policies and production database history protections.
-4. Run hosted five-role human pilot, accessibility, privacy/security and operational acceptance before marking production milestone 8 Verified.
-5. Track broader backlog separately: transfer/section-change UI, admission documents/imports, exam calendars/weighted grading/exports, installments/refunds and general-ledger work.
-
-Read memory/design and inspect code before changing services. Use admission, progression, attendance-correction, notice/settings, assessment and finance services; do not bypass immutable history or treat stored balances as another truth. Retain teacher source/target notice checks and exact assignment pairs. Keep production gates explicit. Update affected AI context/JSON, regenerate HTML, record actual checks and commit a reviewable checkpoint.
+1. Run final local full suite and checks; replace the prior129 baseline count with measured new passed/skipped counts.
+2. Run real PostgreSQL17 full suite/concurrency and encrypted restore rehearsal through the draft release PR CI; inspect failures and fix them.
+3. Build/start the container stack and validate volume/secret UID10001 permissions, TLS edge, real SMTP and ClamAV signature/scan paths.
+4. Complete hosted five-role, privacy/retention and human accessibility acceptance with operator-owned credentials/host.
+5. Update all affected AI context/JSON/HTML and release evidence; never mark production milestone8 Verified solely from code presence.

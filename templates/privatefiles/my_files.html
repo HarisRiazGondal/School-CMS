@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+{% block title %}My submitted files · School CMS{% endblock %}
+{% block content %}
+<h1>My submitted files</h1>
+<p>Files remain available here for your own submission history, including previous school years.</p>
+<ul>
+  {% for attachment in attachments %}
+    <li>{{ attachment.submission.assignment.title }} — <a href="{% url 'privatefiles:download' attachment.id %}">{{ attachment.original_name }}</a> ({{ attachment.size }} bytes)</li>
+  {% empty %}
+    <li>No submitted files.</li>
+  {% endfor %}
+</ul>
+{% endblock %}

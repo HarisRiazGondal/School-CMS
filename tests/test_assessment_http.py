@@ -4,7 +4,7 @@ from datetime import date
 from unittest.mock import patch
 
 from django.core.exceptions import PermissionDenied, ValidationError
-from django.test import TestCase
+from django.test import TestCase, override_settings
 from django.urls import reverse
 from django.utils import timezone
 
@@ -183,6 +183,7 @@ class AssessmentHTTPWorkflowTests(TestCase):
         attempt.refresh_from_db()
         self.assertEqual(attempt.status, Attempt.Status.SUBMITTED)
 
+    @override_settings(SESSION_COOKIE_AGE=86400)
     def test_late_submit_preserves_last_saved_answers_and_ignores_late_body(self):
         assessment, mcq, manual = self._make_assessment()
         self.client.force_login(self.student_user)

@@ -28,3 +28,7 @@ Optional/later: guardian portal, library, transport, inventory, HR/payroll, broa
 6. Registrar records a pending application without issuing an identity → school admin reviews and approves/rejects → approval registers identity/enrollment/guardian atomically. The walk-in registration workflow remains available separately.
 7. Admin previews a batch of promoted/repeated/conditional/graduated outcomes → resolves row conflicts and supplies conditional reasons → confirms the revalidated batch → all outcomes and immutable snapshots commit together or none do.
 8. Admin changes bounded school policies or publishes a notice/timetable → relevant school-role portals apply the policy and scope → settings and published-notice edits preserve revisions.
+
+## Production candidate update
+
+Production release candidate now includes private assignment/submission files, MFA/throttling, strict deployment configuration and encrypted recovery tooling. These implementations still require actual PostgreSQL/runtime/hosted acceptance; they do not close production milestone8 by code presence.

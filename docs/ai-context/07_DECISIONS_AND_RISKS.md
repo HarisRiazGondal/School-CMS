@@ -32,3 +32,7 @@
 Username login; one enrollment per student/year; section/date attendance sessions; default late text work allowed until grading; immutable permanent identities; admin decisions and confirmation. Correction age defaults to seven school-local calendar days; notice expiry defaults to no automatic expiry; student results are visible by default. These policies have effective consumers and tests, not inert settings controls.
 
 Campus consistency is validated, but staff memberships are school-wide rather than campus-restricted. Notice authoring checks both persisted source and proposed target scope. History protection is application-level and does not replace production database/operator controls. Treat synthetic test evidence as a pilot gate, not authorization to introduce real minors' data before release acceptance.
+
+## Production candidate update
+
+Production hardening has been implemented with targeted local evidence. Outstanding acceptance remains environment-specific: PostgreSQL, full container startup, file-volume/secret ownership, TLS, real SMTP, current ClamAV signatures, restored files/database, monitoring and hosted human privacy/accessibility. Preserve87.5% until all milestone8 criteria are evidenced.

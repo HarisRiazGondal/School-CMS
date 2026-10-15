@@ -69,7 +69,7 @@ class Assessment(models.Model):
         if self.opens_at and self.closes_at and self.closes_at <= self.opens_at:
             errors["closes_at"] = "The closing time must be after the opening time."
         if self.pass_percent is not None and not Decimal("0") <= self.pass_percent <= Decimal("100"):
-            errors["pass_percent"] = "Pass percent must be between 0 and 100."
+            errors["pass_percent"] = "Pass percent must be between 0 and 100."  # nosec B105  # public grading threshold, not a credential.
         if errors:
             raise ValidationError(errors)
 
